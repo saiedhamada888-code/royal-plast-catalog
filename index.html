@@ -265,7 +265,16 @@ img{display:block;-webkit-user-drag:none;user-select:none}
   </div>
 </div>
 
-<script src="catalog-data.js"></script>
+<script>
+  /* GitHub Pages lets browsers keep files for ~10 minutes. Always load the newest data,
+     and if a newer version of the page was published, reload once to get it. */
+  window.APP_VERSION = "6";
+  document.write('<script src="catalog-data.js?v=' + Date.now() + '"><\/script>');
+  fetch("version.txt?t=" + Date.now(), { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(v => {
+    v = v.trim(); const u = new URL(location.href);
+    if (v && v !== window.APP_VERSION && u.searchParams.get("v") !== v){ u.searchParams.set("v", v); location.replace(u); }
+  }).catch(() => {});
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 <script>
