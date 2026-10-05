@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Royal Plast Catalog</title>
+<meta name="description" content="Royal Plast — Packaging That Sells. Browse our catalog and order any item on WhatsApp.">
+<link rel="icon" href="images/logo-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#F2222B; --cyan:#1FE0FD; --sky:#5CE6FF; --ink:#0E1A2B; --bg:#F2FCFF;
+  --muted:color-mix(in srgb,var(--ink) 60%,transparent);
+  --line:color-mix(in srgb,var(--ink) 12%,transparent);
+  --wa:#25D366; --cols:4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;line-height:1.55}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{display:block;max-width:100%}
+.serif{font-family:"DM Serif Display",Georgia,serif;font-weight:400;letter-spacing:-.01em}
+.wrap{width:min(1280px,100% - 32px);margin-inline:auto}
+
+/* ---------- loader ---------- */
+#loader{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:#fff;transition:opacity .7s,visibility .7s}
+#loader.done{opacity:0;visibility:hidden}
+.ld{position:relative;width:170px;height:170px;display:grid;place-items:center}
+.ld img{width:84px;animation:ldpop 1s cubic-bezier(.3,1.5,.5,1) both}
+.ld svg{position:absolute;inset:0;animation:spin 1.4s linear infinite}
+.ld-txt{position:absolute;bottom:-42px;left:50%;transform:translateX(-50%);white-space:nowrap;font-weight:800;color:var(--red);letter-spacing:.5px;opacity:0;animation:fadeup .6s .5s forwards}
+@keyframes ldpop{from{transform:scale(.2) rotate(-25deg);opacity:0}}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,#fff 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);transition:box-shadow .3s}
+header.scrolled{box-shadow:0 10px 30px color-mix(in srgb,var(--ink) 8%,transparent)}
+.nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{height:52px;width:auto;mix-blend-mode:multiply}
+.links{display:flex;gap:30px;font-weight:600;font-size:15px}
+.links a{position:relative;opacity:.75;transition:opacity .3s}
+.links a:hover{opacity:1}
+.links a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--red),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.links a:hover::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 24px;border-radius:999px;font-weight:700;font-size:15px;transition:transform .3s,box-shadow .3s,background .3s}
+.btn svg{width:20px;height:20px;flex:none}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 10px 26px color-mix(in srgb,var(--red) 35%,transparent)}
+.btn-red:hover{transform:translateY(-3px);box-shadow:0 16px 34px color-mix(in srgb,var(--red) 45%,transparent)}
+.btn-line{border:2px solid var(--ink);background:#fff}
+.btn-line:hover{transform:translateY(-3px);background:var(--ink);color:#fff}
+.btn-wa{background:var(--wa);color:#fff;box-shadow:0 10px 26px #25d36655}
+.btn-wa:hover{transform:translateY(-3px)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,#fff 0%,color-mix(in srgb,var(--sky) 35%,#fff) 60%,var(--bg) 100%)}
+.swoosh{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.swoosh path{transform-origin:center;animation:drift 14s ease-in-out infinite alternate}
+.swoosh path:nth-child(2){animation-duration:18s;animation-direction:alternate-reverse}
+.hero-in{position:relative;display:grid;grid-template-columns:1fr 1.05fr;gap:30px;align-items:center;min-height:calc(100vh - 76px);padding:50px 0 70px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;padding:7px 16px 7px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:600;font-size:14px;box-shadow:0 6px 20px color-mix(in srgb,var(--ink) 6%,transparent)}
+.eyebrow b{background:var(--red);color:#fff;border-radius:999px;padding:2px 10px;font-size:12px}
+.hero h1{font-size:clamp(46px,7vw,96px);line-height:1;margin:22px 0 20px}
+.hero h1 .w{display:inline-block;opacity:0;transform:translateY(60%) rotate(4deg);transition:all 1s cubic-bezier(.2,.8,.2,1)}
+.ready .hero h1 .w{opacity:1;transform:none}
+.hl{position:relative;color:var(--red);font-style:italic}
+.hl svg{position:absolute;left:-4%;bottom:-.12em;width:108%;height:.35em;overflow:visible}
+.hl svg path{stroke:var(--cyan);stroke-width:7;fill:none;stroke-linecap:round;stroke-dasharray:400;stroke-dashoffset:400;transition:stroke-dashoffset 1.2s 1s ease}
+.ready .hl svg path{stroke-dashoffset:0}
+.hero p.sub{font-size:17px;color:var(--muted);max-width:520px;margin-bottom:32px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero-meta{display:flex;gap:26px;margin-top:38px;flex-wrap:wrap}
+.hero-meta div{display:flex;flex-direction:column}
+.hero-meta b{font-size:28px;font-weight:800;line-height:1.1}
+.hero-meta span{font-size:13px;color:var(--muted)}
+
+/* 3D carousel */
+.stage{position:relative;height:560px;perspective:1300px;display:grid;place-items:center}
+.platform{position:absolute;bottom:60px;width:78%;height:90px;border-radius:50%;background:radial-gradient(ellipse,color-mix(in srgb,var(--cyan) 55%,transparent),transparent 70%);filter:blur(6px)}
+.platform::after{content:"";position:absolute;inset:18px 12%;border-radius:50%;border:2px solid color-mix(in srgb,var(--red) 40%,transparent);animation:pulse 2.6s infinite}
+.ring{position:relative;width:180px;height:240px;transform-style:preserve-3d;animation:ring 26s linear infinite}
+.stage:hover .ring{animation-play-state:paused}
+.ring .it{position:absolute;inset:0;border-radius:24px;overflow:hidden;background:#fff;border:1.5px solid var(--ink);box-shadow:0 20px 40px color-mix(in srgb,var(--ink) 18%,transparent);cursor:pointer;-webkit-box-reflect:below 14px linear-gradient(transparent 70%,#ffffff40)}
+.ring .it img{width:100%;height:100%;object-fit:cover}
+.ring .it span{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:var(--red);color:#fff;font-size:12px;font-weight:600;padding:3px 12px;border-radius:999px;white-space:nowrap}
+.orbit-badge{position:absolute;top:40px;right:6%;width:110px;height:110px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center;font-weight:800;font-size:13px;line-height:1.1;box-shadow:0 14px 30px color-mix(in srgb,var(--ink) 12%,transparent)}
+.orbit-badge svg{position:absolute;inset:0;animation:spin 12s linear infinite}
+.orbit-badge b{font-size:28px;color:var(--red);display:block}
+
+/* ---------- marquee ---------- */
+.marquee{background:var(--ink);color:#fff;overflow:hidden;padding:16px 0;transform:rotate(-1.2deg);margin:-14px -10px 0;position:relative;z-index:2}
+.marquee-t{display:flex;width:max-content;animation:marq 32s linear infinite}
+.marquee-t span{display:flex;align-items:center;gap:28px;padding-right:28px;font-family:"DM Serif Display",serif;font-size:26px;white-space:nowrap}
+.marquee-t span i{width:12px;height:12px;border-radius:50%;background:var(--red);box-shadow:16px 0 0 var(--cyan);margin-right:16px}
+
+/* ---------- toolbar ---------- */
+#catalog{padding:80px 0 30px}
+.sec-head{text-align:center;margin-bottom:34px}
+.sec-head small{color:var(--red);font-weight:700;letter-spacing:3px;font-size:13px}
+.sec-head h2{font-size:clamp(36px,4.6vw,58px);line-height:1.1;margin:6px 0}
+.sec-head p{color:var(--muted);max-width:620px;margin:auto}
+.toolbar{position:sticky;top:76px;z-index:40;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 0;margin-bottom:26px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px)}
+.pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex:none;padding:9px 18px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-weight:600;font-size:14px;transition:all .3s}
+.pill:hover{border-color:var(--ink)}
+.pill.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 8px 20px color-mix(in srgb,var(--red) 30%,transparent)}
+.pill em{font-style:normal;opacity:.6;margin-left:6px;font-size:12px}
+.search{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:9px 16px;min-width:260px;transition:border-color .3s}
+.search:focus-within{border-color:var(--cyan)}
+.search svg{width:18px;opacity:.5}
+.search input{border:0;outline:0;font:inherit;width:100%;background:none;color:var(--ink)}
+
+/* ---------- collection panel ---------- */
+.col{position:relative;margin-bottom:46px;border-radius:34px;overflow:hidden;background:var(--sky);opacity:0;transform:translateY(50px);transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.2,1)}
+.col.in{opacity:1;transform:none}
+.col-head{position:relative;display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:center;padding:26px 34px;background:linear-gradient(90deg,#fff,color-mix(in srgb,var(--sky) 25%,#fff));border-bottom:1.5px solid var(--ink)}
+.col-head .logo-chip{width:64px;height:64px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 6px 16px color-mix(in srgb,var(--ink) 10%,transparent)}
+.col-head .logo-chip img{width:38px}
+.col-head h3{font-size:clamp(28px,3.4vw,44px);color:var(--red);line-height:1.05}
+.col-head p{color:var(--red);font-size:14.5px;max-width:640px;opacity:.9}
+.col-code{background:var(--red);color:#fff;font-size:clamp(18px,2vw,28px);padding:8px 30px;border-radius:999px;white-space:nowrap;box-shadow:0 10px 22px color-mix(in srgb,var(--red) 30%,transparent)}
+.col-bg{position:absolute;right:-60px;bottom:-60px;width:340px;opacity:.08;pointer-events:none}
+.grid{position:relative;display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:34px 26px;padding:40px 34px 44px}
+
+/* ---------- product card ---------- */
+.pc{position:relative;opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i)*60ms)}
+.col.in .pc{opacity:1;transform:none}
+.pc.hl-pulse .frame{animation:hlpulse 1.2s 3}
+.pc-stage{position:relative;perspective:900px;cursor:pointer;outline:none}
+.frame{position:relative;aspect-ratio:1;border-radius:26px;transform-style:preserve-3d;transition:transform .25s ease-out}
+.face{position:absolute;inset:0;border-radius:26px;overflow:hidden;background:#fff;border:1.5px solid var(--ink);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.face img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.face.back{transform:rotateY(180deg)}
+.face.back img{transform:scaleX(-1)}
+.pc-stage:hover .face.front img{transform:scale(1.07)}
+.face::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,30%),#ffffff70,transparent 45%);opacity:0;transition:opacity .3s;pointer-events:none}
+.pc-stage:hover .face::after{opacity:1}
+.frame.spin{animation:spin360 1.2s cubic-bezier(.45,.05,.25,1)}
+.frame.frames-play{animation:bump 1.2s ease}
+.pc-code{position:absolute;left:50%;bottom:-15px;transform:translateX(-50%) translateZ(30px);z-index:3;background:var(--red);color:#fff;font-size:13.5px;font-weight:500;padding:5px 20px;border-radius:999px;white-space:nowrap;box-shadow:0 6px 14px color-mix(in srgb,var(--red) 35%,transparent)}
+.pc-360{position:absolute;top:12px;right:12px;z-index:3;display:flex;align-items:center;gap:4px;padding:4px 10px 4px 6px;border-radius:999px;background:#ffffffe6;font-size:11.5px;font-weight:700;box-shadow:0 4px 10px #0001}
+.pc-360 svg{width:16px;height:16px;color:var(--red);animation:spin 3s linear infinite}
+.pc-hint{position:absolute;left:12px;right:12px;bottom:26px;z-index:3;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px;border-radius:14px;background:var(--wa);color:#fff;font-size:13px;font-weight:700;opacity:0;transform:translateY(12px);transition:all .35s cubic-bezier(.2,.8,.2,1)}
+.pc-hint svg{width:16px;height:16px}
+.pc-stage:hover .pc-hint,.pc-stage:focus-visible .pc-hint{opacity:1;transform:none}
+.ripple{position:absolute;border-radius:50%;background:color-mix(in srgb,var(--cyan) 50%,transparent);transform:scale(0);animation:ripple .8s ease-out forwards;pointer-events:none;z-index:4}
+.pc-body{padding:28px 4px 0}
+.pc-name{font-size:26px;line-height:1.15;margin-bottom:10px}
+.pc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cap{background:#fff;color:var(--red);font-weight:800;font-size:14px;padding:5px 16px;border-radius:999px}
+.spec{font-size:12.5px;font-weight:600;color:color-mix(in srgb,var(--ink) 70%,transparent)}
+.pc-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 25%,transparent);transition:transform .2s,box-shadow .2s}
+.chip:hover{transform:scale(1.2)}
+.chip.on{box-shadow:0 0 0 2px var(--sky),0 0 0 4px var(--ink);transform:scale(1.12)}
+.wa-mini{width:40px;height:40px;flex:none;border-radius:50%;background:var(--wa);color:#fff;display:grid;place-items:center;box-shadow:0 6px 14px #25d36655;transition:transform .3s}
+.wa-mini:hover{transform:scale(1.12) rotate(-8deg)}
+.wa-mini svg{width:20px;height:20px}
+.empty{padding:70px 20px;text-align:center;color:var(--muted);font-size:18px}
+
+/* ---------- steps ---------- */
+#how{padding:60px 0 90px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.step{position:relative;padding:34px 28px;border-radius:28px;background:#fff;border:1.5px solid var(--line);overflow:hidden;transition:transform .4s,border-color .4s;opacity:0;transform:translateY(30px)}
+.step.in{opacity:1;transform:none}
+.step:hover{transform:translateY(-8px);border-color:var(--red)}
+.step .n{font-family:"DM Serif Display",serif;font-size:64px;line-height:1;background:linear-gradient(135deg,var(--red),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.step h4{font-size:20px;margin:8px 0 6px}
+.step p{color:var(--muted);font-size:14.5px}
+
+/* ---------- footer ---------- */
+footer{position:relative;background:var(--sky);border-top:2px solid var(--red)}
+.foot{display:grid;grid-template-columns:auto 1fr auto auto;gap:34px;align-items:center;padding:34px 0}
+.qr{display:flex;align-items:center;gap:14px}
+.qr-box{width:116px;height:116px;padding:8px;background:#fff;border-radius:16px;box-shadow:0 10px 24px color-mix(in srgb,var(--ink) 12%,transparent)}
+.qr-box canvas,.qr-box img{width:100%!important;height:100%!important}
+.qr small{font-weight:700;font-size:13px;max-width:90px;line-height:1.3}
+.phones{display:flex;align-items:center;gap:12px;color:var(--red);font-weight:600}
+.phones .ic{width:44px;height:44px;border-radius:50%;border:2px solid var(--red);display:grid;place-items:center;flex:none}
+.phones .ic svg{width:20px}
+.phones div{display:flex;flex-direction:column;font-size:15px;line-height:1.5}
+.tagline{color:var(--red);font-weight:700;font-size:19px;text-align:center}
+.site{display:flex;align-items:center;gap:8px;color:var(--red);font-weight:600}
+.site svg{width:20px}
+.copy{border-top:1px solid color-mix(in srgb,var(--ink) 15%,transparent);padding:14px 0;font-size:13px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.copy a{opacity:.5}
+
+/* ---------- floating ---------- */
+.fab{position:fixed;right:22px;bottom:22px;z-index:60;width:62px;height:62px;border-radius:50%;background:var(--wa);color:#fff;display:grid;place-items:center;box-shadow:0 12px 30px #25d36677}
+.fab svg{width:32px;height:32px}
+.fab::before,.fab::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--wa);animation:wave 2.4s infinite}
+.fab::after{animation-delay:1.2s}
+.toast{position:fixed;left:50%;bottom:100px;z-index:90;transform:translate(-50%,30px);opacity:0;display:flex;align-items:center;gap:12px;padding:14px 22px;border-radius:16px;background:var(--ink);color:#fff;font-weight:600;font-size:14px;transition:all .4s;pointer-events:none;box-shadow:0 20px 40px #0003}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast i{width:10px;height:10px;border-radius:50%;background:var(--wa);box-shadow:0 0 10px var(--wa)}
+.top-bar{position:fixed;top:0;left:0;height:3px;z-index:70;background:linear-gradient(90deg,var(--red),var(--cyan));width:0}
+.preview-flag{position:fixed;left:16px;bottom:16px;z-index:80;background:var(--ink);color:#fff;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ring{to{transform:rotateY(-360deg)}}
+@keyframes spin360{0%{transform:rotateY(0)}50%{transform:rotateY(180deg) scale(1.06)}100%{transform:rotateY(360deg)}}
+@keyframes bump{50%{transform:scale(1.05)}}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(-30px,20px) scale(1.04)}}
+@keyframes pulse{50%{transform:scale(1.06);opacity:.4}}
+@keyframes marq{to{transform:translateX(-50%)}}
+@keyframes ripple{to{transform:scale(3.2);opacity:0}}
+@keyframes wave{to{transform:scale(1.7);opacity:0}}
+@keyframes fadeup{to{opacity:1}}
+@keyframes hlpulse{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--red) 50%,transparent);border-radius:26px}}
+
+@media (max-width:1100px){.grid{--cols:3!important}}
+@media (max-width:980px){
+  .links{display:none}
+  .hero-in{grid-template-columns:1fr;text-align:center;padding-top:36px}
+  .hero p.sub{margin-inline:auto}.hero-cta,.hero-meta{justify-content:center}
+  .stage{height:430px}
+  .steps{grid-template-columns:1fr}
+  .foot{grid-template-columns:1fr 1fr;gap:24px}
+  .tagline{grid-column:1/-1;order:-1}
+}
+@media (max-width:720px){
+  .grid{--cols:2!important;gap:30px 14px;padding:28px 16px 32px}
+  .col{border-radius:24px}
+  .col-head{grid-template-columns:1fr auto;padding:20px}
+  .col-head .logo-chip{display:none}
+  .col-head p{grid-column:1/-1;font-size:13px}
+  .pc-name{font-size:19px}
+  .cap{font-size:12px;padding:4px 12px}
+  .spec{display:none}
+  .face,.frame{border-radius:20px}
+  .pc-hint{display:none}
+  .search{min-width:0;flex:1}
+  .toolbar{top:76px}
+  .ring{width:130px;height:175px}
+  .orbit-badge{width:86px;height:86px;font-size:11px;right:auto;left:2%;top:0}
+  .orbit-badge b{font-size:22px}
+  .nav .btn span{display:none}
+  .nav .btn{padding:11px}
+}
+@media (max-width:460px){.foot{grid-template-columns:1fr;justify-items:center;text-align:center}.phones{flex-direction:column}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.col,.pc,.step,.hero h1 .w{opacity:1!important;transform:none!important}}
+</style>
+</head>
+<body>
+<div class="top-bar" id="progress"></div>
+
+<div id="loader"><div class="ld">
+  <svg viewBox="0 0 170 170"><circle cx="85" cy="85" r="78" fill="none" stroke="var(--cyan)" stroke-width="5" stroke-linecap="round" stroke-dasharray="120 400"/><circle cx="85" cy="85" r="66" fill="none" stroke="var(--red)" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 400" stroke-dashoffset="200"/></svg>
+  <img id="ldLogo" src="images/logo-mark.png" alt="">
+  <div class="ld-txt" id="ldTxt">Royal Plast</div>
+</div></div>
+
+<header id="hdr"><div class="wrap nav">
+  <a href="#top" class="brand"><img id="hdrLogo" src="images/logo.jpg" alt="Royal Plast"></a>
+  <nav class="links"><a href="#catalog">Collections</a><a href="#how">How to order</a><a href="#contact">Contact</a></nav>
+  <a class="btn btn-red js-wa" target="_blank" rel="noopener" href="#"><svg viewBox="0 0 24 24" class="wa-ic"></svg><span>Talk to Sales</span></a>
+</div></header>
+
+<main id="top">
+  <section class="hero">
+    <svg class="swoosh" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <path d="M1440 120C1180 160 980 330 900 560 850 700 860 800 900 900H1440Z" fill="var(--cyan)" opacity=".22"/>
+      <path d="M1440 0H1050C1240 70 1330 210 1300 380 1280 500 1350 560 1440 590Z" fill="var(--red)" opacity=".12"/>
+      <path d="M-40 760C200 650 420 700 560 900H-40Z" fill="var(--cyan)" opacity=".14"/>
+    </svg>
+    <div class="wrap hero-in">
+      <div>
+        <span class="eyebrow"><b>NEW</b><span id="heroEyebrow"></span></span>
+        <h1 class="serif" id="heroTitle"></h1>
+        <p class="sub" id="heroSub"></p>
+        <div class="hero-cta">
+          <a href="#catalog" class="btn btn-red" id="heroCta">Explore Catalog</a>
+          <a href="#" target="_blank" rel="noopener" class="btn btn-line js-wa"><svg viewBox="0 0 24 24" class="wa-ic"></svg> Request a quote</a>
+        </div>
+        <div class="hero-meta">
+          <div><b id="mProducts">0</b><span>Products</span></div>
+          <div><b id="mCollections">0</b><span>Collections</span></div>
+          <div><b>360°</b><span>Product view</span></div>
+        </div>
+      </div>
+      <div class="stage" id="stage">
+        <div class="platform"></div>
+        <div class="ring" id="ring"></div>
+        <div class="orbit-badge"><svg viewBox="0 0 110 110"><defs><path id="cp" d="M55 55m-42 0a42 42 0 1 1 84 0a42 42 0 1 1-84 0"/></defs><text font-size="9" font-weight="700" fill="var(--ink)"><textPath href="#cp" id="badgeTxt" textLength="260" lengthAdjust="spacing">PACKAGING THAT SELLS • ROYAL PLAST •</textPath></text></svg><div><b>360°</b>VIEW</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee" id="marqueeWrap"><div class="marquee-t" id="marquee"></div></div>
+
+  <section id="catalog"><div class="wrap">
+    <div class="sec-head"><small>THE COLLECTIONS</small><h2 class="serif">Our Catalog</h2><p>Tap any product to spin it 360° — WhatsApp opens with every detail of the item ready to send to our sales team.</p></div>
+    <div class="toolbar">
+      <div class="pills" id="pills"></div>
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search by name or code…"></label>
+    </div>
+    <div id="collections"></div>
+  </div></section>
+
+  <section id="how"><div class="wrap">
+    <div class="sec-head"><small>HOW TO ORDER</small><h2 class="serif">Three taps away</h2></div>
+    <div class="steps" id="steps"></div>
+  </div></section>
+</main>
+
+<footer id="contact">
+  <div class="wrap foot">
+    <div class="qr"><a class="qr-box" id="qrBox" target="_blank" rel="noopener"></a><small id="qrCap"></small></div>
+    <div class="phones"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></span><div id="phones"></div></div>
+    <div class="tagline" id="footTag"></div>
+    <a class="site" id="site" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg><span></span></a>
+  </div>
+  <div class="wrap copy"><span id="copy"></span></div>
+</footer>
+
+<a class="fab js-wa" href="#" target="_blank" rel="noopener" aria-label="WhatsApp sales"><svg viewBox="0 0 24 24" class="wa-ic"></svg></a>
+<div class="toast" id="toast"><i></i><span>Opening WhatsApp…</span></div>
+
+<script src="catalog-data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const WA = '<path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 4.54 0 8.24 3.7 8.24 8.24 0 4.54-3.7 8.24-8.23 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/>';
+const SPIN_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>';
+
+let DATA = window.CATALOG_DATA;
+let state = { col: "all", q: "" };
+
+/* ---------- storage (for live preview from admin) ---------- */
+function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open("royalplast",1); r.onupgradeneeded=()=>r.result.createObjectStore("kv"); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+async function idbGet(k){ const db=await idb(); return new Promise((res,rej)=>{ const q=db.transaction("kv").objectStore("kv").get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); }); }
+const isPreview = new URLSearchParams(location.search).has("preview");
+
+/* ---------- helpers ---------- */
+const S = () => DATA.settings;
+const waUrl = text => `https://wa.me/${String(S().whatsapp).replace(/\D/g,"")}?text=${encodeURIComponent(text)}`;
+const online = () => /^https?:$/.test(location.protocol) && !/^(localhost|127\.)/.test(location.hostname);
+const colName = id => (DATA.collections.find(c => c.id === id) || {}).name || "";
+
+function fillTemplate(p, color){
+  const pageUrl = `${location.origin}${location.pathname}?p=${encodeURIComponent(p.code)}`;
+  let image = "";
+  if (online()) image = p.image && !p.image.startsWith("data:") ? new URL(p.image, location.href).href : pageUrl;
+  const vals = { name:p.name, code:p.code, collection:colName(p.collection), capacity:p.capacity, material:p.material, neck:p.neck,
+    weight:p.weight, packing:p.packing, color:color || "", image, link: online() ? pageUrl : "" };
+  return S().messageTemplate.split("\n").filter(line => {
+    const keys = [...line.matchAll(/\{(\w+)\}/g)].map(m => m[1]);
+    return !keys.length || keys.some(k => String(vals[k] ?? "").trim());
+  }).map(line => line.replace(/\{(\w+)\}/g, (_, k) => vals[k] ?? "")).join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+let toastT;
+function toast(msg){ const t=$("#toast"); t.querySelector("span").textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2200); }
+function openWA(url){ const w = window.open(url, "_blank", "noopener"); if (!w) location.href = url; }
+
+/* ---------- theme & static texts ---------- */
+function applySettings(){
+  const s = S(), c = s.colors, r = document.documentElement.style;
+  r.setProperty("--red", c.primary); r.setProperty("--cyan", c.secondary); r.setProperty("--sky", c.sky); r.setProperty("--ink", c.ink); r.setProperty("--bg", c.bg);
+  document.title = `${s.brandName} Catalog`;
+  $("#hdrLogo").src = s.logo; $("#ldLogo").src = s.logoMark || s.logo; $("#ldTxt").textContent = s.brandName;
+  document.querySelectorAll(".wa-ic").forEach(e => e.innerHTML = WA);
+  document.querySelectorAll(".js-wa").forEach(a => a.href = waUrl(`Hello ${s.brandName} 👋\nI'd like to talk to your sales team about your packaging products.`));
+  $("#heroEyebrow").textContent = s.hero.eyebrow;
+  const words = s.hero.title.split(" ").map((w,i) => `<span class="w" style="transition-delay:${i*.12}s">${esc(w)}</span>`).join(" ");
+  $("#heroTitle").innerHTML = `${words} <span class="w hl" style="transition-delay:${s.hero.title.split(" ").length*.12}s">${esc(s.hero.highlight)}<svg viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M4 14C60 4 140 2 196 10"/></svg></span>`;
+  $("#heroSub").textContent = s.hero.subtitle; $("#heroCta").textContent = s.hero.cta;
+  $("#badgeTxt").textContent = `${s.tagline.toUpperCase()} • ${s.brandName.toUpperCase()} •`;
+  $("#steps").innerHTML = s.steps.map((st,i) => `<div class="step rv"><div class="n">0${i+1}</div><h4>${esc(st.title)}</h4><p>${esc(st.text)}</p></div>`).join("");
+  $("#how").style.display = s.layout.showSteps ? "" : "none";
+  $("#marqueeWrap").style.display = s.layout.showMarquee ? "" : "none";
+  $("#stage").style.display = s.layout.showCarousel ? "" : "none";
+  // footer
+  $("#phones").innerHTML = s.phones.map(p => `<a href="tel:${p.replace(/\s/g,"")}">${esc(p)}</a>`).join("");
+  $("#footTag").textContent = `${s.brandName} - ${s.tagline}`;
+  $("#site span").textContent = s.website; $("#site").href = /^https?:/.test(s.website) ? s.website : "https://" + s.website;
+  $("#qrCap").textContent = s.qrCaption; $("#qrBox").href = s.qrLink;
+  $("#copy").textContent = `© ${new Date().getFullYear()} ${s.brandName}. All rights reserved.`;
+  const box = $("#qrBox"); box.innerHTML = "";
+  if (window.QRCode && s.qrLink) new QRCode(box, { text: s.qrLink, width: 200, height: 200, colorDark: c.ink, colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+  else box.innerHTML = '<img src="images/qr-original.png" alt="QR">';
+}
+
+/* ---------- hero carousel + marquee ---------- */
+function renderHero(){
+  const vis = DATA.products.filter(p => !p.hidden && p.image);
+  let list = vis.filter(p => p.featured); if (list.length < 5) list = list.concat(vis.filter(p => !p.featured)).slice(0, 8);
+  const ring = $("#ring"), n = list.length || 1, w = ring.offsetWidth || 180;
+  const R = Math.round((w / 2) / Math.tan(Math.PI / Math.max(n, 3)) + 40);
+  ring.innerHTML = list.map((p,i) => `<div class="it" data-code="${esc(p.code)}" style="transform:rotateY(${i*360/n}deg) translateZ(${R}px)"><img src="${esc(p.image)}" alt="${esc(p.name)}"><span>${esc(p.code)}</span></div>`).join("");
+  ring.querySelectorAll(".it").forEach(it => it.onclick = () => focusProduct(it.dataset.code));
+  $("#mProducts").textContent = DATA.products.filter(p => !p.hidden).length;
+  $("#mCollections").textContent = DATA.collections.length;
+  const items = [S().tagline, ...DATA.collections.map(c => c.name)];
+  const span = `<span>${items.map(t => `<i></i>${esc(t)}`).join("")}</span>`;
+  $("#marquee").innerHTML = span.repeat(4);
+}
+
+/* ---------- catalog ---------- */
+function renderPills(){
+  const counts = id => DATA.products.filter(p => !p.hidden && (id === "all" || p.collection === id)).length;
+  $("#pills").innerHTML = [{id:"all",name:"All"}, ...DATA.collections].map(c =>
+    `<button class="pill${state.col===c.id?" on":""}" data-id="${esc(c.id)}">${esc(c.name)}<em>${counts(c.id)}</em></button>`).join("");
+  $("#pills").querySelectorAll(".pill").forEach(b => b.onclick = () => { state.col = b.dataset.id; renderPills(); renderCatalog(); $("#catalog").scrollIntoView({behavior:"smooth"}); });
+}
+
+function renderCatalog(){
+  const q = state.q.toLowerCase(), root = $("#collections");
+  const cols = DATA.collections.filter(c => state.col === "all" || c.id === state.col);
+  let html = "";
+  cols.forEach((c, ci) => {
+    const items = DATA.products.filter(p => !p.hidden && p.collection === c.id &&
+      (!q || [p.name,p.code,p.capacity,p.material].join(" ").toLowerCase().includes(q)));
+    if (!items.length) return;
+    html += `<section class="col" id="col-${esc(c.id)}">
+      <div class="col-head">
+        <span class="logo-chip"><img src="${esc(S().logoMark || S().logo)}" alt=""></span>
+        <div><h3 class="serif">${esc(c.name)} Catalog</h3><p>${esc(c.description)}</p></div>
+        <span class="col-code">${esc(c.code)}</span>
+      </div>
+      <div class="grid" style="--cols:${S().layout.columns}">${items.map((p,i) => cardHTML(p,i)).join("")}</div>
+    </section>`;
+  });
+  root.innerHTML = html || `<div class="empty">No products match “${esc(state.q)}”.</div>`;
+  root.querySelectorAll(".pc").forEach(bindCard);
+  root.querySelectorAll(".col").forEach(el => revealObs.observe(el));
+}
+
+function cardHTML(p, i){
+  const specs = [p.material, p.neck].filter(Boolean).join(" · ");
+  const has360 = p.frames && p.frames.length > 1;
+  return `<article class="pc" id="${esc(p.code)}" data-id="${esc(p.id)}" style="--i:${i}">
+    <div class="pc-stage" role="button" tabindex="0" aria-label="Spin ${esc(p.name)} and order on WhatsApp">
+      <div class="frame">
+        <div class="face front"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy"></div>
+        <div class="face back"><img src="${esc(p.image)}" alt="" loading="lazy"></div>
+      </div>
+      <span class="pc-360">${SPIN_IC}${has360 ? "360° VIEW" : "360°"}</span>
+      <div class="pc-hint"><svg viewBox="0 0 24 24">${WA}</svg> Tap to spin & order</div>
+      <span class="pc-code">${esc(p.code)}</span>
+    </div>
+    <div class="pc-body">
+      <h3 class="pc-name serif">${esc(p.name)}</h3>
+      <div class="pc-row">${p.capacity ? `<span class="cap">${esc(p.capacity)}</span>` : ""}<span class="spec">${esc(specs)}</span></div>
+      <div class="pc-foot">
+        <div class="chips">${(p.colors||[]).map(c => `<button class="chip" title="${esc(c.name)}" data-name="${esc(c.name)}" style="background:${esc(c.hex)}"></button>`).join("")}</div>
+        <button class="wa-mini" title="Order on WhatsApp"><svg viewBox="0 0 24 24">${WA}</svg></button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function bindCard(el){
+  const p = DATA.products.find(x => x.id === el.dataset.id), stage = el.querySelector(".pc-stage"), frame = el.querySelector(".frame");
+  const front = el.querySelector(".face.front img"), frames = (p.frames||[]).length > 1 ? p.frames : null;
+  let color = "", busy = false, preloaded = false;
+  const preload = () => { if (frames && !preloaded){ preloaded = true; frames.forEach(f => { const im = new Image(); im.src = f; }); } };
+
+  stage.addEventListener("pointermove", e => {
+    const r = stage.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    stage.style.setProperty("--mx", x*100+"%"); stage.style.setProperty("--my", y*100+"%");
+    if (busy) return;
+    if (frames){ preload(); front.src = frames[Math.min(frames.length-1, Math.floor(x * frames.length))]; }
+    else frame.style.transform = `rotateY(${(x-.5)*16}deg) rotateX(${(.5-y)*12}deg)`;
+  });
+  stage.addEventListener("pointerleave", () => { if (!busy){ frame.style.transform = ""; if (frames) front.src = p.image; } });
+
+  const order = () => openWA(waUrl(fillTemplate(p, color)));
+  const go = e => {
+    if (busy) return; busy = true;
+    const r = stage.getBoundingClientRect(), s = Math.max(r.width, r.height), rp = document.createElement("span");
+    rp.className = "ripple"; rp.style.width = rp.style.height = s + "px";
+    rp.style.left = ((e.clientX || r.left + r.width/2) - r.left - s/2) + "px"; rp.style.top = ((e.clientY || r.top + r.height/2) - r.top - s/2) + "px";
+    stage.appendChild(rp); setTimeout(() => rp.remove(), 800);
+    frame.style.transform = "";
+    if (frames){ // true 360 using photo frames
+      preload(); frame.classList.add("frames-play"); let k = 0;
+      const t = setInterval(() => { front.src = frames[k++ % frames.length]; if (k > frames.length){ clearInterval(t); front.src = p.image; } }, 1200 / frames.length);
+    } else { frame.classList.remove("spin"); void frame.offsetWidth; frame.classList.add("spin"); }
+    const action = S().clickAction;
+    if (action !== "spin") toast("Opening WhatsApp…");
+    setTimeout(() => { frame.classList.remove("spin","frames-play"); busy = false; if (action !== "spin") order(); }, action === "whatsapp" ? 0 : 1250);
+  };
+  stage.addEventListener("click", go);
+  stage.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); go(e); } });
+  el.querySelector(".wa-mini").addEventListener("click", order);
+  el.querySelectorAll(".chip").forEach(ch => ch.addEventListener("click", () => {
+    const on = !ch.classList.contains("on");
+    el.querySelectorAll(".chip").forEach(c => c.classList.remove("on"));
+    ch.classList.toggle("on", on); color = on ? ch.dataset.name : "";
+    if (on) toast(`Color selected: ${color}`);
+  }));
+}
+
+function focusProduct(code){
+  const el = document.getElementById(code);
+  if (!el){ state.col = "all"; state.q = ""; $("#q").value = ""; renderPills(); renderCatalog(); }
+  const t = document.getElementById(code); if (!t) return;
+  t.closest(".col")?.classList.add("in");
+  t.scrollIntoView({ behavior: "smooth", block: "center" });
+  t.classList.remove("hl-pulse"); void t.offsetWidth; t.classList.add("hl-pulse");
+}
+
+const revealObs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add("in"); revealObs.unobserve(e.target); } }), { threshold: .06 });
+
+let qT; $("#q").addEventListener("input", e => { clearTimeout(qT); qT = setTimeout(() => { state.q = e.target.value.trim(); renderCatalog(); }, 150); });
+
+addEventListener("scroll", () => {
+  const h = document.documentElement; $("#progress").style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+  $("#hdr").classList.toggle("scrolled", scrollY > 10);
+}, { passive: true });
+
+function renderAll(){
+  applySettings(); renderHero(); renderPills(); renderCatalog();
+  document.querySelectorAll(".rv").forEach(el => revealObs.observe(el));
+}
+
+/* ---------- boot ---------- */
+(async function boot(){
+  if (isPreview){
+    document.body.insertAdjacentHTML("beforeend", '<div class="preview-flag">Preview mode — changes not published yet</div>');
+    addEventListener("message", e => { if (e.data && e.data.type === "rp-data"){ DATA = e.data.data; renderAll(); } });
+    if (window.opener) window.opener.postMessage({ type: "rp-ready" }, "*");
+    try { const d = await idbGet("draft"); if (d) DATA = d; } catch(_) {}
+  }
+  renderAll();
+  const hide = () => {
+    $("#loader").classList.add("done"); document.body.classList.add("ready");
+    const pid = new URLSearchParams(location.search).get("p");
+    if (pid) setTimeout(() => focusProduct(pid), 300);
+  };
+  if (document.readyState === "complete") setTimeout(hide, 900); else addEventListener("load", () => setTimeout(hide, 900));
+  setTimeout(hide, 4000); // safety
+})();
+</script>
+</body>
+</html>
