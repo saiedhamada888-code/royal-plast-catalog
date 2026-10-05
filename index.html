@@ -344,7 +344,7 @@ const swoosh = (a, b) => `<svg class="sw" viewBox="0 0 700 1000" preserveAspectR
   <path d="M700 0H480C620 60 680 200 650 380 640 470 670 520 700 540Z" fill="var(--red)" opacity="${b}"/></svg>`;
 
 const productHTML = p => `<div class="cell"><div class="prod" role="button" tabindex="0" data-id="${esc(p.id)}" aria-label="${esc(p.name)}"><span class="pin">
-    <span class="pimg"><span class="face"><img src="${esc(p.image)}" alt="" loading="lazy" draggable="false"></span>
+    <span class="pimg"><span class="face"><img src="${esc(p.image)}" alt="" decoding="async" draggable="false"></span>
       <span class="pview">${EYE}${esc(L().view)}</span><span class="pcode">${esc(p.code)}</span></span>
     <span class="pname">${esc(p.name)}</span>
     ${p.capacity ? `<span class="pcap">${esc(p.capacity)}</span>` : ""}
