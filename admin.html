@@ -104,6 +104,11 @@ main{padding:26px 34px 60px;min-width:0}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .drop{border:2px dashed #c9d6e2;border-radius:14px;padding:22px;text-align:center;color:var(--muted);transition:all .2s}
 .drop.over{border-color:var(--red);background:#fff5f5;color:var(--red)}
+.tag{display:inline-flex;align-items:center;gap:5px}
+.swd{width:11px;height:11px;border-radius:50%;box-shadow:inset 0 0 0 1px #0004;display:inline-block}
+.famrow{display:grid;grid-template-columns:38px 1fr auto 46px auto auto;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.famrow .big{width:34px;height:34px;border-radius:50%;box-shadow:inset 0 0 0 1px #0003}
+@media (max-width:900px){.famrow{grid-template-columns:34px 1fr 46px auto}.famrow .meta,.famrow .check{display:none}}
 @media (max-width:900px){
   .app{grid-template-columns:1fr}
   aside{position:static;height:auto;flex-direction:row;overflow-x:auto;padding:10px}
@@ -144,7 +149,7 @@ main{padding:26px 34px 60px;min-width:0}
 <script>
   /* GitHub Pages lets browsers keep files for ~10 minutes. Always load the newest data,
      and if a newer version of the page was published, reload once to get it. */
-  window.APP_VERSION = "6";
+  window.APP_VERSION = "7";
   document.write('<script src="catalog-data.js?v=' + Date.now() + '"><\/script>');
   fetch("version.txt?t=" + Date.now(), { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(v => {
     v = v.trim(); const u = new URL(location.href);
@@ -180,7 +185,7 @@ const IC = {
 };
 const PAGES = {
   products:{t:"Products", s:"Add, edit, reorder and hide products. Click a product to edit it."},
-  collections:{t:"Collections", s:"The catalog sections — like “Glow Essentials · NK 63”."},
+  collections:{t:"Collections & Color groups", s:"The catalog sections (Bottles, Jars, Pumps…) and the color groups inside them (White, Black, Clear…)."},
   brand:{t:"Brand & Contact", s:"Logo, WhatsApp number, phones, website and the social-media QR code."},
   colors:{t:"Brand Colors", s:"Every color in the catalog comes from these five values."},
   texts:{t:"Texts & Layout", s:"Front & back cover, contents page steps and products per page."},
@@ -194,7 +199,18 @@ function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open("royalpla
 async function idbGet(k){ const db=await idb(); return new Promise((res,rej)=>{ const q=db.transaction("kv").objectStore("kv").get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); }); }
 async function idbSet(k,v){ const db=await idb(); return new Promise((res,rej)=>{ const t=db.transaction("kv","readwrite"); t.objectStore("kv").put(v,k); t.oncomplete=res; t.onerror=()=>rej(t.error); }); }
 
-let D, page = "products", filter = { q:"", col:"all" }, previewWin = null, saveT;
+let D, page = "products", filter = { q:"", col:"all", fam:"all" }, previewWin = null, saveT;
+
+/* color groups (White / Black / Clear / Colored …) */
+const fams = () => D.settings.families || (D.settings.families = []);
+const MULTI = "conic-gradient(#F2222B,#F6D02F,#38D4C0,#1F6FE0,#A77BE0,#F2222B)";
+const swBg = hex => hex === "multi" ? MULTI : hex;
+const famTag = p => { const f = fams().find(x => x.id === p.family); return f ? `<span class="tag"><i class="swd" style="background:${esc(swBg(f.hex))}"></i>${esc(f.name)}</span>` : ""; };
+function guessFamily(name){
+  const n = name.toLowerCase(), has = (...w) => w.some(x => n.includes(x));
+  const id = has("white","abyad","ابيض","أبيض") ? "white" : has("black","aswad","اسود","أسود") ? "black" : has("clear","transparent","shafaf","شفاف") ? "clear" : "";
+  return fams().some(f => f.id === id) ? id : "";
+}
 function changed(){
   $("#saved span").textContent = "Saving…";
   clearTimeout(saveT);
@@ -261,14 +277,16 @@ function vProducts(){
     <div class="toolbar">
       <input id="pq" type="search" placeholder="Search name or code…" value="${esc(filter.q)}">
       <select id="pc"><option value="all">All collections</option>${D.collections.map(c => `<option value="${esc(c.id)}"${filter.col === c.id ? " selected" : ""}>${esc(c.name)}</option>`).join("")}</select>
+      <select id="pfam"><option value="all">All color groups</option>${fams().map(f => `<option value="${esc(f.id)}"${filter.fam === f.id ? " selected" : ""}>${esc(f.name)}</option>`).join("")}<option value="none"${filter.fam === "none" ? " selected" : ""}>No color group</option></select>
       <button class="btn btn-red" id="add">${IC.plus}Add product</button>
       <button class="btn btn-line" id="bulk">${IC.plus}Bulk add from images</button>
       <span class="count" id="pcount"></span>
     </div>
-    <div class="drop" id="drop">Drop many product photos here to create products in bulk — the file name becomes the product code (e.g. <b>NK 63-05.png</b>).</div>
+    <div class="drop" id="drop">Drop many product photos here to create products in bulk — the file name becomes the product code (e.g. <b>PB 24-08.png</b>).<br>Put <b>white</b>, <b>black</b> or <b>clear</b> in a file name and it goes straight into that color group. They are added to the collection selected above.</div>
     <div class="list" id="plist" style="margin-top:14px"></div>`;
   $("#pq").oninput = e => { filter.q = e.target.value; drawList(); };
   $("#pc").onchange = e => { filter.col = e.target.value; drawList(); };
+  $("#pfam").onchange = e => { filter.fam = e.target.value; drawList(); };
   $("#add").onclick = () => editProduct(null);
   $("#bulk").onclick = async () => bulkAdd(await pickFiles({ multiple:true }));
   const drop = $("#drop");
@@ -279,7 +297,8 @@ function vProducts(){
 }
 function drawList(){
   const q = filter.q.toLowerCase(), cname = id => D.collections.find(c => c.id === id)?.name || "—";
-  const list = D.products.filter(p => (filter.col === "all" || p.collection === filter.col) && (!q || (p.name + " " + p.code).toLowerCase().includes(q)));
+  const famOk = p => filter.fam === "all" || (filter.fam === "none" ? !fams().some(f => f.id === p.family) : p.family === filter.fam);
+  const list = D.products.filter(p => (filter.col === "all" || p.collection === filter.col) && famOk(p) && (!q || (p.name + " " + p.code).toLowerCase().includes(q)));
   $("#pcount").textContent = `${list.length} of ${D.products.length} products`;
   $("#plist").innerHTML = list.length ? list.map(p => `
     <div class="item${p.hidden ? " hidden" : ""}" data-id="${esc(p.id)}">
@@ -287,7 +306,7 @@ function drawList(){
       <div><span class="code">${esc(p.code)}</span><div class="nm">${esc(p.name)}</div></div>
       <div class="meta c3">${esc([p.capacity, p.material, p.neck].filter(Boolean).join(" · "))}</div>
       <div class="meta c4">${esc(cname(p.collection))}</div>
-      <div class="tags c5">${p.featured ? '<span class="tag star">★ Cover</span>' : ""}${p.hidden ? '<span class="tag">Hidden</span>' : ""}</div>
+      <div class="tags c5">${famTag(p)}${p.featured ? '<span class="tag star">★ Cover</span>' : ""}${p.hidden ? '<span class="tag">Hidden</span>' : ""}</div>
       <div class="ibtns">
         <button class="ib" data-a="up" title="Move up">${IC.up}</button><button class="ib" data-a="down" title="Move down">${IC.down}</button>
         <button class="ib" data-a="edit" title="Edit">${IC.edit}</button><button class="ib" data-a="dup" title="Duplicate">${IC.copy}</button>
@@ -313,14 +332,14 @@ async function bulkAdd(files){
   toast(`Adding ${files.length} products…`);
   for (const f of files){
     const base = f.name.replace(/\.[^.]+$/, "");
-    D.products.push({ id:uid(), code:base.toUpperCase(), name:base.replace(/[-_]+/g," "), collection:col, capacity:"", material:"", neck:"", weight:"", packing:"", colors:[], description:"", image:await readImage(f), featured:false, hidden:false });
+    D.products.push({ id:uid(), code:base.toUpperCase(), name:base.replace(/[-_]+/g," "), collection:col, family:guessFamily(base), capacity:"", material:"", neck:"", weight:"", packing:"", colors:[], description:"", image:await readImage(f), featured:false, hidden:false });
   }
   changed(); drawList(); toast(`${files.length} products added — click each one to complete its details`);
 }
 
 function editProduct(id){
   const isNew = !id;
-  const p = isNew ? { id:uid(), code:"", name:"", collection:filter.col !== "all" ? filter.col : D.collections[0]?.id, capacity:"", material:"", neck:"", weight:"", packing:"", description:"", colors:[], image:"", featured:false, hidden:false }
+  const p = isNew ? { id:uid(), code:"", name:"", collection:filter.col !== "all" ? filter.col : D.collections[0]?.id, family:fams().some(f => f.id === filter.fam) ? filter.fam : "", capacity:"", material:"", neck:"", weight:"", packing:"", description:"", colors:[], image:"", featured:false, hidden:false }
                   : clone(D.products.find(x => x.id === id));
   const dr = $("#drawer");
   const colorsHTML = () => p.colors.map((c, i) => `<div class="row"><input type="color" value="${esc(c.hex)}" data-ci="${i}" data-k="hex"><input type="text" value="${esc(c.name)}" data-ci="${i}" data-k="name" placeholder="Color name"><button class="ib del" data-rm="${i}">${IC.x}</button></div>`).join("");
@@ -340,7 +359,8 @@ function editProduct(id){
         <div class="f"><label>Code *</label><input data-k="code" placeholder="NK 63-05"></div>
         <div class="f"><label>Name *</label><input data-k="name" placeholder="Glow Mist Bottle"></div>
         <div class="f"><label>Collection</label><select data-k="collection">${D.collections.map(c => `<option value="${esc(c.id)}">${esc(c.name)} · ${esc(c.code)}</option>`).join("")}</select></div>
-        <div class="f"><label>Capacity</label><input data-k="capacity" placeholder="200 ML"></div>
+        <div class="f"><label>Color group</label><select data-k="family"><option value="">— None —</option>${fams().map(f => `<option value="${esc(f.id)}">${esc(f.name)}</option>`).join("")}</select><small>Products of the same group sit together (all white, all black…).</small></div>
+        <div class="f"><label>Capacity / size</label><input data-k="capacity" placeholder="200 ML"></div>
         <div class="f"><label>Material</label><input data-k="material" placeholder="PET / PP / HDPE"></div>
         <div class="f"><label>Neck size</label><input data-k="neck" placeholder="24/410"></div>
         <div class="f"><label>Weight</label><input data-k="weight" placeholder="22 g"></div>
@@ -393,8 +413,11 @@ function vCollections(){
         <div class="f"><label>Products per page</label><select data-bind="collections.${i}.perPage"><option value="">Default (from Texts & Layout)</option>${PER_PAGE.map(([n, t]) => `<option value="${n}">${t}</option>`).join("")}</select></div>
         ${field("Description", `collections.${i}.description`, { full:true, area:true })}
       </div>
-    </div>`).join("");
+      <label class="check" style="margin-top:12px"><input type="checkbox" data-bind="collections.${i}.groupByFamily"> Group products by color (white together, black together, clear together…)</label>
+    </div>`).join("") + famCard();
+  D.collections.forEach(c => { if (c.groupByFamily === undefined) c.groupByFamily = true; });
   bindAll($("#clist"));
+  bindFamilies();
   $("#clist").querySelectorAll("[data-a]").forEach(b => b.onclick = () => {
     const i = +b.closest(".card").dataset.i, a = b.dataset.a, c = D.collections[i];
     if (a === "up" && i > 0) [D.collections[i-1], D.collections[i]] = [c, D.collections[i-1]];
@@ -407,6 +430,55 @@ function vCollections(){
     }
     changed(); vCollections();
   });
+}
+
+function famCard(){
+  return `<div class="card" id="famCard"><h3>Color groups</h3>
+    <p class="hint">Inside every collection, products are grouped in this order. Each group starts on a new row with its own label, and appears in the contents page so customers can jump straight to it.</p>
+    <div class="list">${fams().map((f, i) => `
+      <div class="famrow" data-fi="${i}">
+        <span class="big" style="background:${esc(swBg(f.hex))}"></span>
+        <input data-ff="name" value="${esc(f.name)}" placeholder="Group name (e.g. White)">
+        <label class="check"><input type="checkbox" data-ff="multi"${f.hex === "multi" ? " checked" : ""}> Multicolor</label>
+        <input type="color" data-ff="hex" value="${f.hex === "multi" ? "#ffffff" : esc(f.hex)}"${f.hex === "multi" ? " disabled" : ""}>
+        <span class="meta">${D.products.filter(p => p.family === f.id).length} products</span>
+        <div class="ibtns"><button class="ib" data-fa="up">${IC.up}</button><button class="ib" data-fa="down">${IC.down}</button><button class="ib del" data-fa="del">${IC.del}</button></div>
+      </div>`).join("")}</div>
+    <button class="btn btn-line btn-sm" id="addFam" style="margin-top:12px">${IC.plus}Add color group</button>
+  </div>`;
+}
+function bindFamilies(){
+  const card = $("#famCard");
+  card.addEventListener("input", e => {
+    const row = e.target.closest("[data-fi]"); if (!row) return;
+    const f = fams()[+row.dataset.fi], k = e.target.dataset.ff;
+    if (k === "name") f.name = e.target.value;
+    if (k === "hex"){ f.hex = e.target.value; row.querySelector(".big").style.background = f.hex; }
+    changed();
+  });
+  card.addEventListener("change", e => {
+    if (e.target.dataset.ff !== "multi") return;
+    const row = e.target.closest("[data-fi]"), f = fams()[+row.dataset.fi], hexIn = row.querySelector("[data-ff=hex]");
+    f.hex = e.target.checked ? "multi" : hexIn.value; hexIn.disabled = e.target.checked;
+    row.querySelector(".big").style.background = swBg(f.hex); changed();
+  });
+  card.querySelectorAll("[data-fa]").forEach(b => b.onclick = () => {
+    const i = +b.closest("[data-fi]").dataset.fi, a = b.dataset.fa, list = fams(), f = list[i];
+    if (a === "up" && i > 0) [list[i-1], list[i]] = [f, list[i-1]];
+    if (a === "down" && i < list.length - 1) [list[i+1], list[i]] = [f, list[i+1]];
+    if (a === "del"){
+      const used = D.products.filter(p => p.family === f.id);
+      if (!confirm(used.length ? `Delete “${f.name}”? Its ${used.length} products will have no color group.` : `Delete “${f.name}”?`)) return;
+      used.forEach(p => p.family = ""); list.splice(i, 1);
+    }
+    changed(); vCollections();
+  });
+  $("#addFam").onclick = () => {
+    const name = prompt("Color group name (e.g. Amber)"); if (!name) return;
+    let id = slug(name), n = 2; while (fams().some(f => f.id === id)) id = slug(name) + "-" + n++;
+    fams().push({ id, name, hex:"#cccccc" }); changed(); vCollections();
+    setTimeout(() => $("#famCard").scrollIntoView({ behavior:"smooth", block:"end" }), 50);
+  };
 }
 
 /* ---------- BRAND ---------- */
@@ -467,7 +539,15 @@ function vTexts(){
       <div class="fields">${field("Year", `${s}.cover.year`)}${field("Title", `${s}.cover.title`)}${field("Highlighted word", `${s}.cover.highlight`)}${field("Subtitle", `${s}.cover.subtitle`, { full:true, area:true })}${field("Note at the bottom", `${s}.cover.note`, { full:true })}</div>
       <p class="hint" style="margin-top:12px">The 3 photos on the cover are the products marked “Show on the front cover”.</p>
     </div>
-    <div class="card"><h3>Back cover</h3><div class="fields">${field("Back cover headline", `${s}.cover.backTitle`, { full:true })}</div></div>
+    <div class="card"><h3>Last page — thank-you message</h3><p class="hint">The animated last page with the QR code. Arabic text is fine here.</p>
+      <div class="fields">
+        <div class="f"><label>Big thank-you line</label><input data-bind="${s}.back.thanks" dir="rtl" placeholder="شكراً لثقتكم"></div>
+        <div class="f"><label>Second line</label><input data-bind="${s}.back.thanksSub" dir="rtl" placeholder="في كيان رويال بلاست"></div>
+        <div class="f full"><label>Small message (optional)</label><input data-bind="${s}.back.message" dir="rtl" placeholder="نفخر بأن نكون جزءاً من نجاحكم"></div>
+      </div><br>
+      <label class="check"><input type="checkbox" data-bind="${s}.back.confetti"> Confetti celebration when the page opens</label>
+      <p class="hint" style="margin:10px 0 0">The QR, phones, WhatsApp button and website on this page come from <b>Brand & Contact</b>.</p>
+    </div>
     <div class="card"><h3>How to order — 3 steps</h3><p class="hint">Shown on the contents page.</p>
       ${D.settings.steps.map((st, i) => `<div class="fields" style="margin-bottom:12px">${field(`Step ${i+1} title`, `${s}.steps.${i}.title`)}${field(`Step ${i+1} text`, `${s}.steps.${i}.text`)}</div>`).join("")}
     </div>
@@ -478,7 +558,8 @@ function vTexts(){
           <option value="preview">Show the product large first, with an “Order Now” button</option><option value="whatsapp">Open WhatsApp immediately</option></select></div>
         <div class="f"><label>Page-turn speed</label><select data-bind="${s}.layout.flipSpeed" data-num><option value="500">Fast</option><option value="700">Normal</option><option value="950">Slow & elegant</option></select></div>
       </div><br>
-      <label class="check"><input type="checkbox" data-bind="${s}.layout.flipSound"> Page-turn sound on by default</label>
+      <label class="check"><input type="checkbox" data-bind="${s}.layout.flipSound"> Page-turn sound on by default</label><br>
+      <label class="check"><input type="checkbox" data-bind="${s}.layout.sideArrows"> Show the big arrows on both sides of the book</label>
     </div>
     <div class="card"><h3>Labels & small texts</h3><p class="hint">Every word the customer sees in the catalog.</p>
       <div class="fields">
@@ -502,7 +583,7 @@ function vTexts(){
 
 /* ---------- WHATSAPP ---------- */
 function vWhatsapp(){
-  const keys = ["name","code","collection","capacity","material","neck","weight","color","colors","packing","image","link"];
+  const keys = ["name","code","collection","family","capacity","material","neck","weight","color","colors","packing","image","link"];
   $("#view").innerHTML = `
     <div class="card"><h3>Message template</h3><p class="hint">Click a field to insert it. Lines whose fields are empty are removed automatically.</p>
       <div class="ph">${keys.map(k => `<button data-k="${k}">{${k}}</button>`).join("")}</div>
@@ -516,7 +597,7 @@ function vWhatsapp(){
   const tpl = $("#tpl");
   const prev = () => {
     const p = D.products.find(x => x.id === $("#pp").value) || D.products[0]; if (!p) return;
-    const vals = { name:p.name, code:p.code, collection:D.collections.find(c => c.id === p.collection)?.name, capacity:p.capacity, material:p.material, neck:p.neck, weight:p.weight, packing:p.packing, color:p.colors[0]?.name || "", colors:p.colors.map(c => c.name).join(" / "), image:"https://your-site.com/images/…", link:"https://your-site.com/?p=" + p.code };
+    const vals = { name:p.name, code:p.code, collection:D.collections.find(c => c.id === p.collection)?.name, family:fams().find(f => f.id === p.family)?.name, capacity:p.capacity, material:p.material, neck:p.neck, weight:p.weight, packing:p.packing, color:p.colors[0]?.name || "", colors:p.colors.map(c => c.name).join(" / "), image:"https://your-site.com/images/…", link:"https://your-site.com/?p=" + p.code };
     $("#mp").textContent = D.settings.messageTemplate.split("\n").filter(l => { const ks = [...l.matchAll(/\{(\w+)\}/g)].map(m => m[1]); return !ks.length || ks.some(k => String(vals[k] ?? "").trim()); }).map(l => l.replace(/\{(\w+)\}/g, (_, k) => vals[k] ?? "")).join("\n");
   };
   prev(); tpl.addEventListener("bound", prev); $("#pp").onchange = prev;

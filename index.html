@@ -7,9 +7,10 @@
 <meta name="description" content="Royal Plast — Packaging That Sells. Flip through our catalog and order any item on WhatsApp.">
 <link rel="icon" href="images/logo-mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Poppins:wght@400;500;600;700;800&family=Aref+Ruqaa:wght@700&family=Cairo:wght@600;800&display=swap" rel="stylesheet">
 <style>
-:root{--red:#F2222B;--cyan:#1FE0FD;--sky:#5CE6FF;--ink:#0E1A2B;--bg:#F2FCFF;--wa:#25D366}
+:root{--red:#F2222B;--cyan:#1FE0FD;--sky:#5CE6FF;--ink:#0E1A2B;--bg:#F2FCFF;--wa:#25D366;
+  --multi:conic-gradient(#F2222B,#F6D02F,#38D4C0,#1F6FE0,#A77BE0,#F2222B)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{font-family:Poppins,system-ui,sans-serif;color:var(--ink);overflow:hidden;
@@ -25,10 +26,24 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 #loader img{width:90px;animation:pop 1s cubic-bezier(.3,1.5,.5,1) both}
 #loader svg{position:absolute;width:170px;height:170px;animation:spin 1.3s linear infinite}
 
-/* ---------- stage & toolbar ---------- */
-.stage{position:fixed;inset:0 0 64px;display:grid;place-items:center;padding:12px}
-#host{position:relative;margin:auto;touch-action:none}
+/* ---------- stage: tap right = next, tap left = previous ---------- */
+.stage{position:fixed;inset:0 0 64px;display:grid;place-items:center;padding:12px;touch-action:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.stage.cur-next{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Ccircle cx='22' cy='22' r='19' fill='%23F2222B' stroke='white' stroke-width='3'/%3E%3Cpath d='M19 14l8 8-8 8' stroke='white' stroke-width='3.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 22 22,e-resize}
+.stage.cur-prev{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Ccircle cx='22' cy='22' r='19' fill='%23F2222B' stroke='white' stroke-width='3'/%3E%3Cpath d='M25 14l-8 8 8 8' stroke='white' stroke-width='3.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 22 22,w-resize}
+.stage a,.stage .prod{cursor:pointer}
+#wrap{position:relative;margin:auto}
+#host{position:relative;width:100%}
 #host .stf__parent{filter:drop-shadow(0 30px 40px #0e1a2b40)}
+.side{position:absolute;top:50%;z-index:6;width:58px;height:58px;border-radius:50%;background:#fff;color:var(--red);display:grid;place-items:center;box-shadow:0 10px 26px #0e1a2b2e;transform:translateY(-50%);transition:transform .25s,background .25s,color .25s,opacity .3s}
+.side svg{width:26px;height:26px}
+#wrap.out .side.prev{left:-80px}#wrap.out .side.next{right:-80px}
+#wrap:not(.out) .side{width:40px;height:40px;background:#ffffffd9}
+#wrap:not(.out) .side svg{width:20px;height:20px}
+#wrap:not(.out) .side.prev{left:4px}#wrap:not(.out) .side.next{right:4px}
+.side:hover,.stage.cur-next .side.next,.stage.cur-prev .side.prev{background:var(--red);color:#fff;transform:translateY(-50%) scale(1.1)}
+.side.dim{opacity:0;pointer-events:none}
+.side.nudge{animation:nudge 1.4s ease-in-out 3}
+.no-sides .side{display:none}
 .toolbar{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:6px;padding:6px;border-radius:999px;background:#fff;box-shadow:0 10px 30px #0e1a2b26}
 .tb{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;transition:background .2s,transform .15s;flex:none}
 .tb:hover{background:#EEF6F9}
@@ -42,14 +57,14 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 .find{display:flex;align-items:center;gap:6px;background:#EEF6F9;border-radius:999px;padding:0 12px;height:42px}
 .find svg{width:16px;opacity:.5}
 .find input{border:0;outline:0;background:none;font:inherit;font-size:13px;width:150px;color:var(--ink)}
-.hint{position:fixed;left:50%;bottom:76px;transform:translate(-50%,10px);z-index:20;background:var(--ink);color:#fff;font-size:12.5px;font-weight:600;padding:9px 16px;border-radius:12px;opacity:0;transition:all .5s;pointer-events:none;white-space:nowrap}
+.hint{position:fixed;left:50%;bottom:76px;transform:translate(-50%,10px);z-index:20;background:var(--ink);color:#fff;font-size:12.5px;font-weight:600;padding:9px 16px;border-radius:12px;opacity:0;transition:all .5s;pointer-events:none;white-space:nowrap;max-width:calc(100vw - 24px);overflow:hidden;text-overflow:ellipsis}
 .hint.show{opacity:1;transform:translate(-50%,0)}
-.toast{position:fixed;left:50%;top:18px;z-index:90;transform:translate(-50%,-20px);opacity:0;display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:14px;background:var(--ink);color:#fff;font-weight:600;font-size:14px;transition:all .4s;pointer-events:none}
+.toast{position:fixed;left:50%;top:18px;z-index:90;transform:translate(-50%,-20px);opacity:0;padding:12px 20px;border-radius:14px;background:var(--ink);color:#fff;font-weight:600;font-size:14px;transition:all .4s;pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .preview-flag{position:fixed;left:12px;top:12px;z-index:80;background:var(--ink);color:#fff;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px}
 
 /* ---------- page base (sizes in container units => everything scales with the book) ---------- */
-.page{background:#fff;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent}
+.page{background:#fff;overflow:hidden}
 .page a *,.page [role=button] *{pointer-events:none}
 .pg{position:relative;width:100%;height:100%;container-type:size;overflow:hidden;background:var(--sky);display:flex;flex-direction:column}
 .pnum{position:absolute;bottom:1.2cqh;font-size:1.5cqw;font-weight:600;opacity:.5}
@@ -57,6 +72,10 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 .gutter{position:absolute;top:0;bottom:0;width:6cqw;pointer-events:none;z-index:5}
 .page.--left .gutter{right:0;background:linear-gradient(90deg,transparent,#0000001f)}
 .page.--right .gutter{left:0;background:linear-gradient(-90deg,transparent,#0000001f)}
+.sw{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sw path{animation:drift 9s ease-in-out infinite alternate;transform-origin:center}
+.sw path:nth-child(2){animation-duration:12s}
+.swatch{display:inline-block;border-radius:50%;box-shadow:inset 0 0 0 1px #0e1a2b40;flex:none}
 
 /* header — same DNA as the printed catalog */
 .ph{position:relative;flex:none;height:14.5cqw;display:grid;grid-template-columns:16cqw 1fr auto;align-items:center;gap:2.5cqw;padding-right:4cqw;background:linear-gradient(90deg,#fff 0%,color-mix(in srgb,var(--sky) 30%,#fff) 100%);border-bottom:.25cqw solid var(--ink)}
@@ -68,7 +87,7 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 
 /* footer — every item is a working link */
 .pf{flex:none;height:11.5cqw;display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:3cqw;padding:0 3.5cqw;border-top:.2cqw solid var(--red);background:var(--sky)}
-.pf a{transition:transform .2s,opacity .2s}
+.pf a{transition:transform .2s}
 .pf a:hover{transform:translateY(-.25cqw)}
 .pf .qr{display:block;width:8cqw;height:8cqw;background:#fff;padding:.5cqw;border-radius:1cqw;box-shadow:0 .5cqw 1.2cqw #0e1a2b1a}
 .pf .qr img{width:100%;height:100%}
@@ -85,11 +104,13 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 @property --pw{syntax:"<length>";inherits:true;initial-value:0px}
 @property --ph{syntax:"<length>";inherits:true;initial-value:0px}
 @property --tx{syntax:"<length>";inherits:true;initial-value:0px}
-.pb{--pw:1cqw;--ph:1cqh;--tx:var(--txt);flex:1;min-height:0;display:grid;grid-template-rows:repeat(var(--r),1fr);padding:2.5cqh 4cqw 1.5cqh}
-.row{display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));gap:3cqw;min-height:0;padding:2cqh 0}
+.pb{--pw:1cqw;--ph:1cqh;--tx:var(--txt);flex:1;min-height:0;display:grid;grid-template-rows:repeat(var(--r),1fr);padding:3cqh 4cqw 1.5cqh}
+.row{position:relative;display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));gap:3cqw;min-height:0;padding:2.4cqh 0 1.8cqh}
 .row+.row{border-top:.15cqw solid var(--red)}
+.rowfam{position:absolute;left:0;top:0;transform:translateY(-50%);z-index:3;display:flex;align-items:center;gap:.5em;background:#fff;border-radius:999px;padding:.35em 1em .35em .45em;font-size:calc(var(--pw) * 1.35);font-weight:700;box-shadow:0 .4em 1em #0e1a2b1f}
+.rowfam .swatch{width:1.15em;height:1.15em}
 .cell{container-type:size;min-width:0;min-height:0}
-.prod{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;outline:none}
+.prod{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;outline:none}
 .pin{display:flex;flex-direction:column;align-items:flex-start;text-align:left;max-width:100%}
 .pimg{position:relative;width:min(100cqw, 100cqh - var(--tx));aspect-ratio:1;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 .face{position:absolute;inset:0;border-radius:calc(var(--pw) * 3.2 * var(--s));overflow:hidden;background:#fff;border:calc(var(--pw) * .18) solid var(--ink);transition:box-shadow .35s}
@@ -108,9 +129,6 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 
 /* ---------- cover ---------- */
 .cover{position:relative;width:100%;height:100%;container-type:size;overflow:hidden;background:linear-gradient(160deg,#fff 0%,color-mix(in srgb,var(--sky) 40%,#fff) 55%,var(--sky) 100%)}
-.sw{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.sw path{animation:drift 9s ease-in-out infinite alternate;transform-origin:center}
-.sw path:nth-child(2){animation-duration:12s}
 .cv-top{position:absolute;top:6cqh;left:7cqw;right:7cqw;display:flex;justify-content:space-between;align-items:center}
 .cv-logo{width:19cqw;height:19cqw;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 2cqw 5cqw #0e1a2b1f}
 .cv-logo img{width:12cqw}
@@ -133,39 +151,69 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 .cv-foot a:hover{text-decoration:underline}
 
 /* ---------- contents ---------- */
-.toc{flex:1;padding:5cqh 7cqw 3cqh;display:flex;flex-direction:column;gap:2cqh}
-.toc a{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:2.5cqw;padding:2.2cqh 3cqw;background:#fff;border-radius:3cqw;transition:transform .3s,box-shadow .3s}
-.toc a:hover{box-shadow:0 1.5cqw 3cqw #0e1a2b1f;transform:translateX(1cqw)}
+.toc{flex:1;padding:4.5cqh 7cqw 3cqh;display:flex;flex-direction:column;gap:1.8cqh}
+.toc-item{background:#fff;border-radius:3cqw;transition:box-shadow .3s,transform .3s}
+.toc-item:hover{box-shadow:0 1.5cqw 3cqw #0e1a2b1f;transform:translateX(.8cqw)}
+.toc-main{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:2.5cqw;padding:2cqh 3cqw}
 .toc .n{font-size:5cqw;color:var(--red);line-height:1;font-family:"DM Serif Display",serif}
 .toc .t{font-size:3.4cqw;line-height:1.1;font-family:"DM Serif Display",serif}
 .toc .t small{display:block;font-family:Poppins;font-size:1.4cqw;opacity:.6;margin-top:.5cqh}
 .toc .c{background:var(--red);color:#fff;font-size:1.7cqw;padding:.5cqw 2cqw;border-radius:99cqw}
 .toc .pg-n{font-weight:700;font-size:2.2cqw;min-width:4cqw;text-align:right}
+.toc-fams{display:flex;flex-wrap:wrap;gap:1.2cqw;padding:0 3cqw 1.8cqh calc(3cqw + 7.5cqw)}
+.toc-fams a{display:flex;align-items:center;gap:.9cqw;background:color-mix(in srgb,var(--sky) 22%,#fff);border-radius:99cqw;padding:.6cqw 1.6cqw .6cqw .8cqw;font-size:1.45cqw;font-weight:600;transition:background .2s}
+.toc-fams a:hover{background:color-mix(in srgb,var(--sky) 55%,#fff)}
+.toc-fams .swatch{width:1.9cqw;height:1.9cqw}
+.toc-fams b{opacity:.5;font-weight:700}
 .how-t{font-size:3cqw;font-family:"DM Serif Display",serif;margin-top:auto}
 .how{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5cqw}
-.how div{background:#ffffffb3;border-radius:3cqw;padding:2.4cqh 2.4cqw}
+.how div{background:#ffffffb3;border-radius:3cqw;padding:2.2cqh 2.4cqw}
 .how b{display:block;font-family:"DM Serif Display",serif;font-size:4.5cqw;color:var(--red);line-height:1}
 .how h4{font-size:1.9cqw;margin:.8cqh 0 .5cqh}
 .how p{font-size:1.4cqw;line-height:1.45;opacity:.75}
 
-/* ---------- filler / back cover ---------- */
-.filler{display:grid;place-items:center;background:linear-gradient(160deg,var(--sky),color-mix(in srgb,var(--sky) 40%,#fff))}
-.filler img{width:40cqw;opacity:.18}
-.back{position:relative;width:100%;height:100%;container-type:size;overflow:hidden;background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3cqh;padding:8cqw}
-.back>*:not(.sw){position:relative}
-.back .lg{width:22cqw;height:22cqw;border-radius:50%;background:#fff;display:grid;place-items:center}
-.back .lg img{width:14cqw}
-.back h3{font-size:7cqw;line-height:1.05;max-width:70cqw}
-.back .bqr{display:block;width:30cqw;background:#fff;border-radius:3cqw;padding:2cqw;transition:transform .3s}
-.back .bqr:hover{transform:scale(1.04)}
-.back .bqr img{width:100%}
-.back small{font-size:1.9cqw;opacity:.8;margin-top:-1.5cqh}
-.back .bph{display:flex;gap:4cqw;font-size:2.4cqw;font-weight:600;flex-wrap:wrap;justify-content:center}
-.back .bph a:hover,.back .bsite:hover{text-decoration:underline}
-.back .bwa{display:inline-flex;align-items:center;gap:1.5cqw;background:var(--wa);color:#fff;font-weight:700;font-size:2.4cqw;padding:1.8cqw 4.5cqw;border-radius:99cqw;transition:transform .3s}
-.back .bwa:hover{transform:scale(1.05)}
-.back .bwa svg{width:3cqw}
-.back .bsite{color:var(--cyan);font-weight:600;font-size:2.4cqw}
+/* ---------- filler page ---------- */
+.filler{position:relative;width:100%;height:100%;container-type:size;overflow:hidden;background:linear-gradient(160deg,color-mix(in srgb,var(--sky) 35%,#fff),var(--sky));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3cqh;text-align:center}
+.filler>*:not(.sw){position:relative}
+.filler .lgc{width:30cqw;height:30cqw;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 3cqw 6cqw #0e1a2b1f}
+.filler .lgc img{width:19cqw}
+.filler h3{font-size:8cqw;line-height:1;color:var(--red)}
+.filler p{font-size:2.4cqw;font-weight:600}
+
+/* ---------- back cover — animated "thank you" page ---------- */
+.back{position:relative;width:100%;height:100%;container-type:size;overflow:hidden;background:linear-gradient(170deg,#fff 0%,color-mix(in srgb,var(--sky) 38%,#fff) 46%,var(--sky) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2cqh;padding:6cqw}
+.back>*:not(.sw):not(.fx){position:relative;z-index:2}
+.fx{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.bub{position:absolute;bottom:-12cqw;border-radius:50%;border:.3cqw solid #ffffffd0;background:radial-gradient(circle at 32% 30%,#ffffffd9 0 18%,color-mix(in srgb,var(--cyan) 25%,transparent) 60%,transparent 70%);animation:bub linear infinite}
+.conf{position:absolute;top:-6cqh;width:1.5cqw;height:2.6cqw;border-radius:.3cqw;opacity:0}
+.back.show .conf{animation:conf 3.2s cubic-bezier(.25,.6,.4,1) forwards}
+.back .lg{width:19cqw;height:19cqw;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 2cqw 5cqw #0e1a2b26}
+.back .lg img{width:12cqw}
+.back .lg::before,.back .lg::after{content:"";position:absolute;border-radius:50%;inset:-2cqw;border:.45cqw dashed var(--red);animation:spin 16s linear infinite}
+.back .lg::after{inset:-4cqw;border:.35cqw dotted var(--cyan);animation-direction:reverse;animation-duration:22s}
+.thx{direction:rtl;display:flex;flex-direction:column;align-items:center}
+.thx .t1{font-family:"Aref Ruqaa",serif;font-weight:700;font-size:13.5cqw;line-height:1.15;color:var(--red);text-shadow:0 1cqw 3cqw color-mix(in srgb,var(--red) 22%,transparent)}
+.thx .t2{font-family:Cairo,sans-serif;font-weight:800;font-size:5.4cqw;line-height:1.3;color:var(--ink)}
+.thx svg{width:46cqw;height:3.5cqw;margin-top:.4cqh}
+.thx svg path{stroke:var(--cyan);stroke-width:7;fill:none;stroke-linecap:round;stroke-dasharray:400;stroke-dashoffset:400}
+.back.show .thx svg path{animation:draw 1.2s 1.1s forwards}
+.armsg{direction:rtl;font-family:Cairo,sans-serif;font-weight:600;font-size:3.3cqw;color:color-mix(in srgb,var(--ink) 75%,transparent)}
+.bqr{position:relative;display:block;width:28cqw;background:#fff;border-radius:3cqw;padding:1.8cqw;box-shadow:0 2cqw 4cqw #0e1a2b26,0 0 0 .45cqw var(--red);overflow:hidden;transition:transform .3s}
+.bqr:hover{transform:scale(1.05)}
+.bqr img{width:100%}
+.bqr i{position:absolute;left:1cqw;right:1cqw;top:1.2cqw;height:.55cqw;border-radius:1cqw;background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 2cqw var(--cyan);animation:scan 2.4s ease-in-out infinite}
+.back small{font-size:2.2cqw;font-weight:600;opacity:.7;margin-top:-1cqh}
+.bph{display:flex;gap:4cqw;font-size:2.9cqw;font-weight:700;color:var(--red);flex-wrap:wrap;justify-content:center}
+.bph a:hover,.bsite:hover{text-decoration:underline}
+.bwa{display:inline-flex;align-items:center;gap:1.5cqw;background:var(--wa);color:#fff;font-weight:700;font-size:2.8cqw;padding:1.9cqw 5cqw;border-radius:99cqw;box-shadow:0 1.5cqw 3cqw #25d36655;transition:transform .3s}
+.bwa:hover{transform:scale(1.05)}
+.bwa svg{width:3cqw}
+.bsite{color:var(--ink);font-weight:700;font-size:2.8cqw}
+/* entrance — replayed every time the last page opens */
+.back .rv{opacity:0;transform:translateY(3cqh) scale(.96)}
+.back.show .rv{opacity:1;transform:none;transition:opacity .8s,transform .9s cubic-bezier(.2,.8,.2,1);transition-delay:var(--d,0s)}
+.back .t1{clip-path:inset(0 0 0 100%)}
+.back.show .t1{clip-path:inset(0 0 0 0);transition:clip-path 1.2s cubic-bezier(.6,.05,.3,1) .35s}
 
 /* ---------- product preview (lightbox) ---------- */
 .lb{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:20px;background:color-mix(in srgb,var(--ink) 55%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
@@ -184,7 +232,8 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 .lb-info{padding:36px 34px 28px;display:flex;flex-direction:column;gap:14px;overflow:auto}
 .lb-info>*{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
 .lb-info>*:nth-child(2){animation-delay:.04s}.lb-info>*:nth-child(3){animation-delay:.08s}.lb-info>*:nth-child(4){animation-delay:.12s}.lb-info>*:nth-child(5){animation-delay:.16s}.lb-info>*:nth-child(6){animation-delay:.2s}.lb-info>*:nth-child(7){animation-delay:.24s}
-.lb-col{color:var(--red);font-weight:700;font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase}
+.lb-col{display:flex;align-items:center;gap:8px;color:var(--red);font-weight:700;font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase}
+.lb-col .swatch{width:14px;height:14px}
 .lb-name{font-size:42px;line-height:1.05;letter-spacing:-.01em}
 .lb-cap{align-self:flex-start;background:var(--sky);color:var(--red);font-weight:800;font-size:15px;padding:6px 18px;border-radius:999px}
 .lb-desc{color:color-mix(in srgb,var(--ink) 70%,transparent);font-size:15px;line-height:1.6}
@@ -216,6 +265,10 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 @keyframes pulse{50%{box-shadow:0 0 0 1cqw var(--red)}}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}}
 @keyframes shine{0%{left:-60%}35%,100%{left:130%}}
+@keyframes nudge{50%{transform:translateY(-50%) translateX(6px) scale(1.08);background:var(--red);color:#fff}}
+@keyframes bub{to{transform:translateY(-170cqh)}}
+@keyframes conf{0%{opacity:1;transform:translateY(0) rotate(0)}85%{opacity:1}100%{opacity:0;transform:translateY(125cqh) rotate(var(--r,540deg))}}
+@keyframes scan{50%{top:calc(100% - 1.8cqw)}}
 
 @media (max-width:760px){
   .find input{width:76px}
@@ -229,13 +282,19 @@ img{display:block;-webkit-user-drag:none;user-select:none}
   .lb-name{font-size:30px}
   .lb-order{position:sticky;bottom:0}
 }
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.back .rv{opacity:1;transform:none}.back .t1{clip-path:none}}
 </style>
 </head>
 <body>
 <div id="loader"><svg viewBox="0 0 170 170"><circle cx="85" cy="85" r="78" fill="none" stroke="var(--cyan)" stroke-width="5" stroke-linecap="round" stroke-dasharray="120 400"/><circle cx="85" cy="85" r="66" fill="none" stroke="var(--red)" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 400" stroke-dashoffset="200"/></svg><img id="ldLogo" src="images/logo-mark.png" alt=""></div>
 
-<div class="stage"><div id="host"></div></div>
+<div class="stage" id="stage">
+  <div id="wrap">
+    <div id="host"></div>
+    <button class="side prev" id="sPrev" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></button>
+    <button class="side next" id="sNext" aria-label="Next page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></button>
+  </div>
+</div>
 
 <div class="toolbar">
   <button class="tb" id="bHome" title="Contents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
@@ -248,7 +307,7 @@ img{display:block;-webkit-user-drag:none;user-select:none}
   <a class="tb wa js-wa" target="_blank" rel="noopener" href="#" title="WhatsApp sales"><svg viewBox="0 0 24 24" class="wa-ic"></svg></a>
 </div>
 <div class="hint" id="hint"></div>
-<div class="toast" id="toast"><span></span></div>
+<div class="toast" id="toast"></div>
 
 <!-- product preview -->
 <div class="lb" id="lb" aria-hidden="true">
@@ -268,7 +327,7 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 <script>
   /* GitHub Pages lets browsers keep files for ~10 minutes. Always load the newest data,
      and if a newer version of the page was published, reload once to get it. */
-  window.APP_VERSION = "6";
+  window.APP_VERSION = "7";
   document.write('<script src="catalog-data.js?v=' + Date.now() + '"><\/script>');
   fetch("version.txt?t=" + Date.now(), { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(v => {
     v = v.trim(); const u = new URL(location.href);
@@ -288,6 +347,9 @@ const LAYOUTS = { 1:{c:1,r:1,s:2.1,t:"22cqh"}, 2:{c:2,r:1,s:1.5,t:"16cqh"}, 4:{c
 
 let DATA = window.CATALOG_DATA, pf = null, pageOf = {}, sound = true, QR = "";
 const S = () => DATA.settings, L = () => S().labels;
+const famOf = p => (S().families || []).find(f => f.id === p.family);
+const swatchBg = hex => hex === "multi" ? "var(--multi)" : hex;
+const swatch = f => `<i class="swatch" style="background:${esc(swatchBg(f.hex))}"></i>`;
 
 /* older saved drafts may miss newer settings → fill them from the defaults */
 function withDefaults(d){
@@ -315,13 +377,13 @@ const online = () => /^https?:$/.test(location.protocol) && !/^(localhost|127\.)
 function fillTemplate(p, color){
   const link = `${location.origin}${location.pathname}?p=${encodeURIComponent(p.code)}`;
   const image = online() ? (p.image && !p.image.startsWith("data:") ? new URL(p.image, location.href).href : link) : "";
-  const v = { name:p.name, code:p.code, collection:(DATA.collections.find(c => c.id === p.collection)||{}).name, capacity:p.capacity, material:p.material,
+  const v = { name:p.name, code:p.code, collection:(DATA.collections.find(c => c.id === p.collection)||{}).name, family:(famOf(p)||{}).name, capacity:p.capacity, material:p.material,
     neck:p.neck === "—" ? "" : p.neck, weight:p.weight, packing:p.packing, color:color || "", colors:(p.colors||[]).map(c => c.name).join(" / "), image, link: online() ? link : "" };
   return S().messageTemplate.split("\n").filter(l => { const ks=[...l.matchAll(/\{(\w+)\}/g)].map(m=>m[1]); return !ks.length || ks.some(k => String(v[k] ?? "").trim()); })
     .map(l => l.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "")).join("\n").replace(/\n{3,}/g,"\n\n").trim();
 }
 function openWA(url){ const w = window.open(url, "_blank", "noopener"); if (!w) location.href = url; }
-let tT; function toast(m){ const t=$("#toast"); t.querySelector("span").textContent=m; t.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>t.classList.remove("show"),2200); }
+let tT; function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>t.classList.remove("show"),2200); }
 
 /* ---------- page sound (synthesised, no audio file needed) ---------- */
 let actx;
@@ -359,6 +421,19 @@ const productHTML = p => `<div class="cell"><div class="prod" role="button" tabi
     ${p.capacity ? `<span class="pcap">${esc(p.capacity)}</span>` : ""}
   </span></div></div>`;
 
+/* products of a collection → rows; with “group by color”, every color group starts on a fresh row */
+function collectionRows(c, items, cols){
+  const fams = S().families || [];
+  let groups = [{ f:null, items }];
+  if (c.groupByFamily !== false && fams.length){
+    groups = fams.map(f => ({ f, items:items.filter(p => p.family === f.id) })).filter(g => g.items.length);
+    const rest = items.filter(p => !famOf(p)); if (rest.length) groups.push({ f:null, items:rest });
+  }
+  const rows = [];
+  groups.forEach(g => { for (let k = 0; k < g.items.length; k += cols) rows.push({ f:g.f, items:g.items.slice(k, k + cols), first:k === 0 }); });
+  return rows;
+}
+
 function buildPages(){
   const s = S(), l = L(), html = [], vis = DATA.products.filter(p => !p.hidden);
   pageOf = {};
@@ -370,44 +445,57 @@ function buildPages(){
     <div class="collage">${feat.map(p => `<div><img src="${esc(p.image)}" alt="" draggable="false"></div>`).join("")}</div>
     <div class="cv-note"><b><svg viewBox="0 0 24 24">${WA}</svg></b>${esc(s.cover.note)}</div>
     <div class="cv-foot"><span>${esc(s.brandName)} - ${esc(s.tagline)}</span><a href="${esc(siteHref())}" target="_blank" rel="noopener">${esc(s.website)}</a></div></div>`, true));
+  // collection pages first (so the contents page knows every page number)
   const colPages = [];
   DATA.collections.forEach(c => {
     const items = vis.filter(p => p.collection === c.id); if (!items.length) return;
-    const Lo = LAYOUTS[+c.perPage || +s.layout.perPage] || LAYOUTS[6], per = Lo.c * Lo.r;
-    for (let k = 0; k < items.length; k += per){
-      const chunk = items.slice(k, k + per), rows = [];
-      for (let r = 0; r < chunk.length; r += Lo.c) rows.push(chunk.slice(r, r + Lo.c));
-      if (k === 0) pageOf["col:" + c.id] = 2 + colPages.length;
-      chunk.forEach(p => pageOf[p.code.toLowerCase()] = 2 + colPages.length);
+    const Lo = LAYOUTS[+c.perPage || +s.layout.perPage] || LAYOUTS[6];
+    const rows = collectionRows(c, items, Lo.c);
+    for (let k = 0; k < rows.length; k += Lo.r){
+      const pr = rows.slice(k, k + Lo.r), pgIdx = 2 + colPages.length;
+      if (k === 0) pageOf["col:" + c.id] = pgIdx;
+      pr.forEach(r => { if (r.f && r.first) pageOf[`fam:${c.id}:${r.f.id}`] = pgIdx; r.items.forEach(p => pageOf[p.code.toLowerCase()] = pgIdx); });
       colPages.push(`<div class="pg">${header(c.name + (l.catalogSuffix || ""), c.description, c.code)}
-        <div class="pb" style="--r:${Lo.r};--c:${Lo.c};--s:${Lo.s};--txt:${Lo.t}">${rows.map(row => `<div class="row">${row.map(productHTML).join("")}</div>`).join("")}</div>
-        ${footer()}<span class="pnum">${2 + colPages.length + 1}</span><span class="gutter"></span></div>`);
+        <div class="pb" style="--r:${Lo.r};--c:${Lo.c};--s:${Lo.s};--txt:${Lo.t}">${pr.map((r, ri) => `<div class="row">${r.f && (r.first || ri === 0) ? `<span class="rowfam">${swatch(r.f)}${esc(r.f.name)}</span>` : ""}${r.items.map(productHTML).join("")}</div>`).join("")}</div>
+        ${footer()}<span class="pnum">${pgIdx + 1}</span><span class="gutter"></span></div>`);
     }
   });
   const tocCols = DATA.collections.filter(c => pageOf["col:" + c.id] !== undefined);
   html.push(page(`<div class="pg">${header(l.contentsTitle, l.contentsSub, s.cover.year)}
-    <div class="toc">${tocCols.map((c, i) => `<a href="#" data-goto="${pageOf["col:" + c.id]}"><span class="n">${String(i+1).padStart(2,"0")}</span><span class="t">${esc(c.name)}<small>${vis.filter(p => p.collection === c.id).length} ${esc(l.productsWord)}</small></span><span class="c">${esc(c.code)}</span><span class="pg-n">${pageOf["col:" + c.id] + 1}</span></a>`).join("")}
+    <div class="toc">${tocCols.map((c, i) => {
+      const fams = (s.families || []).filter(f => pageOf[`fam:${c.id}:${f.id}`] !== undefined);
+      return `<div class="toc-item"><a class="toc-main" href="#" data-goto="${pageOf["col:" + c.id]}"><span class="n">${String(i+1).padStart(2,"0")}</span><span class="t">${esc(c.name)}<small>${vis.filter(p => p.collection === c.id).length} ${esc(l.productsWord)}</small></span><span class="c">${esc(c.code)}</span><span class="pg-n">${pageOf["col:" + c.id] + 1}</span></a>
+        ${fams.length ? `<div class="toc-fams">${fams.map(f => `<a href="#" data-goto="${pageOf[`fam:${c.id}:${f.id}`]}">${swatch(f)}${esc(f.name)}<b>${pageOf[`fam:${c.id}:${f.id}`] + 1}</b></a>`).join("")}</div>` : ""}</div>`;
+    }).join("")}
       <div class="how-t">${esc(l.howTitle)}</div>
       <div class="how">${s.steps.map((st, i) => `<div><b>0${i+1}</b><h4>${esc(st.title)}</h4><p>${esc(st.text)}</p></div>`).join("")}</div>
     </div>${footer()}<span class="pnum">2</span><span class="gutter"></span></div>`));
   colPages.forEach(h => html.push(page(h)));
-  if ((html.length + 1) % 2) html.push(page(`<div class="pg filler"><img src="${esc(s.logoMark || s.logo)}" alt="" draggable="false"><span class="gutter"></span></div>`));
-  html.push(page(`<div class="back">${swoosh(.16,.22)}
-    <span class="lg"><img src="${esc(s.logoMark || s.logo)}" alt="" draggable="false"></span>
-    <h3 class="serif">${esc(s.cover.backTitle)}</h3>
-    <a class="bqr" href="${esc(s.qrLink)}" target="_blank" rel="noopener"><img src="${QR}" alt="QR" draggable="false"></a><small>${esc(s.qrCaption)}</small>
-    <div class="bph">${s.phones.map(p => `<a href="${esc(phoneHref(p))}"${phoneTarget()}>${esc(p)}</a>`).join("")}</div>
-    <a class="bwa js-wa" target="_blank" rel="noopener" href="#"><svg viewBox="0 0 24 24">${WA}</svg>${esc(l.backWhatsapp)}</a>
-    <a class="bsite" href="${esc(siteHref())}" target="_blank" rel="noopener">${esc(s.website)}</a></div>`, true));
+  if ((html.length + 1) % 2) html.push(page(`<div class="filler">${swoosh(.22,.12)}<span class="lgc"><img src="${esc(s.logoMark || s.logo)}" alt="" draggable="false"></span><h3 class="serif">${esc(s.tagline)}</h3><p>${esc(s.brandName)} · ${esc(s.website)}</p><span class="gutter"></span></div>`));
+  // animated thank-you back cover
+  const confColors = [s.colors.primary, s.colors.secondary, s.colors.sky, "#ffffff", s.colors.primary];
+  const conf = s.back.confetti ? Array.from({ length:34 }, (_, i) => `<i class="conf" style="left:${(i * 29 + 7) % 100}%;background:${confColors[i % 5]};animation-delay:${(i % 9) * .09}s;--r:${(i % 2 ? 1 : -1) * (360 + i * 23)}deg"></i>`).join("") : "";
+  const bubs = Array.from({ length:10 }, (_, i) => { const z = 4 + (i * 7) % 9; return `<i class="bub" style="left:${(i * 37 + 5) % 95}%;width:${z}cqw;height:${z}cqw;animation-duration:${9 + (i * 3) % 8}s;animation-delay:-${(i * 2.3).toFixed(1)}s"></i>`; }).join("");
+  html.push(page(`<div class="back" id="backPage">${swoosh(.26,.16)}<div class="fx">${bubs}${conf}</div>
+    <span class="lg rv" style="--d:.05s"><img src="${esc(s.logoMark || s.logo)}" alt="" draggable="false"></span>
+    <div class="thx"><span class="t1">${esc(s.back.thanks)}</span><span class="t2 rv" style="--d:.9s">${esc(s.back.thanksSub)}</span><svg viewBox="0 0 300 20" preserveAspectRatio="none"><path d="M296 12C210 3 90 2 4 10"/></svg></div>
+    ${s.back.message ? `<p class="armsg rv" style="--d:1.15s">${esc(s.back.message)}</p>` : ""}
+    <a class="bqr rv" style="--d:1.35s" href="${esc(s.qrLink)}" target="_blank" rel="noopener"><img src="${QR}" alt="QR" draggable="false"><i></i></a><small class="rv" style="--d:1.45s">${esc(s.qrCaption)}</small>
+    <div class="bph rv" style="--d:1.55s">${s.phones.map(p => `<a href="${esc(phoneHref(p))}"${phoneTarget()}>${esc(p)}</a>`).join("")}</div>
+    <a class="bwa js-wa rv" style="--d:1.65s" target="_blank" rel="noopener" href="#"><svg viewBox="0 0 24 24">${WA}</svg>${esc(l.backWhatsapp)}</a>
+    <a class="bsite rv" style="--d:1.75s" href="${esc(siteHref())}" target="_blank" rel="noopener">${esc(s.website)}</a></div>`, true));
   return html.join("");
 }
 
 /* ---------- flipbook ---------- */
 let fstate = "read", queued = null;
 function sizeHost(){
-  const W = innerWidth - 24, H = innerHeight - 64 - 24, R = 1000 / 707;
+  const stage = $("#stage"), W = stage.clientWidth - 24, H = stage.clientHeight - 24, R = 1000 / 707;
   const single = W < 760 || W / H < 1.05;
-  $("#host").style.width = Math.floor(single ? Math.min(W, H / R) : Math.min(W, (H / R) * 2)) + "px";
+  let w = Math.floor(single ? Math.min(W, H / R) : Math.min(W, (H / R) * 2));
+  if (!single && W - w < 156) w = Math.max(320, Math.min(w, W - 156));   // keep room for the big side arrows
+  $("#wrap").style.width = w + "px";
+  $("#wrap").classList.toggle("out", !single && (W - w) / 2 >= 78);
   return single;
 }
 function build(startPage = 0){
@@ -415,6 +503,7 @@ function build(startPage = 0){
   r.setProperty("--red", c.primary); r.setProperty("--cyan", c.secondary); r.setProperty("--sky", c.sky); r.setProperty("--ink", c.ink); r.setProperty("--bg", c.bg);
   document.title = `${S().brandName} Catalog`; $("#ldLogo").src = S().logoMark || S().logo;
   $("#find").placeholder = L().findPlaceholder;
+  document.body.classList.toggle("no-sides", S().layout.sideArrows === false);
   const tmp = document.createElement("div");
   if (window.QRCode && S().qrLink){ new QRCode(tmp, { text:S().qrLink, width:240, height:240, colorDark:c.ink, colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M }); QR = tmp.querySelector("canvas").toDataURL(); }
   else QR = "images/qr-original.png";
@@ -423,10 +512,10 @@ function build(startPage = 0){
   sizeHost(); fstate = "read"; queued = null;
   $("#host").innerHTML = `<div id="book">${buildPages()}</div>`;
   pf = new St.PageFlip($("#book"), {
-    width: 707, height: 1000, size: "stretch", minWidth: 260, maxWidth: 1414, minHeight: 368, maxHeight: 2000,
+    width: 707, height: 1000, size: "stretch", minWidth: 240, maxWidth: 1414, minHeight: 340, maxHeight: 2000,
     showCover: true, usePortrait: true, mobileScrollSupport: false, maxShadowOpacity: .35, drawShadow: true,
-    flippingTime: +S().layout.flipSpeed || 700, swipeDistance: 18, showPageCorners: false,
-    disableFlipByClick: true, clickEventForward: true, startPage, autoSize: true
+    flippingTime: +S().layout.flipSpeed || 700, startPage, autoSize: true,
+    useMouseEvents: false                                           // no corner-dragging: the catalog handles taps & swipes itself
   });
   pf.loadFromHTML(document.querySelectorAll("#book .page"));
   pf.on("flip", e => updateCount(e.data));
@@ -439,35 +528,42 @@ function build(startPage = 0){
   document.querySelectorAll(".wa-ic").forEach(e => e.innerHTML = WA);
   updateCount(startPage);
 }
-function updateCount(i){ $("#count").textContent = `${i + 1} / ${pf.getPageCount()}`; }
+function updateCount(i){
+  const n = pf.getPageCount();
+  $("#count").textContent = `${i + 1} / ${n}`;
+  $("#sPrev").classList.toggle("dim", i <= 0);
+  $("#sNext").classList.toggle("dim", i >= n - 1);
+  const back = $("#backPage"); if (back) back.classList.toggle("show", i >= n - 1);
+}
 /* every page move goes through here: if a flip is still running, the request waits instead of being dropped */
 function act(fn){ if (!pf) return; if (fstate !== "read") queued = fn; else fn(); }
 const next = () => act(() => pf.flipNext());
 const prev = () => act(() => pf.flipPrev());
 const goTo = i => act(() => { if (i === pf.getCurrentPageIndex()) return; pf.getOrientation() === "portrait" ? (pf.turnToPage(i), updateCount(i)) : pf.flip(i); });
 
-/* ---------- taps inside the book ---------- */
+/* ---------- touch anywhere: right side = next, left side = previous, swipe = turn ---------- */
+const stage = $("#stage");
+const sideOf = x => { const r = $("#host").getBoundingClientRect(); return x >= r.left + r.width / 2 ? "next" : "prev"; };
 let down = null;
-// a mouse press on a product must never start a page drag / corner flip (touch still lets you swipe across products)
-$("#host").addEventListener("mousedown", e => { if (e.target.closest(".prod")) e.stopPropagation(); }, true);
-$("#host").addEventListener("pointerdown", e => { down = { x:e.clientX, y:e.clientY, t:Date.now() }; });
-$("#host").addEventListener("pointerup", e => {
+stage.addEventListener("pointerdown", e => { if (e.button > 0) return; down = { x:e.clientX, y:e.clientY, t:Date.now() }; });
+stage.addEventListener("pointercancel", () => { down = null; });
+stage.addEventListener("pointerup", e => {
   if (!down) return;
-  const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), quick = Date.now() - down.t < 450; down = null;
-  if (moved > 8 || !quick || e.target.closest("a")) return;           // drags are handled by the book; links work natively
+  const dx = e.clientX - down.x, dy = e.clientY - down.y, dt = Date.now() - down.t; down = null;
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2 && dt < 1000) return dx < 0 ? next() : prev();   // swipe
+  if (Math.hypot(dx, dy) > 12 || e.target.closest("a, .side")) return;                                        // links & arrows handle themselves
   const prod = e.target.closest(".prod");
   if (prod) return openProduct(prod);
-  // tap on an empty part of a page → turn it (left side = back, right side = forward)
-  setTimeout(() => {
-    if (fstate !== "read") return;
-    const r = $("#host").getBoundingClientRect(), portrait = pf.getOrientation() === "portrait";
-    const back = portrait ? e.clientX < r.left + r.width * .3 : e.clientX < r.left + r.width / 2;
-    back ? prev() : next();
-  }, 40);
+  sideOf(e.clientX) === "next" ? next() : prev();
 });
-$("#host").addEventListener("click", e => {
-  const g = e.target.closest("[data-goto]"); if (g){ e.preventDefault(); goTo(+g.dataset.goto); }
+stage.addEventListener("mousemove", e => {
+  const side = e.target.closest("a, .prod, .side") ? "" : sideOf(e.clientX);
+  stage.classList.toggle("cur-next", side === "next"); stage.classList.toggle("cur-prev", side === "prev");
 });
+stage.addEventListener("mouseleave", () => stage.classList.remove("cur-next", "cur-prev"));
+$("#sPrev").onclick = prev;
+$("#sNext").onclick = next;
+$("#host").addEventListener("click", e => { const g = e.target.closest("[data-goto]"); if (g){ e.preventDefault(); goTo(+g.dataset.goto); } });
 $("#host").addEventListener("keydown", e => { const p = e.target.closest(".prod"); if (p && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); openProduct(p); } });
 
 /* ---------- product preview ---------- */
@@ -475,11 +571,13 @@ let lbList = [], lbIdx = 0, lbColor = "";
 function openProduct(el){
   const p = DATA.products.find(x => x.id === el.dataset.id); if (!p) return;
   if (S().clickAction === "whatsapp"){ toast("Opening WhatsApp…"); return openWA(waUrl(fillTemplate(p, ""))); }
-  lbList = DATA.products.filter(x => !x.hidden && x.collection === p.collection); lbIdx = lbList.indexOf(p);
+  const fams = S().families || [], rank = x => { const i = fams.findIndex(f => f.id === x.family); return i < 0 ? 99 : i; };
+  lbList = DATA.products.filter(x => !x.hidden && x.collection === p.collection)
+    .map((x, i) => [x, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(a => a[0]);   // same order as the pages
+  lbIdx = lbList.indexOf(p);
   fillLB(0);
   const lb = $("#lb"); lb.classList.add("open"); lb.setAttribute("aria-hidden", "false");
   if (!(history.state && history.state.lb)) history.pushState({ lb:1 }, "");
-  // fly the photo from the page into the preview
   const from = el.querySelector(".face"), img = $("#lbImg");
   if (from && !matchMedia("(prefers-reduced-motion:reduce)").matches){
     const a = from.getBoundingClientRect(), b = $("#lbMedia").getBoundingClientRect(), g = document.createElement("img");
@@ -492,7 +590,7 @@ function openProduct(el){
   setTimeout(() => $("#lbX").focus({ preventScroll:true }), 50);
 }
 function fillLB(dir){
-  const p = lbList[lbIdx], l = L(), col = DATA.collections.find(c => c.id === p.collection) || {}, img = $("#lbImg");
+  const p = lbList[lbIdx], l = L(), col = DATA.collections.find(c => c.id === p.collection) || {}, f = famOf(p), img = $("#lbImg");
   lbColor = "";
   img.src = p.image; img.alt = p.name; $("#lbMedia").classList.remove("zoom");
   if (dir) img.animate([{ opacity:0, transform:`translateX(${dir * 40}px)` }, { opacity:1, transform:"none" }], { duration:380, easing:"cubic-bezier(.2,.8,.2,1)" });
@@ -501,7 +599,7 @@ function fillLB(dir){
   $("#lbPrev").style.display = $("#lbNext").style.display = $("#lbIdx").style.display = lbList.length > 1 ? "" : "none";
   const spec = (k, v) => v && v !== "—" ? `<div><span>${k}</span><b>${esc(v)}</b></div>` : "";
   $("#lbInfo").innerHTML = `
-    <span class="lb-col">${esc(col.name || "")} · ${esc(col.code || "")}</span>
+    <span class="lb-col">${f ? swatch(f) : ""}${esc(col.name || "")}${f ? " · " + esc(f.name) : ""} · ${esc(col.code || "")}</span>
     <h3 class="lb-name serif" id="lbName">${esc(p.name)}</h3>
     ${p.capacity ? `<span class="lb-cap">${esc(p.capacity)}</span>` : ""}
     ${p.description ? `<p class="lb-desc">${esc(p.description)}</p>` : ""}
@@ -546,7 +644,7 @@ addEventListener("keydown", e => {
   if ($("#lb").classList.contains("open")){
     if (e.key === "Escape") closeLB(); if (e.key === "ArrowRight") navLB(1); if (e.key === "ArrowLeft") navLB(-1); return;
   }
-  if (e.key === "ArrowRight") next(); if (e.key === "ArrowLeft") prev();
+  if (e.key === "ArrowRight" || e.key === "PageDown") next(); if (e.key === "ArrowLeft" || e.key === "PageUp") prev();
 });
 function findProduct(q, open){
   q = q.trim().toLowerCase(); if (!q) return;
@@ -577,8 +675,10 @@ addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(() => { con
     build(0); lastSingle = sizeHost();
     $("#loader").classList.add("done");
     const pid = new URLSearchParams(location.search).get("p");
-    if (pid) setTimeout(() => findProduct(pid, true), 600);
-    else { $("#hint").textContent = innerWidth < 760 ? L().hintMobile : L().hintDesktop; setTimeout(() => $("#hint").classList.add("show"), 1500); setTimeout(() => $("#hint").classList.remove("show"), 6000); }
+    if (pid) return setTimeout(() => findProduct(pid, true), 600);
+    $("#hint").textContent = innerWidth < 760 ? L().hintMobile : L().hintDesktop;
+    setTimeout(() => { $("#hint").classList.add("show"); $("#sNext").classList.add("nudge"); }, 1300);
+    setTimeout(() => $("#hint").classList.remove("show"), 6500);
   };
   if (document.readyState === "complete") setTimeout(go, 400); else addEventListener("load", () => setTimeout(go, 400));
 })();
