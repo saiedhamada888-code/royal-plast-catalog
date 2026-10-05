@@ -13,26 +13,27 @@ window.CATALOG_DATA = {
     "qrLink": "https://q.me-qr.com/wbdxvc67",
     "qrCaption": "Scan to follow us",
     "colors": { "primary": "#F2222B", "secondary": "#1FE0FD", "sky": "#5CE6FF", "ink": "#0E1A2B", "bg": "#F2FCFF" },
-    "hero": {
-      "eyebrow": "2026 Product Catalog",
-      "title": "Packaging That",
-      "highlight": "Sells",
-      "subtitle": "Premium plastic bottles, pumps, sprayers and closures — engineered for beauty, home care and food brands. Tap any product to spin it 360° and order instantly on WhatsApp.",
-      "cta": "Explore Catalog"
+    "cover": {
+      "year": "2026",
+      "title": "Product",
+      "highlight": "Catalog",
+      "subtitle": "Premium plastic bottles, pumps, sprayers and closures for beauty, home care and food brands.",
+      "note": "Tap any product — it spins 360° and opens WhatsApp with all the details.",
+      "backTitle": "Let's create packaging that sells."
     },
     "steps": [
       { "title": "Pick your packaging", "text": "Browse collections or search by code to find the right bottle, pump or closure." },
       { "title": "Choose a color", "text": "Select the color you need — it is added to your request automatically." },
       { "title": "Tap to spin & send", "text": "Tap the product: it spins 360° and opens WhatsApp with every detail ready to send." }
     ],
-    "layout": { "columns": 4, "showMarquee": true, "showSteps": true, "showCarousel": true },
+    "layout": { "perPage": 6, "flipSound": true },
     "clickAction": "spin-whatsapp",
-    "messageTemplate": "Hello Royal Plast 👋\nI'd like to inquire about this item:\n\n📦 Product: {name}\n🔖 Code: {code}\n📂 Collection: {collection}\n📏 Capacity: {capacity}\n🧪 Material: {material}\n🔩 Neck size: {neck}\n⚖️ Weight: {weight}\n🎨 Color: {color}\n📦 Packing: {packing}\n\n🖼 Product image: {image}"
+    "messageTemplate": "Hello Royal Plast 👋\nI'd like to inquire about this item:\n\n📦 Product: {name}\n🔖 Code: {code}\n📂 Collection: {collection}\n📏 Capacity: {capacity}\n🧪 Material: {material}\n🔩 Neck size: {neck}\n⚖️ Weight: {weight}\n🎨 Available colors: {color}\n📦 Packing: {packing}\n\n🖼 Product image: {image}"
   },
   "collections": [
-    { "id": "glow", "name": "Glow Essentials", "code": "NK 63", "description": "Discover our skincare packaging line — gentle, elegant bottles crafted to make your products shine on every shelf." },
-    { "id": "pumps", "name": "Lotion Pumps", "code": "LP 24", "description": "Smooth-action dispensing pumps in every color, built for creams, soaps, serums and lotions." },
-    { "id": "mist", "name": "Fine Mist Sprayers", "code": "MS 20", "description": "Crystal-clear PET bottles paired with ultra-fine mist sprayers for toners, fragrances and body mists." }
+    { "id": "glow", "name": "Glow Essentials", "code": "NK 63", "perPage": "", "description": "Discover our skincare packaging line — gentle, elegant bottles crafted to make your products shine on every shelf." },
+    { "id": "pumps", "name": "Lotion Pumps", "code": "LP 24", "perPage": "4", "description": "Smooth-action dispensing pumps in every color, built for creams, soaps, serums and lotions." },
+    { "id": "mist", "name": "Fine Mist Sprayers", "code": "MS 20", "perPage": "", "description": "Crystal-clear PET bottles paired with ultra-fine mist sprayers for toners, fragrances and body mists." }
   ],
   "products": [
     { "id": "p1", "code": "NK 63-01", "name": "Glow Mist Bottle", "collection": "glow", "capacity": "200 ML", "material": "PET", "neck": "24/410", "weight": "22 g", "packing": "Carton 300 pcs", "colors": [{"name":"Black","hex":"#151515"},{"name":"Blue","hex":"#1F6FE0"},{"name":"Peach","hex":"#F5B99A"},{"name":"Pink","hex":"#F0286E"},{"name":"White","hex":"#FFFFFF"}], "image": "images/spray-single.jpg", "frames": [], "featured": true, "hidden": false },

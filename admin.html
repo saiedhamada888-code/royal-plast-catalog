@@ -170,7 +170,7 @@ const PAGES = {
   collections:{t:"Collections", s:"The catalog sections — like “Glow Essentials · NK 63”."},
   brand:{t:"Brand & Contact", s:"Logo, WhatsApp number, phones, website and the social-media QR code."},
   colors:{t:"Brand Colors", s:"Every color in the catalog comes from these five values."},
-  texts:{t:"Texts & Layout", s:"Hero texts, “how to order” steps, grid size and which sections show."},
+  texts:{t:"Texts & Layout", s:"Front & back cover, contents page steps and products per page."},
   whatsapp:{t:"WhatsApp Message", s:"The message the sales team receives when a customer taps a product."},
   publish:{t:"Publish", s:"Export your changes and upload them to make them live for everyone."}
 };
@@ -274,7 +274,7 @@ function drawList(){
       <div><span class="code">${esc(p.code)}</span><div class="nm">${esc(p.name)}</div></div>
       <div class="meta c3">${esc([p.capacity, p.material, p.neck].filter(Boolean).join(" · "))}</div>
       <div class="meta c4">${esc(cname(p.collection))}</div>
-      <div class="tags c5">${p.featured ? '<span class="tag star">★ Hero</span>' : ""}${p.hidden ? '<span class="tag">Hidden</span>' : ""}${p.frames?.length > 1 ? `<span class="tag">360 · ${p.frames.length}</span>` : ""}</div>
+      <div class="tags c5">${p.featured ? '<span class="tag star">★ Cover</span>' : ""}${p.hidden ? '<span class="tag">Hidden</span>' : ""}${p.frames?.length > 1 ? `<span class="tag">360 · ${p.frames.length}</span>` : ""}</div>
       <div class="ibtns">
         <button class="ib" data-a="up" title="Move up">${IC.up}</button><button class="ib" data-a="down" title="Move down">${IC.down}</button>
         <button class="ib" data-a="edit" title="Edit">${IC.edit}</button><button class="ib" data-a="dup" title="Duplicate">${IC.copy}</button>
@@ -338,12 +338,12 @@ function editProduct(id){
         <div class="f"><label>Packing</label><input data-k="packing" placeholder="Carton 300 pcs"></div>
       </div>
     </div>
-    <div class="card"><h3>Available colors</h3><p class="hint">Customers tap a color dot; the chosen color is added to the WhatsApp message.</p>
+    <div class="card"><h3>Available colors</h3><p class="hint">Listed in the WhatsApp message the sales team receives.</p>
       <div class="colors-ed" id="cols">${colorsHTML()}</div>
       <button class="btn btn-line btn-sm" id="addc" style="margin-top:10px">${IC.plus}Add color</button>
     </div>
     <div class="card">
-      <label class="check"><input type="checkbox" data-k="featured"> Show in the hero 3D carousel</label><br>
+      <label class="check"><input type="checkbox" data-k="featured"> Show on the front cover</label><br>
       <label class="check"><input type="checkbox" data-k="hidden"> Hide from the catalog</label>
     </div>
     <div class="drawer-f"><button class="btn btn-line" id="cancel">Cancel</button><button class="btn btn-red" id="save">${isNew ? "Add product" : "Save changes"}</button></div>`;
@@ -384,6 +384,7 @@ function vCollections(){
         <div class="ibtns"><button class="ib" data-a="up">${IC.up}</button><button class="ib" data-a="down">${IC.down}</button><button class="ib del" data-a="del">${IC.del}</button></div></div>
       <div class="fields">
         ${field("Name", `collections.${i}.name`)}${field("Code badge", `collections.${i}.code`, { ph:"NK 63" })}
+        <div class="f"><label>Products per page</label><select data-bind="collections.${i}.perPage"><option value="">Default (from Texts & Layout)</option>${PER_PAGE.map(([n, t]) => `<option value="${n}">${t}</option>`).join("")}</select></div>
         ${field("Description", `collections.${i}.description`, { full:true, area:true })}
       </div>
     </div>`).join("");
@@ -451,24 +452,25 @@ function vColors(){
 }
 
 /* ---------- TEXTS ---------- */
+const PER_PAGE = [[1,"1 per page (hero product)"],[2,"2 per page"],[4,"4 per page (2 × 2)"],[6,"6 per page (3 × 2)"],[9,"9 per page (3 × 3)"],[12,"12 per page (4 × 3)"]];
 function vTexts(){
   const s = "settings";
   $("#view").innerHTML = `
-    <div class="card"><h3>Hero (top of the page)</h3><p class="hint">The big title is “Title” + the highlighted word in red.</p>
-      <div class="fields">${field("Small label", `${s}.hero.eyebrow`)}${field("Title", `${s}.hero.title`)}${field("Highlighted word", `${s}.hero.highlight`)}${field("Button text", `${s}.hero.cta`)}${field("Subtitle", `${s}.hero.subtitle`, { full:true, area:true })}</div>
+    <div class="card"><h3>Front cover</h3><p class="hint">The big title is “Title” + the highlighted word in red italics.</p>
+      <div class="fields">${field("Year", `${s}.cover.year`)}${field("Title", `${s}.cover.title`)}${field("Highlighted word", `${s}.cover.highlight`)}${field("Subtitle", `${s}.cover.subtitle`, { full:true, area:true })}${field("Note at the bottom", `${s}.cover.note`, { full:true })}</div>
+      <p class="hint" style="margin-top:12px">The 3 photos on the cover are the products marked “Show on the front cover”.</p>
     </div>
-    <div class="card"><h3>How to order — 3 steps</h3><p class="hint">Shown below the catalog.</p>
+    <div class="card"><h3>Back cover</h3><div class="fields">${field("Back cover headline", `${s}.cover.backTitle`, { full:true })}</div></div>
+    <div class="card"><h3>How to order — 3 steps</h3><p class="hint">Shown on the contents page.</p>
       ${D.settings.steps.map((st, i) => `<div class="fields" style="margin-bottom:12px">${field(`Step ${i+1} title`, `${s}.steps.${i}.title`)}${field(`Step ${i+1} text`, `${s}.steps.${i}.text`)}</div>`).join("")}
     </div>
-    <div class="card"><h3>Layout & behavior</h3><p class="hint">Control the grid and which sections appear.</p>
+    <div class="card"><h3>Pages & behavior</h3><p class="hint">Each collection can also override the products-per-page from the Collections tab.</p>
       <div class="fields">
-        <div class="f"><label>Products per row (desktop)</label><select data-bind="${s}.layout.columns" data-num>${[2,3,4,5,6].map(n => `<option value="${n}">${n}</option>`).join("")}</select></div>
+        <div class="f"><label>Products per page (default)</label><select data-bind="${s}.layout.perPage" data-num>${PER_PAGE.map(([n, t]) => `<option value="${n}">${t}</option>`).join("")}</select></div>
         <div class="f"><label>When a customer taps a product</label><select data-bind="${s}.clickAction">
-          <option value="spin-whatsapp">Spin 360° then open WhatsApp</option><option value="whatsapp">Open WhatsApp immediately</option><option value="spin">Spin only (WhatsApp button on card)</option></select></div>
+          <option value="spin-whatsapp">Spin 360° then open WhatsApp</option><option value="whatsapp">Open WhatsApp immediately</option><option value="spin">Spin only</option></select></div>
       </div><br>
-      <label class="check"><input type="checkbox" data-bind="${s}.layout.showCarousel"> Show the 3D product carousel in the hero</label><br>
-      <label class="check"><input type="checkbox" data-bind="${s}.layout.showMarquee"> Show the moving collections strip</label><br>
-      <label class="check"><input type="checkbox" data-bind="${s}.layout.showSteps"> Show “How to order” steps</label>
+      <label class="check"><input type="checkbox" data-bind="${s}.layout.flipSound"> Page-turn sound on by default</label>
     </div>`;
   bindAll($("#view"));
 }
@@ -538,6 +540,8 @@ $("#btnPreview").onclick = () => { previewWin = window.open("index.html?preview=
 (async function boot(){
   try { D = await idbGet("draft"); } catch(_) {}
   if (!D) D = clone(window.CATALOG_DATA);
+  const base = window.CATALOG_DATA.settings; // fill in settings added in newer versions
+  D.settings.cover = D.settings.cover || clone(base.cover); D.settings.layout = { ...clone(base.layout), ...D.settings.layout }; if (!D.settings.layout.perPage) D.settings.layout.perPage = base.layout.perPage;
   $("#sideLogo").src = D.settings.logoMark || D.settings.logo;
   render();
 })();
