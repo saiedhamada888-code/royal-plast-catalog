@@ -78,8 +78,8 @@ main{padding:26px 34px 60px;min-width:0}
 .drawer-h h2{font-size:20px}
 .img-edit{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:start}
 .img-prev{width:150px;height:150px;border-radius:18px;border:1.5px solid var(--ink);object-fit:cover;background:#fff}
-.frames{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}
-.frames img{width:38px;height:38px;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
+.banner{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#FFF7E6;border:1px solid #FCD9A0;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13.5px}
+.banner span{flex:1;min-width:240px}
 .colors-ed{display:flex;flex-direction:column;gap:8px}
 .colors-ed .row input[type=text]{flex:1}
 .check{display:flex;align-items:center;gap:10px;font-weight:500;cursor:pointer}
@@ -148,6 +148,10 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clone = o => JSON.parse(JSON.stringify(o));
 const uid = () => "p" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+// fingerprint of catalog content (ignores the _base marker) — tells whether a saved draft was started from the current live file
+const sigOf = d => { const s = JSON.stringify({ ...d, _base: undefined }); let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return String(h); };
+const PUB_SIG = sigOf(window.CATALOG_DATA);
+const fresh = () => { const d = clone(window.CATALOG_DATA); d._base = PUB_SIG; return d; };
 const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "collection";
 const IC = {
   products:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2h6v4H9zM8 6h8l1 4v11a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V10z"/></svg>',
@@ -274,7 +278,7 @@ function drawList(){
       <div><span class="code">${esc(p.code)}</span><div class="nm">${esc(p.name)}</div></div>
       <div class="meta c3">${esc([p.capacity, p.material, p.neck].filter(Boolean).join(" · "))}</div>
       <div class="meta c4">${esc(cname(p.collection))}</div>
-      <div class="tags c5">${p.featured ? '<span class="tag star">★ Cover</span>' : ""}${p.hidden ? '<span class="tag">Hidden</span>' : ""}${p.frames?.length > 1 ? `<span class="tag">360 · ${p.frames.length}</span>` : ""}</div>
+      <div class="tags c5">${p.featured ? '<span class="tag star">★ Cover</span>' : ""}${p.hidden ? '<span class="tag">Hidden</span>' : ""}</div>
       <div class="ibtns">
         <button class="ib" data-a="up" title="Move up">${IC.up}</button><button class="ib" data-a="down" title="Move down">${IC.down}</button>
         <button class="ib" data-a="edit" title="Edit">${IC.edit}</button><button class="ib" data-a="dup" title="Duplicate">${IC.copy}</button>
@@ -300,14 +304,14 @@ async function bulkAdd(files){
   toast(`Adding ${files.length} products…`);
   for (const f of files){
     const base = f.name.replace(/\.[^.]+$/, "");
-    D.products.push({ id:uid(), code:base.toUpperCase(), name:base.replace(/[-_]+/g," "), collection:col, capacity:"", material:"", neck:"", weight:"", packing:"", colors:[], image:await readImage(f), frames:[], featured:false, hidden:false });
+    D.products.push({ id:uid(), code:base.toUpperCase(), name:base.replace(/[-_]+/g," "), collection:col, capacity:"", material:"", neck:"", weight:"", packing:"", colors:[], description:"", image:await readImage(f), featured:false, hidden:false });
   }
   changed(); drawList(); toast(`${files.length} products added — click each one to complete its details`);
 }
 
 function editProduct(id){
   const isNew = !id;
-  const p = isNew ? { id:uid(), code:"", name:"", collection:filter.col !== "all" ? filter.col : D.collections[0]?.id, capacity:"", material:"", neck:"", weight:"", packing:"", colors:[], image:"", frames:[], featured:false, hidden:false }
+  const p = isNew ? { id:uid(), code:"", name:"", collection:filter.col !== "all" ? filter.col : D.collections[0]?.id, capacity:"", material:"", neck:"", weight:"", packing:"", description:"", colors:[], image:"", featured:false, hidden:false }
                   : clone(D.products.find(x => x.id === id));
   const dr = $("#drawer");
   const colorsHTML = () => p.colors.map((c, i) => `<div class="row"><input type="color" value="${esc(c.hex)}" data-ci="${i}" data-k="hex"><input type="text" value="${esc(c.name)}" data-ci="${i}" data-k="name" placeholder="Color name"><button class="ib del" data-rm="${i}">${IC.x}</button></div>`).join("");
@@ -321,12 +325,8 @@ function editProduct(id){
           <div class="f"><label>…or image path / URL</label><input id="imgPath" value="${p.image.startsWith("data:") ? "" : esc(p.image)}" placeholder="images/NK63-01.png"><small>Using a file in the <b>images</b> folder lets WhatsApp show the photo preview in the message.</small></div>
         </div>
       </div>
-      <div class="f" style="margin-top:16px"><label>True 360° view (optional)</label>
-        <div class="row"><button class="btn btn-line btn-sm" id="fr">Upload 360° frames</button><button class="btn btn-line btn-sm" id="frc">Clear</button><span class="meta" id="frn"></span></div>
-        <small>Upload 24–36 photos taken around the product on a turntable (named 01, 02, 03… in order). Without frames the photo spins in 3D.</small>
-        <div class="frames" id="frs"></div></div>
     </div>
-    <div class="card"><h3>Details</h3><p class="hint">All details appear on the card and in the WhatsApp message.</p>
+    <div class="card"><h3>Details</h3><p class="hint">Name, code and size show on the catalog page; everything shows in the product preview and the WhatsApp message.</p>
       <div class="fields">
         <div class="f"><label>Code *</label><input data-k="code" placeholder="NK 63-05"></div>
         <div class="f"><label>Name *</label><input data-k="name" placeholder="Glow Mist Bottle"></div>
@@ -336,9 +336,10 @@ function editProduct(id){
         <div class="f"><label>Neck size</label><input data-k="neck" placeholder="24/410"></div>
         <div class="f"><label>Weight</label><input data-k="weight" placeholder="22 g"></div>
         <div class="f"><label>Packing</label><input data-k="packing" placeholder="Carton 300 pcs"></div>
+        <div class="f full"><label>Short description (shown in the product preview)</label><textarea data-k="description" placeholder="Ergonomic mini trigger with adjustable nozzle…" style="min-height:70px"></textarea></div>
       </div>
     </div>
-    <div class="card"><h3>Available colors</h3><p class="hint">Listed in the WhatsApp message the sales team receives.</p>
+    <div class="card"><h3>Available colors</h3><p class="hint">Shown in the product preview — the color the customer picks is added to the WhatsApp message.</p>
       <div class="colors-ed" id="cols">${colorsHTML()}</div>
       <button class="btn btn-line btn-sm" id="addc" style="margin-top:10px">${IC.plus}Add color</button>
     </div>
@@ -348,14 +349,10 @@ function editProduct(id){
     </div>
     <div class="drawer-f"><button class="btn btn-line" id="cancel">Cancel</button><button class="btn btn-red" id="save">${isNew ? "Add product" : "Save changes"}</button></div>`;
   dr.querySelectorAll("[data-k]").forEach(el => { if (el.dataset.ci !== undefined) return; if (el.type === "checkbox") el.checked = !!p[el.dataset.k]; else el.value = p[el.dataset.k] ?? ""; });
-  const drawFrames = () => { $("#frn").textContent = p.frames.length ? `${p.frames.length} frames` : "No frames"; $("#frs").innerHTML = p.frames.slice(0, 36).map(f => `<img src="${esc(f)}">`).join(""); };
   const drawColors = () => { $("#cols").innerHTML = colorsHTML(); };
-  drawFrames();
   $("#up").onclick = async () => { const [f] = await pickFiles(); if (!f) return; p.image = await readImage(f); $("#imgPrev").src = p.image; $("#imgPrev").style.opacity = 1; $("#imgPath").value = ""; };
   $("#clr").onclick = () => { p.image = ""; $("#imgPrev").src = ""; $("#imgPath").value = ""; };
   $("#imgPath").oninput = e => { p.image = e.target.value.trim(); $("#imgPrev").style.opacity = 1; $("#imgPrev").src = p.image; };
-  $("#fr").onclick = async () => { const fs = (await pickFiles({ multiple:true })).sort((a,b) => a.name.localeCompare(b.name, undefined, { numeric:true })); if (!fs.length) return; toast("Processing frames…"); p.frames = []; for (const f of fs) p.frames.push(await readImage(f, 600)); drawFrames(); };
-  $("#frc").onclick = () => { p.frames = []; drawFrames(); };
   $("#addc").onclick = () => { p.colors.push({ name:"", hex:"#ffffff" }); drawColors(); };
   $("#cols").addEventListener("input", e => { const i = e.target.dataset.ci; if (i !== undefined) p.colors[i][e.target.dataset.k] = e.target.value; });
   $("#cols").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (b){ p.colors.splice(+b.dataset.rm, 1); drawColors(); } });
@@ -417,10 +414,11 @@ function vBrand(){
     <div class="card"><h3>Sales WhatsApp</h3><p class="hint">Every product tap opens a chat with this number.</p>
       <div class="fields">${field("WhatsApp number (international, digits only)", `${s}.whatsapp`, { hint:"Egypt example: 201013105930 (20 + number without the first 0)" })}</div>
     </div>
-    <div class="card"><h3>Contact</h3><p class="hint">Shown in the footer.</p>
+    <div class="card"><h3>Contact</h3><p class="hint">Shown in the footer of every page and on the back cover — all of them are clickable.</p>
       <div class="fields">
         <div class="f"><label>Phone numbers (one per line)</label><textarea id="phones"></textarea></div>
-        ${field("Website", `${s}.website`)}
+        <div class="f"><label>When a customer taps a phone number</label><select data-bind="${s}.phoneAction"><option value="call">Call the number</option><option value="whatsapp">Open a WhatsApp chat with it</option></select>
+          ${field("Website (opens when tapped)", `${s}.website`)}</div>
       </div>
     </div>
     <div class="card"><h3>Social media QR</h3><p class="hint">The QR is generated from this link, so it always stays sharp and in your brand colors.</p>
@@ -468,21 +466,39 @@ function vTexts(){
       <div class="fields">
         <div class="f"><label>Products per page (default)</label><select data-bind="${s}.layout.perPage" data-num>${PER_PAGE.map(([n, t]) => `<option value="${n}">${t}</option>`).join("")}</select></div>
         <div class="f"><label>When a customer taps a product</label><select data-bind="${s}.clickAction">
-          <option value="spin-whatsapp">Spin 360° then open WhatsApp</option><option value="whatsapp">Open WhatsApp immediately</option><option value="spin">Spin only</option></select></div>
+          <option value="preview">Show the product large first, with an “Order Now” button</option><option value="whatsapp">Open WhatsApp immediately</option></select></div>
+        <div class="f"><label>Page-turn speed</label><select data-bind="${s}.layout.flipSpeed" data-num><option value="500">Fast</option><option value="700">Normal</option><option value="950">Slow & elegant</option></select></div>
       </div><br>
       <label class="check"><input type="checkbox" data-bind="${s}.layout.flipSound"> Page-turn sound on by default</label>
+    </div>
+    <div class="card"><h3>Labels & small texts</h3><p class="hint">Every word the customer sees in the catalog.</p>
+      <div class="fields">
+        ${field("Word after collection names", `${s}.labels.catalogSuffix`, { hint:"e.g. “ Catalog” → “PET Bottles Catalog”. Leave empty for none." })}
+        ${field("Contents page title", `${s}.labels.contentsTitle`)}
+        ${field("Contents page subtitle", `${s}.labels.contentsSub`)}
+        ${field("“How to order” title", `${s}.labels.howTitle`)}
+        ${field("Word “products” (contents page)", `${s}.labels.productsWord`)}
+        ${field("“View” badge on products", `${s}.labels.view`)}
+        ${field("Order button", `${s}.labels.orderNow`)}
+        ${field("Note under the order button", `${s}.labels.orderNote`)}
+        ${field("Colors title in the preview", `${s}.labels.chooseColor`)}
+        ${field("Back cover WhatsApp button", `${s}.labels.backWhatsapp`)}
+        ${field("Search box placeholder", `${s}.labels.findPlaceholder`)}
+        ${field("Hint on computers", `${s}.labels.hintDesktop`)}
+        ${field("Hint on phones", `${s}.labels.hintMobile`)}
+      </div>
     </div>`;
   bindAll($("#view"));
 }
 
 /* ---------- WHATSAPP ---------- */
 function vWhatsapp(){
-  const keys = ["name","code","collection","capacity","material","neck","weight","color","packing","image","link"];
+  const keys = ["name","code","collection","capacity","material","neck","weight","color","colors","packing","image","link"];
   $("#view").innerHTML = `
     <div class="card"><h3>Message template</h3><p class="hint">Click a field to insert it. Lines whose fields are empty are removed automatically.</p>
       <div class="ph">${keys.map(k => `<button data-k="${k}">{${k}}</button>`).join("")}</div>
       <textarea id="tpl" data-bind="settings.messageTemplate" style="min-height:260px;font-family:monospace;font-size:13px"></textarea>
-      <small class="meta">{image} = product photo link (WhatsApp shows it as a preview when the catalog is online) · {link} = link that opens the catalog on this product.</small>
+      <small class="meta">{color} = the color the customer picked · {colors} = all available colors · {image} = product photo link (WhatsApp shows it as a preview when the catalog is online) · {link} = link that opens the catalog on this product.</small>
     </div>
     <div class="card"><h3>Preview</h3><p class="hint">Example with product: <select id="pp" style="width:auto;display:inline-block;padding:4px 8px">${D.products.map(p => `<option value="${esc(p.id)}">${esc(p.code)} — ${esc(p.name)}</option>`).join("")}</select></p>
       <div class="wa-bg"><div class="msg-prev" id="mp"></div></div>
@@ -491,7 +507,7 @@ function vWhatsapp(){
   const tpl = $("#tpl");
   const prev = () => {
     const p = D.products.find(x => x.id === $("#pp").value) || D.products[0]; if (!p) return;
-    const vals = { name:p.name, code:p.code, collection:D.collections.find(c => c.id === p.collection)?.name, capacity:p.capacity, material:p.material, neck:p.neck, weight:p.weight, packing:p.packing, color:p.colors[0]?.name || "", image:"https://your-site.com/images/…", link:"https://your-site.com/?p=" + p.code };
+    const vals = { name:p.name, code:p.code, collection:D.collections.find(c => c.id === p.collection)?.name, capacity:p.capacity, material:p.material, neck:p.neck, weight:p.weight, packing:p.packing, color:p.colors[0]?.name || "", colors:p.colors.map(c => c.name).join(" / "), image:"https://your-site.com/images/…", link:"https://your-site.com/?p=" + p.code };
     $("#mp").textContent = D.settings.messageTemplate.split("\n").filter(l => { const ks = [...l.matchAll(/\{(\w+)\}/g)].map(m => m[1]); return !ks.length || ks.some(k => String(vals[k] ?? "").trim()); }).map(l => l.replace(/\{(\w+)\}/g, (_, k) => vals[k] ?? "")).join("\n");
   };
   prev(); tpl.addEventListener("bound", prev); $("#pp").onchange = prev;
@@ -523,10 +539,10 @@ function vPublish(){
     try {
       const txt = (await f.text()).replace(/^[\s\S]*?window\.CATALOG_DATA\s*=\s*/, "").replace(/;\s*$/, "");
       const d = JSON.parse(txt); if (!d.settings || !d.products) throw new Error("Not a catalog file");
-      D = d; changed(); render(); toast("Imported");
+      d._base = PUB_SIG; D = d; changed(); render(); toast("Imported");
     } catch(e){ alert("Could not import: " + e.message); }
   };
-  $("#rst").onclick = () => { if (!confirm("Discard all unpublished edits?")) return; D = clone(window.CATALOG_DATA); changed(); render(); toast("Reloaded the published catalog"); };
+  $("#rst").onclick = () => { if (!confirm("Discard all unpublished edits?")) return; D = fresh(); changed(); render(); toast("Reloaded the published catalog"); };
 }
 function download(name, text, type){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
 function exportJS(){
@@ -539,11 +555,20 @@ $("#btnPreview").onclick = () => { previewWin = window.open("index.html?preview=
 
 (async function boot(){
   try { D = await idbGet("draft"); } catch(_) {}
-  if (!D) D = clone(window.CATALOG_DATA);
-  const base = window.CATALOG_DATA.settings; // fill in settings added in newer versions
-  D.settings.cover = D.settings.cover || clone(base.cover); D.settings.layout = { ...clone(base.layout), ...D.settings.layout }; if (!D.settings.layout.perPage) D.settings.layout.perPage = base.layout.perPage;
+  if (!D) D = fresh();
+  // fill in settings added in newer versions
+  const base = window.CATALOG_DATA.settings;
+  for (const k in base){
+    if (D.settings[k] === undefined) D.settings[k] = clone(base[k]);
+    else if (base[k] && typeof base[k] === "object" && !Array.isArray(base[k])) D.settings[k] = { ...clone(base[k]), ...D.settings[k] };
+  }
+  if (!["preview","whatsapp"].includes(D.settings.clickAction)) D.settings.clickAction = "preview";
   $("#sideLogo").src = D.settings.logoMark || D.settings.logo;
   render();
+  // the published catalog was updated after these edits were started → offer to switch
+  if (D._base !== PUB_SIG && sigOf(D) !== PUB_SIG) $("#view").insertAdjacentHTML("afterbegin", `<div class="banner" id="stale"><span>⚠️ The live catalog was updated after you started these edits. Load the live version to make sure you edit the latest products.</span><button class="btn btn-ink btn-sm" id="loadPub">Load live version</button><button class="btn btn-line btn-sm" id="keepDraft">Keep my edits</button></div>`);
+  $("#loadPub")?.addEventListener("click", () => { D = fresh(); changed(); render(); toast("Loaded the live catalog"); });
+  $("#keepDraft")?.addEventListener("click", () => { D._base = PUB_SIG; changed(); $("#stale").remove(); });
 })();
 </script>
 </body>

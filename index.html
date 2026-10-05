@@ -16,7 +16,7 @@ body{font-family:Poppins,system-ui,sans-serif;color:var(--ink);overflow:hidden;
   background:radial-gradient(ellipse at 20% 0%,color-mix(in srgb,var(--sky) 45%,#fff),transparent 60%),
              radial-gradient(ellipse at 100% 100%,color-mix(in srgb,var(--red) 12%,#fff),transparent 55%),#EAF6FA}
 button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-decoration:none}
-img{display:block}
+img{display:block;-webkit-user-drag:none;user-select:none}
 .serif{font-family:"DM Serif Display",Georgia,serif;font-weight:400}
 
 /* ---------- loader ---------- */
@@ -25,32 +25,32 @@ img{display:block}
 #loader img{width:90px;animation:pop 1s cubic-bezier(.3,1.5,.5,1) both}
 #loader svg{position:absolute;width:170px;height:170px;animation:spin 1.3s linear infinite}
 
-/* ---------- stage ---------- */
+/* ---------- stage & toolbar ---------- */
 .stage{position:fixed;inset:0 0 64px;display:grid;place-items:center;padding:12px}
-#host{position:relative;margin:auto}
+#host{position:relative;margin:auto;touch-action:none}
 #host .stf__parent{filter:drop-shadow(0 30px 40px #0e1a2b40)}
 .toolbar{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:6px;padding:6px;border-radius:999px;background:#fff;box-shadow:0 10px 30px #0e1a2b26}
-.tb{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;transition:background .2s,transform .2s;flex:none}
+.tb{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;transition:background .2s,transform .15s;flex:none}
 .tb:hover{background:#EEF6F9}
-.tb:active{transform:scale(.92)}
+.tb:active{transform:scale(.9)}
 .tb svg{width:20px;height:20px}
 .tb.main{background:var(--red);color:#fff}
 .tb.main:hover{background:color-mix(in srgb,var(--red) 85%,#000)}
 .tb.wa{background:var(--wa);color:#fff}
 .tb.off{opacity:.4}
-.count{min-width:70px;text-align:center;font-weight:700;font-size:14px}
+.count{min-width:64px;text-align:center;font-weight:700;font-size:14px}
 .find{display:flex;align-items:center;gap:6px;background:#EEF6F9;border-radius:999px;padding:0 12px;height:42px}
 .find svg{width:16px;opacity:.5}
 .find input{border:0;outline:0;background:none;font:inherit;font-size:13px;width:150px;color:var(--ink)}
-.hint{position:fixed;right:24px;bottom:84px;z-index:20;background:var(--ink);color:#fff;font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:12px;opacity:0;transform:translateY(10px);transition:all .5s;pointer-events:none}
-.hint.show{opacity:1;transform:none}
+.hint{position:fixed;left:50%;bottom:76px;transform:translate(-50%,10px);z-index:20;background:var(--ink);color:#fff;font-size:12.5px;font-weight:600;padding:9px 16px;border-radius:12px;opacity:0;transition:all .5s;pointer-events:none;white-space:nowrap}
+.hint.show{opacity:1;transform:translate(-50%,0)}
 .toast{position:fixed;left:50%;top:18px;z-index:90;transform:translate(-50%,-20px);opacity:0;display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:14px;background:var(--ink);color:#fff;font-weight:600;font-size:14px;transition:all .4s;pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
-.toast i{width:9px;height:9px;border-radius:50%;background:var(--wa)}
 .preview-flag{position:fixed;left:12px;top:12px;z-index:80;background:var(--ink);color:#fff;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px}
 
-/* ---------- page base (all sizes in container units => scales with the book) ---------- */
-.page{background:#fff;overflow:hidden}
+/* ---------- page base (sizes in container units => everything scales with the book) ---------- */
+.page{background:#fff;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent}
+.page a *,.page [role=button] *{pointer-events:none}
 .pg{position:relative;width:100%;height:100%;container-type:size;overflow:hidden;background:var(--sky);display:flex;flex-direction:column}
 .pnum{position:absolute;bottom:1.2cqh;font-size:1.5cqw;font-weight:600;opacity:.5}
 .page.--left .pnum{left:3cqw}.page.--right .pnum{right:3cqw}
@@ -66,19 +66,22 @@ img{display:block}
 .ph p{font-size:1.45cqw;color:var(--red);line-height:1.45;margin-top:.8cqw;max-width:58cqw}
 .ph-code{background:var(--red);color:#fff;font-size:2.9cqw;padding:.9cqw 4.5cqw;border-radius:99cqw;white-space:nowrap;box-shadow:0 1cqw 2cqw color-mix(in srgb,var(--red) 30%,transparent)}
 
-/* footer */
+/* footer — every item is a working link */
 .pf{flex:none;height:11.5cqw;display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:3cqw;padding:0 3.5cqw;border-top:.2cqw solid var(--red);background:var(--sky)}
-.pf .qr{width:8cqw;height:8cqw;background:#fff;padding:.5cqw;border-radius:1cqw}
+.pf a{transition:transform .2s,opacity .2s}
+.pf a:hover{transform:translateY(-.25cqw)}
+.pf .qr{display:block;width:8cqw;height:8cqw;background:#fff;padding:.5cqw;border-radius:1cqw;box-shadow:0 .5cqw 1.2cqw #0e1a2b1a}
 .pf .qr img{width:100%;height:100%}
 .pf .ph-n{display:flex;align-items:center;gap:1.4cqw;color:var(--red);font-size:1.25cqw;font-weight:600;line-height:1.5}
-.pf .ph-n i{width:3.6cqw;height:3.6cqw;border:.25cqw solid var(--red);border-radius:50%;display:grid;place-items:center}
-.pf .ph-n i svg{width:1.9cqw}
+.pf .ph-n .ic{width:3.6cqw;height:3.6cqw;border:.25cqw solid var(--red);border-radius:50%;display:grid;place-items:center}
+.pf .ph-n .ic svg{width:1.9cqw}
+.pf .nums{display:flex;flex-direction:column}
+.pf .nums a:hover,.pf .site:hover span{text-decoration:underline}
 .pf .tag{text-align:center;color:var(--red);font-weight:600;font-size:1.6cqw}
 .pf .site{display:flex;align-items:center;gap:.8cqw;color:var(--red);font-size:1.55cqw;font-weight:500}
 .pf .site svg{width:1.8cqw}
 
 /* product grid */
-/* page-relative lengths, frozen at .pb level so they survive inside the per-cell containers */
 @property --pw{syntax:"<length>";inherits:true;initial-value:0px}
 @property --ph{syntax:"<length>";inherits:true;initial-value:0px}
 @property --tx{syntax:"<length>";inherits:true;initial-value:0px}
@@ -86,35 +89,32 @@ img{display:block}
 .row{display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));gap:3cqw;min-height:0;padding:2cqh 0}
 .row+.row{border-top:.15cqw solid var(--red)}
 .cell{container-type:size;min-width:0;min-height:0}
-.prod{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transform:translateY(calc(var(--ph) * 3)) scale(.96);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i)*70ms + .15s)}
-.prod>*{pointer-events:none}
+.prod{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;outline:none}
 .pin{display:flex;flex-direction:column;align-items:flex-start;text-align:left;max-width:100%}
-.page.on .prod{opacity:1;transform:none}
-.pimg{position:relative;width:min(100cqw, 100cqh - var(--tx));aspect-ratio:1;perspective:1200px}
-.flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .3s}
-.face{position:absolute;inset:0;border-radius:calc(var(--pw) * 3.2 * var(--s));overflow:hidden;background:#fff;border:calc(var(--pw) * .18) solid var(--ink);backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.face img{width:100%;height:100%;object-fit:cover}
-.face.back{transform:rotateY(180deg)}
-.face.back img{transform:scaleX(-1)}
-.prod:hover .flip{transform:translateY(calc(var(--ph) * -1)) rotateY(-8deg)}
-.flip.spin{animation:spin360 1.15s cubic-bezier(.45,.05,.25,1)}
+.pimg{position:relative;width:min(100cqw, 100cqh - var(--tx));aspect-ratio:1;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.face{position:absolute;inset:0;border-radius:calc(var(--pw) * 3.2 * var(--s));overflow:hidden;background:#fff;border:calc(var(--pw) * .18) solid var(--ink);transition:box-shadow .35s}
+.face img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.prod:hover .pimg,.prod:focus-visible .pimg{transform:translateY(calc(var(--ph) * -.8))}
+.prod:hover .face,.prod:focus-visible .face{box-shadow:0 calc(var(--pw) * 1.6) calc(var(--pw) * 3) #0e1a2b40}
+.prod:hover .face img{transform:scale(1.06)}
+.pview{position:absolute;top:6%;right:6%;z-index:2;display:flex;align-items:center;gap:.35em;background:#fffffff0;border-radius:999px;padding:.3em .8em .3em .5em;font-size:calc(var(--pw) * 1.15 * var(--s));font-weight:700;opacity:0;transform:scale(.8);transition:all .3s cubic-bezier(.2,.8,.2,1)}
+.pview svg{width:1.3em;height:1.3em;color:var(--red)}
+.prod:hover .pview,.prod:focus-visible .pview{opacity:1;transform:none}
+@media (hover:none){.pview{opacity:1;transform:none}}
 .pcode{position:absolute;left:50%;bottom:0;transform:translate(-50%,45%);z-index:2;background:var(--red);color:#fff;font-size:calc(var(--pw) * 1.6 * var(--s));padding:.35em 1.4em;border-radius:999px;white-space:nowrap}
-.p360{position:absolute;top:6%;right:6%;z-index:2;display:flex;align-items:center;gap:.3em;background:#ffffffe6;border-radius:999px;padding:.25em .6em .25em .35em;font-size:calc(var(--pw) * 1.05 * var(--s));font-weight:700}
-.p360 svg{width:1.3em;height:1.3em;color:var(--red);animation:spin 3s linear infinite}
 .pname{margin-top:calc(var(--ph) * 2.4 * var(--s));font-size:calc(var(--pw) * 2.6 * var(--s));line-height:1.1;letter-spacing:-.01em;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:"DM Serif Display",serif;padding-left:.4em}
 .pcap{margin-top:calc(var(--ph) * 1 * var(--s));background:#fff;color:var(--red);font-weight:800;font-size:calc(var(--pw) * 1.35 * var(--s));padding:.35em 1.1em;border-radius:999px}
 .prod.pulse .face{animation:pulse 1s 3}
-.ripple{position:absolute;inset:0;border-radius:calc(var(--pw) * 3.2 * var(--s));box-shadow:0 0 0 0 color-mix(in srgb,var(--wa) 70%,transparent);animation:ring .9s ease-out;z-index:3}
 
 /* ---------- cover ---------- */
 .cover{position:relative;width:100%;height:100%;container-type:size;overflow:hidden;background:linear-gradient(160deg,#fff 0%,color-mix(in srgb,var(--sky) 40%,#fff) 55%,var(--sky) 100%)}
-.cover .sw{position:absolute;inset:0;width:100%;height:100%}
-.cover .sw path{animation:drift 9s ease-in-out infinite alternate;transform-origin:center}
-.cover .sw path:nth-child(2){animation-duration:12s}
+.sw{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sw path{animation:drift 9s ease-in-out infinite alternate;transform-origin:center}
+.sw path:nth-child(2){animation-duration:12s}
 .cv-top{position:absolute;top:6cqh;left:7cqw;right:7cqw;display:flex;justify-content:space-between;align-items:center}
 .cv-logo{width:19cqw;height:19cqw;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 2cqw 5cqw #0e1a2b1f}
 .cv-logo img{width:12cqw}
-.cv-year{font-size:6cqw;color:var(--ink);opacity:.9}
+.cv-year{font-size:6cqw;opacity:.9}
 .cv-title{position:absolute;left:7cqw;top:30cqh;font-size:17cqw;line-height:.88;letter-spacing:-.03em}
 .cv-title em{color:var(--red);font-style:italic;display:block}
 .cv-title svg{display:block;width:62cqw;height:4cqw;margin-top:1cqh}
@@ -130,58 +130,106 @@ img{display:block}
 .cv-note b{flex:none;width:5cqw;height:5cqw;border-radius:50%;background:var(--wa);color:#fff;display:grid;place-items:center}
 .cv-note b svg{width:3cqw}
 .cv-foot{position:absolute;left:7cqw;right:7cqw;bottom:4.5cqh;display:flex;justify-content:space-between;color:var(--red);font-weight:700;font-size:2.3cqw}
+.cv-foot a:hover{text-decoration:underline}
 
 /* ---------- contents ---------- */
 .toc{flex:1;padding:5cqh 7cqw 3cqh;display:flex;flex-direction:column;gap:2cqh}
-.toc a{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:2.5cqw;padding:2.2cqh 3cqw;background:#fff;border-radius:3cqw;transition:transform .3s,box-shadow .3s;opacity:0;transform:translateX(-3cqw);transition-delay:calc(var(--i)*90ms + .1s)}
-.page.on .toc a{opacity:1;transform:none}
+.toc a{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:2.5cqw;padding:2.2cqh 3cqw;background:#fff;border-radius:3cqw;transition:transform .3s,box-shadow .3s}
 .toc a:hover{box-shadow:0 1.5cqw 3cqw #0e1a2b1f;transform:translateX(1cqw)}
-.toc a>*{pointer-events:none}
 .toc .n{font-size:5cqw;color:var(--red);line-height:1;font-family:"DM Serif Display",serif}
 .toc .t{font-size:3.4cqw;line-height:1.1;font-family:"DM Serif Display",serif}
 .toc .t small{display:block;font-family:Poppins;font-size:1.4cqw;opacity:.6;margin-top:.5cqh}
 .toc .c{background:var(--red);color:#fff;font-size:1.7cqw;padding:.5cqw 2cqw;border-radius:99cqw}
 .toc .pg-n{font-weight:700;font-size:2.2cqw;min-width:4cqw;text-align:right}
-.how{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:2.5cqw}
+.how-t{font-size:3cqw;font-family:"DM Serif Display",serif;margin-top:auto}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5cqw}
 .how div{background:#ffffffb3;border-radius:3cqw;padding:2.4cqh 2.4cqw}
 .how b{display:block;font-family:"DM Serif Display",serif;font-size:4.5cqw;color:var(--red);line-height:1}
 .how h4{font-size:1.9cqw;margin:.8cqh 0 .5cqh}
 .how p{font-size:1.4cqw;line-height:1.45;opacity:.75}
-.how-t{font-size:3cqw;font-family:"DM Serif Display",serif;margin-top:auto}
 
-/* ---------- filler / back ---------- */
+/* ---------- filler / back cover ---------- */
 .filler{display:grid;place-items:center;background:linear-gradient(160deg,var(--sky),color-mix(in srgb,var(--sky) 40%,#fff))}
 .filler img{width:40cqw;opacity:.18}
 .back{position:relative;width:100%;height:100%;container-type:size;overflow:hidden;background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3cqh;padding:8cqw}
-.back .sw{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
 .back>*:not(.sw){position:relative}
 .back .lg{width:22cqw;height:22cqw;border-radius:50%;background:#fff;display:grid;place-items:center}
 .back .lg img{width:14cqw}
 .back h3{font-size:7cqw;line-height:1.05;max-width:70cqw}
-.back .bqr{width:30cqw;background:#fff;border-radius:3cqw;padding:2cqw}
+.back .bqr{display:block;width:30cqw;background:#fff;border-radius:3cqw;padding:2cqw;transition:transform .3s}
+.back .bqr:hover{transform:scale(1.04)}
 .back .bqr img{width:100%}
 .back small{font-size:1.9cqw;opacity:.8;margin-top:-1.5cqh}
 .back .bph{display:flex;gap:4cqw;font-size:2.4cqw;font-weight:600;flex-wrap:wrap;justify-content:center}
-.back .bwa{display:inline-flex;align-items:center;gap:1.5cqw;background:var(--wa);color:#fff;font-weight:700;font-size:2.4cqw;padding:1.8cqw 4.5cqw;border-radius:99cqw}
-.back .bwa svg{width:3cqw;pointer-events:none}
+.back .bph a:hover,.back .bsite:hover{text-decoration:underline}
+.back .bwa{display:inline-flex;align-items:center;gap:1.5cqw;background:var(--wa);color:#fff;font-weight:700;font-size:2.4cqw;padding:1.8cqw 4.5cqw;border-radius:99cqw;transition:transform .3s}
+.back .bwa:hover{transform:scale(1.05)}
+.back .bwa svg{width:3cqw}
 .back .bsite{color:var(--cyan);font-weight:600;font-size:2.4cqw}
+
+/* ---------- product preview (lightbox) ---------- */
+.lb{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:20px;background:color-mix(in srgb,var(--ink) 55%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+.lb.open{opacity:1;visibility:visible}
+.lb-card{position:relative;width:min(1000px,100%);max-height:calc(100vh - 40px);display:grid;grid-template-columns:1.05fr 1fr;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 40px 90px #0e1a2b66}
+.lb-media{position:relative;background:#F4F6F8;overflow:hidden;cursor:zoom-in;aspect-ratio:1;max-height:calc(100vh - 40px);touch-action:pan-y}
+.lb-media img{width:100%;height:100%;object-fit:cover;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.lb-media.zoom{cursor:zoom-out}
+.lb-media.zoom img{transform:scale(2.1)}
+.lb-code{position:absolute;left:18px;top:18px;background:var(--red);color:#fff;padding:6px 18px;border-radius:999px;font-weight:600;font-size:14px;z-index:2}
+.lb-nav{position:absolute;top:50%;z-index:2;width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;transform:translateY(-50%);box-shadow:0 8px 20px #0e1a2b26;transition:transform .2s}
+.lb-nav:hover{transform:translateY(-50%) scale(1.08)}
+.lb-nav svg{width:20px;height:20px}
+.lb-nav.prev{left:14px}.lb-nav.next{right:14px}
+.lb-idx{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:2;background:#0e1a2bb3;color:#fff;font-size:12px;font-weight:600;padding:4px 12px;border-radius:999px}
+.lb-info{padding:36px 34px 28px;display:flex;flex-direction:column;gap:14px;overflow:auto}
+.lb-info>*{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.lb-info>*:nth-child(2){animation-delay:.04s}.lb-info>*:nth-child(3){animation-delay:.08s}.lb-info>*:nth-child(4){animation-delay:.12s}.lb-info>*:nth-child(5){animation-delay:.16s}.lb-info>*:nth-child(6){animation-delay:.2s}.lb-info>*:nth-child(7){animation-delay:.24s}
+.lb-col{color:var(--red);font-weight:700;font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase}
+.lb-name{font-size:42px;line-height:1.05;letter-spacing:-.01em}
+.lb-cap{align-self:flex-start;background:var(--sky);color:var(--red);font-weight:800;font-size:15px;padding:6px 18px;border-radius:999px}
+.lb-desc{color:color-mix(in srgb,var(--ink) 70%,transparent);font-size:15px;line-height:1.6}
+.lb-specs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lb-specs div{background:#F3F7FA;border-radius:12px;padding:10px 14px}
+.lb-specs span{display:block;font-size:11.5px;color:color-mix(in srgb,var(--ink) 55%,transparent);font-weight:600}
+.lb-specs b{font-size:14.5px}
+.lb-colors small{display:block;font-size:12px;font-weight:700;margin-bottom:8px;color:color-mix(in srgb,var(--ink) 65%,transparent)}
+.lb-colors div{display:flex;flex-wrap:wrap;gap:8px}
+.lb-colors button{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:999px;border:1.5px solid #E1E8EE;font-size:13px;font-weight:600;transition:all .2s}
+.lb-colors button i{width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1px #0002}
+.lb-colors button:hover{border-color:var(--ink)}
+.lb-colors button.on{border-color:var(--red);background:color-mix(in srgb,var(--red) 8%,#fff);color:var(--red)}
+.lb-order{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:12px;background:var(--wa);color:#fff;font-weight:700;font-size:18px;padding:16px;border-radius:16px;box-shadow:0 12px 26px #25d36655;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.lb-order:hover{transform:translateY(-2px);box-shadow:0 16px 32px #25d36677}
+.lb-order svg{width:24px;height:24px}
+.lb-order::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(90deg,transparent,#ffffff55,transparent);transform:skewX(-20deg);animation:shine 2.8s 1s infinite}
+.lb-note{text-align:center;font-size:12px;color:color-mix(in srgb,var(--ink) 55%,transparent);margin-top:-6px}
+.lb-x{position:absolute;right:14px;top:14px;z-index:3;width:42px;height:42px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 6px 16px #0e1a2b26;transition:transform .2s}
+.lb-x:hover{transform:rotate(90deg)}
+.lb-x svg{width:20px}
+.ghost{position:fixed;z-index:80;object-fit:cover;pointer-events:none;box-shadow:0 30px 60px #0e1a2b55}
 
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pop{from{transform:scale(.2) rotate(-20deg);opacity:0}}
-@keyframes spin360{0%{transform:rotateY(0)}50%{transform:rotateY(180deg) scale(1.08)}100%{transform:rotateY(360deg)}}
 @keyframes drift{to{transform:translate(-3%,2%) scale(1.04)}}
 @keyframes float{50%{translate:0 -1.5cqh}}
 @keyframes draw{to{stroke-dashoffset:0}}
 @keyframes pulse{50%{box-shadow:0 0 0 1cqw var(--red)}}
-@keyframes ring{to{box-shadow:0 0 0 4cqw transparent}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes shine{0%{left:-60%}35%,100%{left:130%}}
 
 @media (max-width:760px){
-  .find input{width:80px}
+  .find input{width:76px}
   .tb{width:38px;height:38px}
-  .count{min-width:54px;font-size:13px}
+  .count{min-width:50px;font-size:13px}
   .hide-m{display:none}
+  .lb{padding:0;place-items:end center}
+  .lb-card{grid-template-columns:1fr;border-radius:24px 24px 0 0;max-height:94vh;overflow:auto}
+  .lb-media{max-height:46vh;aspect-ratio:auto;height:46vh}
+  .lb-info{padding:22px 20px 24px;overflow:visible}
+  .lb-name{font-size:30px}
+  .lb-order{position:sticky;bottom:0}
 }
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.prod,.toc a{opacity:1!important;transform:none!important}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -199,8 +247,23 @@ img{display:block}
   <button class="tb hide-m" id="bFull" title="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
   <a class="tb wa js-wa" target="_blank" rel="noopener" href="#" title="WhatsApp sales"><svg viewBox="0 0 24 24" class="wa-ic"></svg></a>
 </div>
-<div class="hint" id="hint">Drag the page corner or use the arrows →</div>
-<div class="toast" id="toast"><i></i><span></span></div>
+<div class="hint" id="hint"></div>
+<div class="toast" id="toast"><span></span></div>
+
+<!-- product preview -->
+<div class="lb" id="lb" aria-hidden="true">
+  <div class="lb-card" role="dialog" aria-modal="true" aria-labelledby="lbName">
+    <button class="lb-x" id="lbX" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <div class="lb-media" id="lbMedia">
+      <img id="lbImg" alt="">
+      <span class="lb-code" id="lbCode"></span>
+      <button class="lb-nav prev" id="lbPrev" aria-label="Previous product"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 6-6 6 6 6"/></svg></button>
+      <button class="lb-nav next" id="lbNext" aria-label="Next product"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m9 6 6 6-6 6"/></svg></button>
+      <span class="lb-idx" id="lbIdx"></span>
+    </div>
+    <div class="lb-info" id="lbInfo"></div>
+  </div>
+</div>
 
 <script src="catalog-data.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -208,35 +271,50 @@ img{display:block}
 <script>
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const WA = '<path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.15c-1.48 0-2.93-.4-4.2-1.150l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 4.54 0 8.24 3.7 8.24 8.240 0 4.54-3.7 8.24-8.23 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.230-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/>';
-const SPIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>';
+const WA = '<path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 4.54 0 8.24 3.7 8.24 8.24 0 4.54-3.7 8.24-8.23 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/>';
+const EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 const PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>';
 const GLOBE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>';
 const LAYOUTS = { 1:{c:1,r:1,s:2.1,t:"22cqh"}, 2:{c:2,r:1,s:1.5,t:"16cqh"}, 4:{c:2,r:2,s:1.3,t:"10cqh"}, 6:{c:3,r:2,s:1,t:"8.5cqh"}, 9:{c:3,r:3,s:.85,t:"6cqh"}, 12:{c:4,r:3,s:.72,t:"5.2cqh"} };
 
 let DATA = window.CATALOG_DATA, pf = null, pageOf = {}, sound = true, QR = "";
-const S = () => DATA.settings;
+const S = () => DATA.settings, L = () => S().labels;
+
+/* older saved drafts may miss newer settings → fill them from the defaults */
+function withDefaults(d){
+  const base = window.CATALOG_DATA.settings, s = d.settings;
+  for (const k in base){
+    if (s[k] === undefined) s[k] = JSON.parse(JSON.stringify(base[k]));
+    else if (base[k] && typeof base[k] === "object" && !Array.isArray(base[k])) s[k] = { ...base[k], ...s[k] };
+  }
+  if (!["preview","whatsapp"].includes(s.clickAction)) s.clickAction = "preview";
+  return d;
+}
 
 /* ---------- storage (live preview from admin) ---------- */
 function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open("royalplast",1); r.onupgradeneeded=()=>r.result.createObjectStore("kv"); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
 async function idbGet(k){ const db=await idb(); return new Promise((res,rej)=>{ const q=db.transaction("kv").objectStore("kv").get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); }); }
 const isPreview = new URLSearchParams(location.search).has("preview");
 
-/* ---------- WhatsApp ---------- */
+/* ---------- links ---------- */
 const waUrl = t => `https://wa.me/${String(S().whatsapp).replace(/\D/g,"")}?text=${encodeURIComponent(t)}`;
+const intl = p => { const d = String(p).replace(/\D/g, ""); return d.startsWith("00") ? d.slice(2) : d.startsWith("0") ? "20" + d.slice(1) : d; };
+const phoneHref = p => S().phoneAction === "whatsapp" ? `https://wa.me/${intl(p)}` : `tel:+${intl(p)}`;
+const phoneTarget = () => S().phoneAction === "whatsapp" ? ' target="_blank" rel="noopener"' : "";
+const siteHref = () => /^https?:/i.test(S().website) ? S().website : "https://" + S().website;
 const online = () => /^https?:$/.test(location.protocol) && !/^(localhost|127\.)/.test(location.hostname);
-function fillTemplate(p){
+function fillTemplate(p, color){
   const link = `${location.origin}${location.pathname}?p=${encodeURIComponent(p.code)}`;
   const image = online() ? (p.image && !p.image.startsWith("data:") ? new URL(p.image, location.href).href : link) : "";
   const v = { name:p.name, code:p.code, collection:(DATA.collections.find(c => c.id === p.collection)||{}).name, capacity:p.capacity, material:p.material,
-    neck:p.neck, weight:p.weight, packing:p.packing, color:(p.colors||[]).map(c => c.name).join(" / "), image, link: online() ? link : "" };
+    neck:p.neck === "—" ? "" : p.neck, weight:p.weight, packing:p.packing, color:color || "", colors:(p.colors||[]).map(c => c.name).join(" / "), image, link: online() ? link : "" };
   return S().messageTemplate.split("\n").filter(l => { const ks=[...l.matchAll(/\{(\w+)\}/g)].map(m=>m[1]); return !ks.length || ks.some(k => String(v[k] ?? "").trim()); })
     .map(l => l.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "")).join("\n").replace(/\n{3,}/g,"\n\n").trim();
 }
 function openWA(url){ const w = window.open(url, "_blank", "noopener"); if (!w) location.href = url; }
 let tT; function toast(m){ const t=$("#toast"); t.querySelector("span").textContent=m; t.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>t.classList.remove("show"),2200); }
 
-/* ---------- page sound (synthesised, no file needed) ---------- */
+/* ---------- page sound (synthesised, no audio file needed) ---------- */
 let actx;
 function flipSound(){
   if (!sound) return;
@@ -252,144 +330,225 @@ function flipSound(){
 
 /* ---------- page builders ---------- */
 const footer = () => `<footer class="pf">
-  <span class="qr"><img src="${QR}" alt="QR"></span>
-  <span class="ph-n"><i>${PHONE}</i><span>${S().phones.map(esc).join("<br>")}</span></span>
+  <a class="qr" href="${esc(S().qrLink)}" target="_blank" rel="noopener" title="${esc(S().qrCaption)}"><img src="${QR}" alt="QR" draggable="false"></a>
+  <span class="ph-n"><a class="ic" href="${esc(phoneHref(S().phones[0] || ""))}"${phoneTarget()}>${PHONE}</a><span class="nums">${S().phones.map(p => `<a href="${esc(phoneHref(p))}"${phoneTarget()}>${esc(p)}</a>`).join("")}</span></span>
   <span class="tag">${esc(S().brandName)} - ${esc(S().tagline)}</span>
-  <span class="site">${GLOBE}${esc(S().website)}</span></footer>`;
+  <a class="site" href="${esc(siteHref())}" target="_blank" rel="noopener">${GLOBE}<span>${esc(S().website)}</span></a></footer>`;
 const header = (title, desc, code) => `<header class="ph">
-  <span class="ph-logo"><img src="${esc(S().logoMark || S().logo)}" alt=""></span>
+  <span class="ph-logo"><img src="${esc(S().logoMark || S().logo)}" alt="" draggable="false"></span>
   <div><h2 class="serif">${esc(title)}</h2><p>${esc(desc)}</p></div>
   ${code ? `<span class="ph-code">${esc(code)}</span>` : "<span></span>"}</header>`;
-const page = (inner, cls = "", hard = false) => `<div class="page ${cls}" data-density="${hard ? "hard" : "soft"}">${inner}</div>`;
-const swoosh = (a = .25, b = .14) => `<svg class="sw" viewBox="0 0 700 1000" preserveAspectRatio="none" aria-hidden="true">
+const page = (inner, hard = false) => `<div class="page" data-density="${hard ? "hard" : "soft"}">${inner}</div>`;
+const swoosh = (a, b) => `<svg class="sw" viewBox="0 0 700 1000" preserveAspectRatio="none" aria-hidden="true">
   <path d="M700 160C500 200 380 380 340 600 320 760 360 880 420 1000H700Z" fill="var(--cyan)" opacity="${a}"/>
   <path d="M700 0H480C620 60 680 200 650 380 640 470 670 520 700 540Z" fill="var(--red)" opacity="${b}"/></svg>`;
 
-function productHTML(p, i){
-  return `<div class="cell"><button class="prod" data-id="${esc(p.id)}" style="--i:${i}" aria-label="${esc(p.name)} — spin and order on WhatsApp"><span class="pin">
-    <span class="pimg"><span class="flip"><span class="face front"><img src="${esc(p.image)}" alt="" loading="lazy"></span><span class="face back"><img src="${esc(p.image)}" alt="" loading="lazy"></span></span>
-      <span class="p360">${SPIN}360°</span><span class="pcode">${esc(p.code)}</span></span>
+const productHTML = p => `<div class="cell"><div class="prod" role="button" tabindex="0" data-id="${esc(p.id)}" aria-label="${esc(p.name)}"><span class="pin">
+    <span class="pimg"><span class="face"><img src="${esc(p.image)}" alt="" loading="lazy" draggable="false"></span>
+      <span class="pview">${EYE}${esc(L().view)}</span><span class="pcode">${esc(p.code)}</span></span>
     <span class="pname">${esc(p.name)}</span>
     ${p.capacity ? `<span class="pcap">${esc(p.capacity)}</span>` : ""}
-  </span></button></div>`;
-}
+  </span></div></div>`;
 
 function buildPages(){
-  const s = S(), html = [], vis = DATA.products.filter(p => !p.hidden);
+  const s = S(), l = L(), html = [], vis = DATA.products.filter(p => !p.hidden);
   pageOf = {};
-  // cover
-  const feat = (vis.filter(p => p.featured && p.image).concat(vis.filter(p => p.image))).filter((p,i,a) => a.indexOf(p) === i).slice(0, 3);
+  const feat = vis.filter(p => p.featured && p.image).concat(vis.filter(p => p.image)).filter((p,i,a) => a.indexOf(p) === i).slice(0, 3);
   html.push(page(`<div class="cover">${swoosh(.3,.16)}
-    <div class="cv-top"><span class="cv-logo"><img src="${esc(s.logoMark || s.logo)}" alt=""></span><span class="cv-year serif">${esc(s.cover.year)}</span></div>
+    <div class="cv-top"><span class="cv-logo"><img src="${esc(s.logoMark || s.logo)}" alt="" draggable="false"></span><span class="cv-year serif">${esc(s.cover.year)}</span></div>
     <h1 class="cv-title serif">${esc(s.cover.title)}<em>${esc(s.cover.highlight)}</em><svg viewBox="0 0 300 20" preserveAspectRatio="none"><path d="M4 14C90 4 210 2 296 10"/></svg></h1>
     <p class="cv-sub">${esc(s.cover.subtitle)}</p>
-    <div class="collage">${feat.map(p => `<div><img src="${esc(p.image)}" alt=""></div>`).join("")}</div>
+    <div class="collage">${feat.map(p => `<div><img src="${esc(p.image)}" alt="" draggable="false"></div>`).join("")}</div>
     <div class="cv-note"><b><svg viewBox="0 0 24 24">${WA}</svg></b>${esc(s.cover.note)}</div>
-    <div class="cv-foot"><span>${esc(s.brandName)} - ${esc(s.tagline)}</span><span>${esc(s.website)}</span></div></div>`, "", true));
-  // collection pages (computed first so the contents page knows page numbers)
+    <div class="cv-foot"><span>${esc(s.brandName)} - ${esc(s.tagline)}</span><a href="${esc(siteHref())}" target="_blank" rel="noopener">${esc(s.website)}</a></div></div>`, true));
   const colPages = [];
   DATA.collections.forEach(c => {
     const items = vis.filter(p => p.collection === c.id); if (!items.length) return;
-    const L = LAYOUTS[+c.perPage || +s.layout.perPage] || LAYOUTS[6], per = L.c * L.r;
+    const Lo = LAYOUTS[+c.perPage || +s.layout.perPage] || LAYOUTS[6], per = Lo.c * Lo.r;
     for (let k = 0; k < items.length; k += per){
       const chunk = items.slice(k, k + per), rows = [];
-      for (let r = 0; r < chunk.length; r += L.c) rows.push(chunk.slice(r, r + L.c));
+      for (let r = 0; r < chunk.length; r += Lo.c) rows.push(chunk.slice(r, r + Lo.c));
       if (k === 0) pageOf["col:" + c.id] = 2 + colPages.length;
       chunk.forEach(p => pageOf[p.code.toLowerCase()] = 2 + colPages.length);
-      colPages.push(`<div class="pg">${header(c.name + " Catalog", c.description, c.code)}
-        <div class="pb" style="--r:${L.r};--c:${L.c};--s:${L.s};--txt:${L.t}">${rows.map((row, ri) => `<div class="row">${row.map((p, j) => productHTML(p, ri * L.c + j)).join("")}</div>`).join("")}</div>
+      colPages.push(`<div class="pg">${header(c.name + (l.catalogSuffix || ""), c.description, c.code)}
+        <div class="pb" style="--r:${Lo.r};--c:${Lo.c};--s:${Lo.s};--txt:${Lo.t}">${rows.map(row => `<div class="row">${row.map(productHTML).join("")}</div>`).join("")}</div>
         ${footer()}<span class="pnum">${2 + colPages.length + 1}</span><span class="gutter"></span></div>`);
     }
   });
-  // contents
   const tocCols = DATA.collections.filter(c => pageOf["col:" + c.id] !== undefined);
-  html.push(page(`<div class="pg">${header("Contents", "Tap a collection to jump straight to its pages.", s.cover.year)}
-    <div class="toc">${tocCols.map((c, i) => `<a href="#" data-goto="${pageOf["col:" + c.id]}" style="--i:${i}"><span class="n">0${i+1}</span><span class="t">${esc(c.name)}<small>${vis.filter(p => p.collection === c.id).length} products</small></span><span class="c">${esc(c.code)}</span><span class="pg-n">${pageOf["col:" + c.id] + 1}</span></a>`).join("")}
-      <div class="how-t">How to order</div>
-      <div class="how" style="margin-top:0">${s.steps.map((st, i) => `<div><b>0${i+1}</b><h4>${esc(st.title)}</h4><p>${esc(st.text)}</p></div>`).join("")}</div>
+  html.push(page(`<div class="pg">${header(l.contentsTitle, l.contentsSub, s.cover.year)}
+    <div class="toc">${tocCols.map((c, i) => `<a href="#" data-goto="${pageOf["col:" + c.id]}"><span class="n">${String(i+1).padStart(2,"0")}</span><span class="t">${esc(c.name)}<small>${vis.filter(p => p.collection === c.id).length} ${esc(l.productsWord)}</small></span><span class="c">${esc(c.code)}</span><span class="pg-n">${pageOf["col:" + c.id] + 1}</span></a>`).join("")}
+      <div class="how-t">${esc(l.howTitle)}</div>
+      <div class="how">${s.steps.map((st, i) => `<div><b>0${i+1}</b><h4>${esc(st.title)}</h4><p>${esc(st.text)}</p></div>`).join("")}</div>
     </div>${footer()}<span class="pnum">2</span><span class="gutter"></span></div>`));
   colPages.forEach(h => html.push(page(h)));
-  if ((html.length + 1) % 2) html.push(page(`<div class="pg filler"><img src="${esc(s.logoMark || s.logo)}" alt=""><span class="gutter"></span></div>`));
-  // back cover
+  if ((html.length + 1) % 2) html.push(page(`<div class="pg filler"><img src="${esc(s.logoMark || s.logo)}" alt="" draggable="false"><span class="gutter"></span></div>`));
   html.push(page(`<div class="back">${swoosh(.16,.22)}
-    <span class="lg"><img src="${esc(s.logoMark || s.logo)}" alt=""></span>
+    <span class="lg"><img src="${esc(s.logoMark || s.logo)}" alt="" draggable="false"></span>
     <h3 class="serif">${esc(s.cover.backTitle)}</h3>
-    <span class="bqr"><img src="${QR}" alt="QR"></span><small>${esc(s.qrCaption)}</small>
-    <div class="bph">${s.phones.map(p => `<span>${esc(p)}</span>`).join("")}</div>
-    <a class="bwa js-wa" target="_blank" rel="noopener" href="#"><svg viewBox="0 0 24 24">${WA}</svg>Chat with our sales team</a>
-    <span class="bsite">${esc(s.website)}</span></div>`, "", true));
+    <a class="bqr" href="${esc(s.qrLink)}" target="_blank" rel="noopener"><img src="${QR}" alt="QR" draggable="false"></a><small>${esc(s.qrCaption)}</small>
+    <div class="bph">${s.phones.map(p => `<a href="${esc(phoneHref(p))}"${phoneTarget()}>${esc(p)}</a>`).join("")}</div>
+    <a class="bwa js-wa" target="_blank" rel="noopener" href="#"><svg viewBox="0 0 24 24">${WA}</svg>${esc(l.backWhatsapp)}</a>
+    <a class="bsite" href="${esc(siteHref())}" target="_blank" rel="noopener">${esc(s.website)}</a></div>`, true));
   return html.join("");
 }
 
 /* ---------- flipbook ---------- */
+let fstate = "read", queued = null;
 function sizeHost(){
   const W = innerWidth - 24, H = innerHeight - 64 - 24, R = 1000 / 707;
   const single = W < 760 || W / H < 1.05;
-  const w = single ? Math.min(W, H / R) : Math.min(W, (H / R) * 2);
-  $("#host").style.width = Math.floor(w) + "px";
+  $("#host").style.width = Math.floor(single ? Math.min(W, H / R) : Math.min(W, (H / R) * 2)) + "px";
   return single;
 }
 function build(startPage = 0){
   const c = S().colors, r = document.documentElement.style;
   r.setProperty("--red", c.primary); r.setProperty("--cyan", c.secondary); r.setProperty("--sky", c.sky); r.setProperty("--ink", c.ink); r.setProperty("--bg", c.bg);
   document.title = `${S().brandName} Catalog`; $("#ldLogo").src = S().logoMark || S().logo;
-  // QR as image (re-used on every page)
+  $("#find").placeholder = L().findPlaceholder;
   const tmp = document.createElement("div");
   if (window.QRCode && S().qrLink){ new QRCode(tmp, { text:S().qrLink, width:240, height:240, colorDark:c.ink, colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M }); QR = tmp.querySelector("canvas").toDataURL(); }
   else QR = "images/qr-original.png";
 
   if (pf){ try { pf.destroy(); } catch(_) {} }
-  const single = sizeHost();
+  sizeHost(); fstate = "read"; queued = null;
   $("#host").innerHTML = `<div id="book">${buildPages()}</div>`;
   pf = new St.PageFlip($("#book"), {
     width: 707, height: 1000, size: "stretch", minWidth: 260, maxWidth: 1414, minHeight: 368, maxHeight: 2000,
-    showCover: true, usePortrait: true, mobileScrollSupport: false, maxShadowOpacity: .45, flippingTime: 850,
-    disableFlipByClick: true, clickEventForward: true, startPage, autoSize: true, drawShadow: true
+    showCover: true, usePortrait: true, mobileScrollSupport: false, maxShadowOpacity: .35, drawShadow: true,
+    flippingTime: +S().layout.flipSpeed || 700, swipeDistance: 18, showPageCorners: false,
+    disableFlipByClick: true, clickEventForward: true, startPage, autoSize: true
   });
   pf.loadFromHTML(document.querySelectorAll("#book .page"));
-  pf.on("flip", e => { markOn(e.data); flipSound(); });
-  pf.on("changeOrientation", () => markOn(pf.getCurrentPageIndex()));
-  pf.on("changeState", e => { // reveal neighbours as soon as a page starts turning, so nothing looks empty mid-flip
-    if (e.data === "read") return;
-    const pages = document.querySelectorAll("#book .page"), i = pf.getCurrentPageIndex();
-    for (let k = i - 2; k <= i + 3; k++) pages[k]?.classList.add("on");
+  pf.on("flip", e => updateCount(e.data));
+  pf.on("changeState", e => {
+    if (e.data === "flipping" && fstate !== "flipping") flipSound();
+    fstate = e.data;
+    if (e.data === "read" && queued !== null){ const q = queued; queued = null; setTimeout(() => q(), 20); }
   });
   document.querySelectorAll(".js-wa").forEach(a => a.href = waUrl(`Hello ${S().brandName} 👋\nI'd like to talk to your sales team about your packaging products.`));
   document.querySelectorAll(".wa-ic").forEach(e => e.innerHTML = WA);
-  markOn(startPage);
+  updateCount(startPage);
 }
-function markOn(i){
-  const pages = document.querySelectorAll("#book .page"), n = pages.length, portrait = pf && pf.getOrientation() === "portrait";
-  const vis = portrait || i === 0 || i === n - 1 ? [i] : (i % 2 ? [i, i + 1] : [i - 1, i]);
-  vis.forEach(k => pages[k]?.classList.add("on"));
-  $("#count").textContent = `${i + 1} / ${n}`;
-}
-function goTo(i){ if (!pf) return; pf.getOrientation() === "portrait" ? pf.turnToPage(i) : pf.flip(i); setTimeout(() => markOn(i), 50); }
+function updateCount(i){ $("#count").textContent = `${i + 1} / ${pf.getPageCount()}`; }
+/* every page move goes through here: if a flip is still running, the request waits instead of being dropped */
+function act(fn){ if (!pf) return; if (fstate !== "read") queued = fn; else fn(); }
+const next = () => act(() => pf.flipNext());
+const prev = () => act(() => pf.flipPrev());
+const goTo = i => act(() => { if (i === pf.getCurrentPageIndex()) return; pf.getOrientation() === "portrait" ? (pf.turnToPage(i), updateCount(i)) : pf.flip(i); });
 
-/* ---------- interactions ---------- */
-$("#host").addEventListener("click", e => {
-  const g = e.target.closest("[data-goto]"); if (g){ e.preventDefault(); goTo(+g.dataset.goto); return; }
-  const b = e.target.closest(".prod"); if (!b || b.busy) return;
-  const p = DATA.products.find(x => x.id === b.dataset.id); if (!p) return;
-  b.busy = true;
-  const f = b.querySelector(".flip"); f.classList.remove("spin"); void f.offsetWidth; f.classList.add("spin");
-  const rp = document.createElement("span"); rp.className = "ripple"; b.querySelector(".pimg").appendChild(rp); setTimeout(() => rp.remove(), 900);
-  const action = S().clickAction;
-  if (action !== "spin") toast("Opening WhatsApp…");
-  setTimeout(() => { f.classList.remove("spin"); b.busy = false; if (action !== "spin") openWA(waUrl(fillTemplate(p))); }, action === "whatsapp" ? 0 : 1200);
+/* ---------- taps inside the book ---------- */
+let down = null;
+// a mouse press on a product must never start a page drag / corner flip (touch still lets you swipe across products)
+$("#host").addEventListener("mousedown", e => { if (e.target.closest(".prod")) e.stopPropagation(); }, true);
+$("#host").addEventListener("pointerdown", e => { down = { x:e.clientX, y:e.clientY, t:Date.now() }; });
+$("#host").addEventListener("pointerup", e => {
+  if (!down) return;
+  const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), quick = Date.now() - down.t < 450; down = null;
+  if (moved > 8 || !quick || e.target.closest("a")) return;           // drags are handled by the book; links work natively
+  const prod = e.target.closest(".prod");
+  if (prod) return openProduct(prod);
+  // tap on an empty part of a page → turn it (left side = back, right side = forward)
+  setTimeout(() => {
+    if (fstate !== "read") return;
+    const r = $("#host").getBoundingClientRect(), portrait = pf.getOrientation() === "portrait";
+    const back = portrait ? e.clientX < r.left + r.width * .3 : e.clientX < r.left + r.width / 2;
+    back ? prev() : next();
+  }, 40);
 });
-$("#bPrev").onclick = () => pf.flipPrev();
-$("#bNext").onclick = () => pf.flipNext();
+$("#host").addEventListener("click", e => {
+  const g = e.target.closest("[data-goto]"); if (g){ e.preventDefault(); goTo(+g.dataset.goto); }
+});
+$("#host").addEventListener("keydown", e => { const p = e.target.closest(".prod"); if (p && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); openProduct(p); } });
+
+/* ---------- product preview ---------- */
+let lbList = [], lbIdx = 0, lbColor = "";
+function openProduct(el){
+  const p = DATA.products.find(x => x.id === el.dataset.id); if (!p) return;
+  if (S().clickAction === "whatsapp"){ toast("Opening WhatsApp…"); return openWA(waUrl(fillTemplate(p, ""))); }
+  lbList = DATA.products.filter(x => !x.hidden && x.collection === p.collection); lbIdx = lbList.indexOf(p);
+  fillLB(0);
+  const lb = $("#lb"); lb.classList.add("open"); lb.setAttribute("aria-hidden", "false");
+  if (!(history.state && history.state.lb)) history.pushState({ lb:1 }, "");
+  // fly the photo from the page into the preview
+  const from = el.querySelector(".face"), img = $("#lbImg");
+  if (from && !matchMedia("(prefers-reduced-motion:reduce)").matches){
+    const a = from.getBoundingClientRect(), b = $("#lbMedia").getBoundingClientRect(), g = document.createElement("img");
+    g.src = p.image; g.className = "ghost"; document.body.appendChild(g); img.style.opacity = 0;
+    g.animate([
+      { left:a.left+"px", top:a.top+"px", width:a.width+"px", height:a.height+"px", borderRadius:"18px" },
+      { left:b.left+"px", top:b.top+"px", width:b.width+"px", height:b.height+"px", borderRadius:"0px" }
+    ], { duration:520, easing:"cubic-bezier(.2,.8,.2,1)", fill:"forwards" }).onfinish = () => { img.style.opacity = 1; g.remove(); };
+  }
+  setTimeout(() => $("#lbX").focus({ preventScroll:true }), 50);
+}
+function fillLB(dir){
+  const p = lbList[lbIdx], l = L(), col = DATA.collections.find(c => c.id === p.collection) || {}, img = $("#lbImg");
+  lbColor = "";
+  img.src = p.image; img.alt = p.name; $("#lbMedia").classList.remove("zoom");
+  if (dir) img.animate([{ opacity:0, transform:`translateX(${dir * 40}px)` }, { opacity:1, transform:"none" }], { duration:380, easing:"cubic-bezier(.2,.8,.2,1)" });
+  $("#lbCode").textContent = p.code;
+  $("#lbIdx").textContent = `${lbIdx + 1} / ${lbList.length}`;
+  $("#lbPrev").style.display = $("#lbNext").style.display = $("#lbIdx").style.display = lbList.length > 1 ? "" : "none";
+  const spec = (k, v) => v && v !== "—" ? `<div><span>${k}</span><b>${esc(v)}</b></div>` : "";
+  $("#lbInfo").innerHTML = `
+    <span class="lb-col">${esc(col.name || "")} · ${esc(col.code || "")}</span>
+    <h3 class="lb-name serif" id="lbName">${esc(p.name)}</h3>
+    ${p.capacity ? `<span class="lb-cap">${esc(p.capacity)}</span>` : ""}
+    ${p.description ? `<p class="lb-desc">${esc(p.description)}</p>` : ""}
+    <div class="lb-specs">${spec("Material", p.material)}${spec("Neck size", p.neck)}${spec("Weight", p.weight)}${spec("Packing", p.packing)}</div>
+    ${(p.colors||[]).length ? `<div class="lb-colors"><small>${esc(l.chooseColor)}</small><div>${p.colors.map(c => `<button data-c="${esc(c.name)}"><i style="background:${esc(c.hex)}"></i>${esc(c.name)}</button>`).join("")}</div></div>` : ""}
+    <a class="lb-order" id="lbOrder" target="_blank" rel="noopener"><svg viewBox="0 0 24 24">${WA}</svg>${esc(l.orderNow)}</a>
+    <p class="lb-note">${esc(l.orderNote)}</p>`;
+  const setHref = () => $("#lbOrder").href = waUrl(fillTemplate(p, lbColor));
+  setHref();
+  $("#lbInfo").querySelectorAll("[data-c]").forEach(b => b.onclick = () => {
+    const on = !b.classList.contains("on");
+    $("#lbInfo").querySelectorAll("[data-c]").forEach(x => x.classList.remove("on"));
+    b.classList.toggle("on", on); lbColor = on ? b.dataset.c : ""; setHref();
+  });
+}
+function navLB(d){ if (lbList.length < 2) return; lbIdx = (lbIdx + d + lbList.length) % lbList.length; fillLB(d); }
+function closeLB(fromHistory){
+  const lb = $("#lb"); if (!lb.classList.contains("open")) return;
+  lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true");
+  if (!fromHistory && history.state && history.state.lb) history.back();
+}
+$("#lbX").onclick = () => closeLB();
+$("#lb").addEventListener("click", e => { if (e.target.id === "lb") closeLB(); });
+$("#lbPrev").onclick = e => { e.stopPropagation(); navLB(-1); };
+$("#lbNext").onclick = e => { e.stopPropagation(); navLB(1); };
+addEventListener("popstate", () => closeLB(true));
+const media = $("#lbMedia");
+media.addEventListener("click", e => { if (e.target.closest(".lb-nav")) return; media.classList.toggle("zoom"); });
+media.addEventListener("pointermove", e => { const r = media.getBoundingClientRect(); $("#lbImg").style.transformOrigin = `${(e.clientX - r.left) / r.width * 100}% ${(e.clientY - r.top) / r.height * 100}%`; });
+let sx = null;
+media.addEventListener("touchstart", e => { sx = e.touches[0].clientX; }, { passive:true });
+media.addEventListener("touchend", e => { if (sx === null || media.classList.contains("zoom")) return; const dx = e.changedTouches[0].clientX - sx; sx = null; if (Math.abs(dx) > 50) navLB(dx < 0 ? 1 : -1); });
+
+/* ---------- toolbar & keyboard ---------- */
+$("#bPrev").onclick = prev;
+$("#bNext").onclick = next;
 $("#bHome").onclick = () => goTo(1);
 $("#bSound").onclick = () => { sound = !sound; $("#bSound").classList.toggle("off", !sound); toast(sound ? "Page sound on" : "Page sound off"); };
 $("#bFull").onclick = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.();
-addEventListener("keydown", e => { if (e.target.tagName === "INPUT") return; if (e.key === "ArrowRight") pf.flipNext(); if (e.key === "ArrowLeft") pf.flipPrev(); });
-function findProduct(q){
+addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") return;
+  if ($("#lb").classList.contains("open")){
+    if (e.key === "Escape") closeLB(); if (e.key === "ArrowRight") navLB(1); if (e.key === "ArrowLeft") navLB(-1); return;
+  }
+  if (e.key === "ArrowRight") next(); if (e.key === "ArrowLeft") prev();
+});
+function findProduct(q, open){
   q = q.trim().toLowerCase(); if (!q) return;
   const p = DATA.products.find(x => !x.hidden && x.code.toLowerCase() === q) || DATA.products.find(x => !x.hidden && (x.code + " " + x.name).toLowerCase().includes(q));
   if (!p) return toast("No product found");
   goTo(pageOf[p.code.toLowerCase()]);
-  setTimeout(() => { const el = document.querySelector(`.prod[data-id="${CSS.escape(p.id)}"]`); if (el){ el.classList.remove("pulse"); void el.offsetWidth; el.classList.add("pulse"); } }, 950);
+  setTimeout(() => {
+    const el = document.querySelector(`.prod[data-id="${CSS.escape(p.id)}"]`); if (!el) return;
+    if (open) return openProduct(el);
+    el.classList.remove("pulse"); void el.offsetWidth; el.classList.add("pulse");
+  }, (+S().layout.flipSpeed || 700) + 250);
 }
 $("#find").addEventListener("keydown", e => { if (e.key === "Enter"){ findProduct(e.target.value); e.target.blur(); } });
 let rT, lastSingle = null;
@@ -399,21 +558,20 @@ addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(() => { con
 (async function boot(){
   if (isPreview){
     document.body.insertAdjacentHTML("beforeend", '<div class="preview-flag">Preview — not published yet</div>');
-    addEventListener("message", e => { if (e.data && e.data.type === "rp-data"){ DATA = e.data.data; build(pf ? pf.getCurrentPageIndex() : 0); } });
+    addEventListener("message", e => { if (e.data && e.data.type === "rp-data"){ DATA = withDefaults(e.data.data); build(pf ? pf.getCurrentPageIndex() : 0); } });
     if (window.opener) window.opener.postMessage({ type:"rp-ready" }, "*");
     try { const d = await idbGet("draft"); if (d) DATA = d; } catch(_) {}
   }
-  const base = window.CATALOG_DATA.settings; // older drafts may miss newer settings
-  S().cover = S().cover || base.cover; S().layout = { ...base.layout, ...S().layout }; if (!S().layout.perPage) S().layout.perPage = base.layout.perPage;
+  DATA = withDefaults(DATA);
   sound = S().layout.flipSound !== false; $("#bSound").classList.toggle("off", !sound);
   const go = () => {
     build(0); lastSingle = sizeHost();
     $("#loader").classList.add("done");
     const pid = new URLSearchParams(location.search).get("p");
-    if (pid) setTimeout(() => findProduct(pid), 700);
-    else { if (innerWidth < 760) $("#hint").textContent = "Swipe to turn the page →"; setTimeout(() => $("#hint").classList.add("show"), 1500); setTimeout(() => $("#hint").classList.remove("show"), 6000); }
+    if (pid) setTimeout(() => findProduct(pid, true), 600);
+    else { $("#hint").textContent = innerWidth < 760 ? L().hintMobile : L().hintDesktop; setTimeout(() => $("#hint").classList.add("show"), 1500); setTimeout(() => $("#hint").classList.remove("show"), 6000); }
   };
-  if (document.readyState === "complete") setTimeout(go, 500); else addEventListener("load", () => setTimeout(go, 500));
+  if (document.readyState === "complete") setTimeout(go, 400); else addEventListener("load", () => setTimeout(go, 400));
 })();
 </script>
 </body>
