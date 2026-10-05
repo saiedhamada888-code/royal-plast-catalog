@@ -165,6 +165,11 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 .toc-fams a:hover{background:color-mix(in srgb,var(--sky) 55%,#fff)}
 .toc-fams .swatch{width:1.9cqw;height:1.9cqw}
 .toc-fams b{opacity:.5;font-weight:700}
+.toc.compact{padding-top:3cqh;gap:1.1cqh}
+.toc.compact .toc-main{padding:1.1cqh 3cqw}
+.toc.compact .n{font-size:3.8cqw}.toc.compact .t{font-size:2.8cqw}.toc.compact .t small{margin-top:.2cqh}
+.toc.compact .toc-fams{padding-bottom:1.1cqh}
+.toc.compact .how div{padding:1.5cqh 2cqw}.toc.compact .how p{font-size:1.3cqw}
 .how-t{font-size:3cqw;font-family:"DM Serif Display",serif;margin-top:auto}
 .how{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5cqw}
 .how div{background:#ffffffb3;border-radius:3cqw;padding:2.2cqh 2.4cqw}
@@ -327,7 +332,7 @@ img{display:block;-webkit-user-drag:none;user-select:none}
 <script>
   /* GitHub Pages lets browsers keep files for ~10 minutes. Always load the newest data,
      and if a newer version of the page was published, reload once to get it. */
-  window.APP_VERSION = "7";
+  window.APP_VERSION = "8";
   document.write('<script src="catalog-data.js?v=' + Date.now() + '"><\/script>');
   fetch("version.txt?t=" + Date.now(), { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(v => {
     v = v.trim(); const u = new URL(location.href);
@@ -345,8 +350,16 @@ const PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 const GLOBE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>';
 const LAYOUTS = { 1:{c:1,r:1,s:2.1,t:"22cqh"}, 2:{c:2,r:1,s:1.5,t:"16cqh"}, 4:{c:2,r:2,s:1.3,t:"10cqh"}, 6:{c:3,r:2,s:1,t:"8.5cqh"}, 9:{c:3,r:3,s:.85,t:"6cqh"}, 12:{c:4,r:3,s:.72,t:"5.2cqh"} };
 
-let DATA = window.CATALOG_DATA, pf = null, pageOf = {}, sound = true, QR = "";
+let DATA = window.CATALOG_DATA, pf = null, pageOf = {}, codeOf = {}, sound = true, QR = "";
 const S = () => DATA.settings, L = () => S().labels;
+/* "24" → "NK 24" (the prefix is set once in the control panel) */
+const prefixed = num => {
+  const pre = String(S().codePrefix || "").trim(), n = String(num ?? "").trim();
+  if (!n) return pre; if (!pre || n.toUpperCase().startsWith(pre.toUpperCase())) return n;
+  return pre + " " + n;
+};
+const pageSet = key => (S().pages || {})[key] || {};
+const productCode = p => p.code ? p.code : (codeOf[p.id] || "");
 const famOf = p => (S().families || []).find(f => f.id === p.family);
 const swatchBg = hex => hex === "multi" ? "var(--multi)" : hex;
 const swatch = f => `<i class="swatch" style="background:${esc(swatchBg(f.hex))}"></i>`;
@@ -375,9 +388,9 @@ const phoneTarget = () => S().phoneAction === "whatsapp" ? ' target="_blank" rel
 const siteHref = () => /^https?:/i.test(S().website) ? S().website : "https://" + S().website;
 const online = () => /^https?:$/.test(location.protocol) && !/^(localhost|127\.)/.test(location.hostname);
 function fillTemplate(p, color){
-  const link = `${location.origin}${location.pathname}?p=${encodeURIComponent(p.code)}`;
+  const link = `${location.origin}${location.pathname}?p=${encodeURIComponent(p.id)}`;
   const image = online() ? (p.image && !p.image.startsWith("data:") ? new URL(p.image, location.href).href : link) : "";
-  const v = { name:p.name, code:p.code, collection:(DATA.collections.find(c => c.id === p.collection)||{}).name, family:(famOf(p)||{}).name, capacity:p.capacity, material:p.material,
+  const v = { name:p.name, code:productCode(p), collection:(DATA.collections.find(c => c.id === p.collection)||{}).name, family:(famOf(p)||{}).name, capacity:p.capacity, material:p.material,
     neck:p.neck === "—" ? "" : p.neck, weight:p.weight, packing:p.packing, color:color || "", colors:(p.colors||[]).map(c => c.name).join(" / "), image, link: online() ? link : "" };
   return S().messageTemplate.split("\n").filter(l => { const ks=[...l.matchAll(/\{(\w+)\}/g)].map(m=>m[1]); return !ks.length || ks.some(k => String(v[k] ?? "").trim()); })
     .map(l => l.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "")).join("\n").replace(/\n{3,}/g,"\n\n").trim();
@@ -416,7 +429,7 @@ const swoosh = (a, b) => `<svg class="sw" viewBox="0 0 700 1000" preserveAspectR
 
 const productHTML = p => `<div class="cell"><div class="prod" role="button" tabindex="0" data-id="${esc(p.id)}" aria-label="${esc(p.name)}"><span class="pin">
     <span class="pimg"><span class="face"><img src="${esc(p.image)}" alt="" decoding="async" draggable="false"></span>
-      <span class="pview">${EYE}${esc(L().view)}</span><span class="pcode">${esc(p.code)}</span></span>
+      <span class="pview">${EYE}${esc(L().view)}</span>${productCode(p) ? `<span class="pcode">${esc(productCode(p))}</span>` : ""}</span>
     <span class="pname">${esc(p.name)}</span>
     ${p.capacity ? `<span class="pcap">${esc(p.capacity)}</span>` : ""}
   </span></div></div>`;
@@ -436,7 +449,7 @@ function collectionRows(c, items, cols){
 
 function buildPages(){
   const s = S(), l = L(), html = [], vis = DATA.products.filter(p => !p.hidden);
-  pageOf = {};
+  pageOf = {}; codeOf = {};
   const feat = vis.filter(p => p.featured && p.image).concat(vis.filter(p => p.image)).filter((p,i,a) => a.indexOf(p) === i).slice(0, 3);
   html.push(page(`<div class="cover">${swoosh(.3,.16)}
     <div class="cv-top"><span class="cv-logo"><img src="${esc(s.logoMark || s.logo)}" alt="" draggable="false"></span><span class="cv-year serif">${esc(s.cover.year)}</span></div>
@@ -451,24 +464,27 @@ function buildPages(){
     const items = vis.filter(p => p.collection === c.id); if (!items.length) return;
     const Lo = LAYOUTS[+c.perPage || +s.layout.perPage] || LAYOUTS[6];
     const rows = collectionRows(c, items, Lo.c);
-    for (let k = 0; k < rows.length; k += Lo.r){
+    for (let k = 0, n = 0; k < rows.length; k += Lo.r, n++){
       const pr = rows.slice(k, k + Lo.r), pgIdx = 2 + colPages.length;
-      if (k === 0) pageOf["col:" + c.id] = pgIdx;
-      pr.forEach(r => { if (r.f && r.first) pageOf[`fam:${c.id}:${r.f.id}`] = pgIdx; r.items.forEach(p => pageOf[p.code.toLowerCase()] = pgIdx); });
-      colPages.push(`<div class="pg">${header(c.name + (l.catalogSuffix || ""), c.description, c.code)}
+      // every page has its own red code (e.g. NK 24) — all products on it show the same code
+      const ps = pageSet(`${c.id}#${n}`), code = prefixed(ps.code || c.code);
+      if (k === 0){ pageOf["col:" + c.id] = pgIdx; codeOf["col:" + c.id] = code; }
+      pr.forEach(r => { if (r.f && r.first) pageOf[`fam:${c.id}:${r.f.id}`] = pgIdx; r.items.forEach(p => { pageOf[p.id] = pgIdx; codeOf[p.id] = code; }); });
+      colPages.push(`<div class="pg">${header(ps.title || (c.name + (l.catalogSuffix || "")), ps.desc || c.description, code)}
         <div class="pb" style="--r:${Lo.r};--c:${Lo.c};--s:${Lo.s};--txt:${Lo.t}">${pr.map((r, ri) => `<div class="row">${r.f && (r.first || ri === 0) ? `<span class="rowfam">${swatch(r.f)}${esc(r.f.name)}</span>` : ""}${r.items.map(productHTML).join("")}</div>`).join("")}</div>
         ${footer()}<span class="pnum">${pgIdx + 1}</span><span class="gutter"></span></div>`);
     }
   });
   const tocCols = DATA.collections.filter(c => pageOf["col:" + c.id] !== undefined);
+  const showHow = s.layout.showHow !== false, compact = tocCols.length > (showHow ? 3 : 5);
   html.push(page(`<div class="pg">${header(l.contentsTitle, l.contentsSub, s.cover.year)}
-    <div class="toc">${tocCols.map((c, i) => {
+    <div class="toc${compact ? " compact" : ""}">${tocCols.map((c, i) => {
       const fams = (s.families || []).filter(f => pageOf[`fam:${c.id}:${f.id}`] !== undefined);
-      return `<div class="toc-item"><a class="toc-main" href="#" data-goto="${pageOf["col:" + c.id]}"><span class="n">${String(i+1).padStart(2,"0")}</span><span class="t">${esc(c.name)}<small>${vis.filter(p => p.collection === c.id).length} ${esc(l.productsWord)}</small></span><span class="c">${esc(c.code)}</span><span class="pg-n">${pageOf["col:" + c.id] + 1}</span></a>
+      return `<div class="toc-item"><a class="toc-main" href="#" data-goto="${pageOf["col:" + c.id]}"><span class="n">${String(i+1).padStart(2,"0")}</span><span class="t">${esc(c.name)}<small>${vis.filter(p => p.collection === c.id).length} ${esc(l.productsWord)}</small></span><span class="c">${esc(codeOf["col:" + c.id])}</span><span class="pg-n">${pageOf["col:" + c.id] + 1}</span></a>
         ${fams.length ? `<div class="toc-fams">${fams.map(f => `<a href="#" data-goto="${pageOf[`fam:${c.id}:${f.id}`]}">${swatch(f)}${esc(f.name)}<b>${pageOf[`fam:${c.id}:${f.id}`] + 1}</b></a>`).join("")}</div>` : ""}</div>`;
     }).join("")}
-      <div class="how-t">${esc(l.howTitle)}</div>
-      <div class="how">${s.steps.map((st, i) => `<div><b>0${i+1}</b><h4>${esc(st.title)}</h4><p>${esc(st.text)}</p></div>`).join("")}</div>
+      ${showHow ? `<div class="how-t">${esc(l.howTitle)}</div>
+      <div class="how">${s.steps.map((st, i) => `<div><b>0${i+1}</b><h4>${esc(st.title)}</h4><p>${esc(st.text)}</p></div>`).join("")}</div>` : ""}
     </div>${footer()}<span class="pnum">2</span><span class="gutter"></span></div>`));
   colPages.forEach(h => html.push(page(h)));
   if ((html.length + 1) % 2) html.push(page(`<div class="filler">${swoosh(.22,.12)}<span class="lgc"><img src="${esc(s.logoMark || s.logo)}" alt="" draggable="false"></span><h3 class="serif">${esc(s.tagline)}</h3><p>${esc(s.brandName)} · ${esc(s.website)}</p><span class="gutter"></span></div>`));
@@ -510,7 +526,9 @@ function build(startPage = 0){
 
   if (pf){ try { pf.destroy(); } catch(_) {} }
   sizeHost(); fstate = "read"; queued = null;
-  $("#host").innerHTML = `<div id="book">${buildPages()}</div>`;
+  const pagesHTML = buildPages();
+  startPage = Math.max(0, Math.min(startPage, (pagesHTML.match(/class="page"/g) || [1]).length - 1));
+  $("#host").innerHTML = `<div id="book">${pagesHTML}</div>`;
   pf = new St.PageFlip($("#book"), {
     width: 707, height: 1000, size: "stretch", minWidth: 240, maxWidth: 1414, minHeight: 340, maxHeight: 2000,
     showCover: true, usePortrait: true, mobileScrollSupport: false, maxShadowOpacity: .35, drawShadow: true,
@@ -594,12 +612,12 @@ function fillLB(dir){
   lbColor = "";
   img.src = p.image; img.alt = p.name; $("#lbMedia").classList.remove("zoom");
   if (dir) img.animate([{ opacity:0, transform:`translateX(${dir * 40}px)` }, { opacity:1, transform:"none" }], { duration:380, easing:"cubic-bezier(.2,.8,.2,1)" });
-  $("#lbCode").textContent = p.code;
+  $("#lbCode").textContent = productCode(p); $("#lbCode").style.display = productCode(p) ? "" : "none";
   $("#lbIdx").textContent = `${lbIdx + 1} / ${lbList.length}`;
   $("#lbPrev").style.display = $("#lbNext").style.display = $("#lbIdx").style.display = lbList.length > 1 ? "" : "none";
   const spec = (k, v) => v && v !== "—" ? `<div><span>${k}</span><b>${esc(v)}</b></div>` : "";
   $("#lbInfo").innerHTML = `
-    <span class="lb-col">${f ? swatch(f) : ""}${esc(col.name || "")}${f ? " · " + esc(f.name) : ""} · ${esc(col.code || "")}</span>
+    <span class="lb-col">${f ? swatch(f) : ""}${esc(col.name || "")}${f ? " · " + esc(f.name) : ""}</span>
     <h3 class="lb-name serif" id="lbName">${esc(p.name)}</h3>
     ${p.capacity ? `<span class="lb-cap">${esc(p.capacity)}</span>` : ""}
     ${p.description ? `<p class="lb-desc">${esc(p.description)}</p>` : ""}
@@ -648,9 +666,11 @@ addEventListener("keydown", e => {
 });
 function findProduct(q, open){
   q = q.trim().toLowerCase(); if (!q) return;
-  const p = DATA.products.find(x => !x.hidden && x.code.toLowerCase() === q) || DATA.products.find(x => !x.hidden && (x.code + " " + x.name).toLowerCase().includes(q));
+  const vis = DATA.products.filter(x => !x.hidden), norm = s => String(s).toLowerCase().replace(/\s+/g, "");
+  const p = vis.find(x => x.id.toLowerCase() === q) || vis.find(x => norm(productCode(x)) === norm(q))
+         || vis.find(x => norm(productCode(x)).includes(norm(q))) || vis.find(x => x.name.toLowerCase().includes(q));
   if (!p) return toast("No product found");
-  goTo(pageOf[p.code.toLowerCase()]);
+  goTo(pageOf[p.id]);
   setTimeout(() => {
     const el = document.querySelector(`.prod[data-id="${CSS.escape(p.id)}"]`); if (!el) return;
     if (open) return openProduct(el);
@@ -665,8 +685,14 @@ addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(() => { con
 (async function boot(){
   if (isPreview){
     document.body.insertAdjacentHTML("beforeend", '<div class="preview-flag">Preview — not published yet</div>');
-    addEventListener("message", e => { if (e.data && e.data.type === "rp-data"){ DATA = withDefaults(e.data.data); build(pf ? pf.getCurrentPageIndex() : 0); } });
-    if (window.opener) window.opener.postMessage({ type:"rp-ready" }, "*");
+    addEventListener("message", e => {
+      const m = e.data || {};
+      if (m.type === "rp-data"){ DATA = withDefaults(m.data); build(Math.min(pf ? pf.getCurrentPageIndex() : 0, 999)); }
+      if (m.type === "rp-goto" && pf) goTo(Math.max(0, Math.min(m.page, pf.getPageCount() - 1)));
+      if (m.type === "rp-goto-product" && pf && pageOf[m.id] !== undefined) goTo(pageOf[m.id]);
+    });
+    const host = window.opener || (window.parent !== window ? window.parent : null);   // separate window or the panel's built-in preview
+    if (host) host.postMessage({ type:"rp-ready" }, "*");
     try { const d = await idbGet("draft"); if (d) DATA = d; } catch(_) {}
   }
   DATA = withDefaults(DATA);

@@ -7,118 +7,162 @@
 <link rel="icon" href="images/logo-mark.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--red:#F2222B;--cyan:#1FE0FD;--sky:#5CE6FF;--ink:#0E1A2B;--bg:#F4F8FB;--card:#fff;--line:#E3EAF0;--muted:#6B7A8C;--ok:#16A34A}
+:root{--red:#F2222B;--cyan:#1FE0FD;--sky:#5CE6FF;--ink:#0E1A2B;--bg:#F4F8FB;--card:#fff;--line:#E3EAF0;--muted:#6B7A8C;--ok:#16A34A;
+  --multi:conic-gradient(#F2222B,#F6D02F,#38D4C0,#1F6FE0,#A77BE0,#F2222B)}
 *{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
 body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
 button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
-input,select,textarea{font:inherit;color:inherit;width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;outline:none;transition:border-color .2s}
-input:focus,select:focus,textarea:focus{border-color:var(--cyan)}
-textarea{resize:vertical;min-height:90px;line-height:1.5}
-input[type=checkbox]{width:18px;height:18px;accent-color:var(--red)}
-input[type=color]{width:46px;height:40px;padding:3px;flex:none}
-.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
-aside{background:var(--ink);color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
-.logo{display:flex;align-items:center;gap:10px;padding:6px 10px 22px}
-.logo img{width:42px;height:42px;border-radius:12px;background:#fff;padding:5px}
-.logo b{display:block;font-size:16px}.logo small{opacity:.6;font-size:12px}
-.nav-b{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;font-weight:500;opacity:.75;text-align:left;transition:all .2s}
-.nav-b svg{width:19px;height:19px;flex:none}
+input,select,textarea{font:inherit;color:inherit;width:100%;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #1fe0fd26}
+textarea{resize:vertical;min-height:80px;line-height:1.5}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--red);flex:none;cursor:pointer}
+input[type=color]{width:44px;height:38px;padding:3px;flex:none;cursor:pointer}
+/* layout: sidebar | editor | live preview */
+.app{display:grid;grid-template-columns:232px minmax(0,1fr) var(--pv,0px);height:100vh}
+body.pv-on{--pv:min(40vw,680px)}
+aside{background:var(--ink);color:#fff;padding:18px 12px;display:flex;flex-direction:column;gap:4px;overflow:auto}
+.logo{display:flex;align-items:center;gap:10px;padding:4px 8px 18px}
+.logo img{width:40px;height:40px;border-radius:12px;background:#fff;padding:5px}
+.logo b{display:block;font-size:15px}.logo small{opacity:.6;font-size:11.5px}
+.nav-b{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;font-weight:500;font-size:13.5px;opacity:.72;text-align:left;transition:all .2s;width:100%}
+.nav-b svg{width:18px;height:18px;flex:none}
 .nav-b:hover{opacity:1;background:#ffffff12}
 .nav-b.on{opacity:1;background:var(--red);box-shadow:0 8px 18px #f2222b55}
+.nav-b em{margin-left:auto;font-style:normal;font-size:11px;background:#ffffff22;border-radius:99px;padding:1px 8px}
 aside .sp{flex:1}
-.saved{font-size:12px;opacity:.7;padding:8px 14px;display:flex;align-items:center;gap:8px}
+.saved{font-size:12px;opacity:.75;padding:8px 12px;display:flex;align-items:center;gap:8px}
 .saved i{width:8px;height:8px;border-radius:50%;background:var(--ok)}
-main{padding:26px 34px 60px;min-width:0}
-.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
-.top h1{font-size:24px}
-.top p{color:var(--muted);font-size:13px}
-.actions{display:flex;gap:10px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;font-weight:600;white-space:nowrap;transition:transform .15s,box-shadow .2s,background .2s}
+.saved.busy i{background:#F59E0B}
+main{overflow:auto;padding:22px 28px 80px;min-width:0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+.top h1{font-size:22px}
+.top p{color:var(--muted);font-size:12.5px;max-width:560px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;font-weight:600;font-size:13.5px;white-space:nowrap;transition:transform .15s,box-shadow .2s,background .2s,border-color .2s}
 .btn:active{transform:scale(.97)}
-.btn svg{width:17px;height:17px}
+.btn svg{width:16px;height:16px}
 .btn-red{background:var(--red);color:#fff;box-shadow:0 6px 16px #f2222b40}
 .btn-ink{background:var(--ink);color:#fff}
 .btn-line{border:1.5px solid var(--line);background:#fff}
 .btn-line:hover{border-color:var(--ink)}
-.btn-sm{padding:7px 12px;font-size:13px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px}
-.card h3{font-size:16px;margin-bottom:4px}
-.card .hint{color:var(--muted);font-size:12.5px;margin-bottom:16px}
-.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-.f label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:#3b4859}
+.btn-line.on{border-color:var(--red);color:var(--red)}
+.btn-sm{padding:6px 11px;font-size:12.5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+.card h3{font-size:15.5px;margin-bottom:3px}
+.card .hint{color:var(--muted);font-size:12.5px;margin-bottom:14px}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.f label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:#3b4859}
 .f small{display:block;color:var(--muted);font-size:11.5px;margin-top:4px}
 .f.full{grid-column:1/-1}
 .row{display:flex;gap:10px;align-items:center}
-.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
-.toolbar input,.toolbar select{width:auto;min-width:200px}
-.list{display:flex;flex-direction:column;gap:8px}
-.item{display:grid;grid-template-columns:60px 1.1fr 1.5fr 1fr .8fr auto;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px;transition:box-shadow .2s,border-color .2s}
-.item:hover{border-color:#cfd9e3;box-shadow:0 6px 16px #0e1a2b0d}
-.item.hidden{opacity:.5}
-.thumb{width:60px;height:60px;border-radius:12px;object-fit:cover;background:var(--bg);border:1px solid var(--line)}
-.code{background:var(--red);color:#fff;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;justify-self:start}
-.item .nm{font-weight:600}
-.item .meta{color:var(--muted);font-size:12.5px}
-.tags{display:flex;gap:6px}
-.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--bg)}
+.check{display:flex;align-items:center;gap:10px;font-weight:500;cursor:pointer;margin:6px 0}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.toolbar input,.toolbar select{width:auto;min-width:170px}
+.toolbar .grow{flex:1;min-width:200px}
+.count{color:var(--muted);font-size:12.5px;margin-left:auto}
+.meta{color:var(--muted);font-size:12.5px}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+.code{display:inline-block;background:var(--red);color:#fff;font-size:11.5px;font-weight:600;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.code.own{background:var(--ink)}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--bg);white-space:nowrap}
 .tag.star{background:#FFF4D6;color:#A16207}
-.ibtns{display:flex;gap:4px}
-.ib{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:#4b5a6b;transition:background .2s,color .2s}
+.sw{display:inline-block;width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1px #0004;flex:none}
+.ib{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#4b5a6b;transition:background .2s,color .2s;flex:none}
 .ib:hover{background:var(--bg);color:var(--ink)}
 .ib.del:hover{background:#FEE2E2;color:var(--red)}
-.ib svg{width:17px;height:17px}
-.count{color:var(--muted);font-size:13px;margin-left:auto}
-.empty{padding:40px;text-align:center;color:var(--muted)}
-/* modal */
-.modal{position:fixed;inset:0;z-index:50;background:#0e1a2b80;backdrop-filter:blur(4px);display:none;justify-content:flex-end}
-.modal.open{display:flex}
-.drawer{width:min(620px,100%);height:100%;background:var(--bg);overflow:auto;padding:24px;animation:slide .3s cubic-bezier(.2,.8,.2,1)}
-@keyframes slide{from{transform:translateX(40px);opacity:0}}
-.drawer-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.drawer-h h2{font-size:20px}
-.img-edit{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:start}
-.img-prev{width:150px;height:150px;border-radius:18px;border:1.5px solid var(--ink);object-fit:cover;background:#fff}
-.banner{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#FFF7E6;border:1px solid #FCD9A0;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13.5px}
-.banner span{flex:1;min-width:240px}
-.colors-ed{display:flex;flex-direction:column;gap:8px}
-.colors-ed .row input[type=text]{flex:1}
-.check{display:flex;align-items:center;gap:10px;font-weight:500;cursor:pointer}
-.drawer-f{position:sticky;bottom:-24px;margin:20px -24px -24px;padding:16px 24px;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
-.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-.sw{display:flex;gap:10px;align-items:center;background:var(--bg);border-radius:12px;padding:10px}
-.sw div{flex:1}
-.sw b{display:block;font-size:13px}
-.sw input[type=text]{padding:6px 10px;font-size:13px}
-.ph{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.ph button{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:12.5px;font-family:monospace}
-.ph button:hover{border-color:var(--red);color:var(--red)}
-.msg-prev{white-space:pre-wrap;background:#E7FFDB;border-radius:12px 12px 2px 12px;padding:14px 16px;font-size:13.5px;line-height:1.55;max-width:420px;box-shadow:0 2px 6px #0001;margin-left:auto}
-.wa-bg{background:#EFE7DD;border-radius:14px;padding:20px}
-.qr-prev{width:120px;height:120px;padding:8px;background:#fff;border:1px solid var(--line);border-radius:12px}
-.qr-prev canvas,.qr-prev img{width:100%!important;height:100%!important}
-.steps-ol{counter-reset:s;list-style:none;display:flex;flex-direction:column;gap:12px}
-.steps-ol li{counter-increment:s;display:flex;gap:12px}
-.steps-ol li::before{content:counter(s);flex:none;width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
-.notice{background:#ECFEFF;border:1px solid #A5F3FC;border-radius:12px;padding:12px 14px;font-size:13px;margin-bottom:14px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);opacity:0;background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;font-weight:600;transition:all .3s;z-index:99;pointer-events:none}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-.drop{border:2px dashed #c9d6e2;border-radius:14px;padding:22px;text-align:center;color:var(--muted);transition:all .2s}
+.ib svg{width:16px;height:16px}
+.ibtns{display:flex;gap:2px}
+.thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;background:var(--bg);border:1px solid var(--line);flex:none}
+/* products */
+.plist{display:flex;flex-direction:column;gap:6px}
+.item{display:grid;grid-template-columns:22px 18px 52px minmax(0,1.4fr) minmax(0,1fr) auto auto;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:13px;padding:8px 12px;transition:box-shadow .2s,border-color .2s,opacity .2s}
+.item:hover{border-color:#cfd9e3;box-shadow:0 6px 16px #0e1a2b0d}
+.item.sel{border-color:var(--red);background:#FFF7F7}
+.item.hid{opacity:.5}
+.item.drag{opacity:.35}
+.item.over{box-shadow:0 -3px 0 var(--red)}
+.grip{cursor:grab;color:#9aa8b6;display:grid;place-items:center}
+.grip svg{width:16px}
+.item .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .sub{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:3px}
+.bulk{position:sticky;top:-22px;z-index:5;display:none;align-items:center;gap:8px;flex-wrap:wrap;background:var(--ink);color:#fff;border-radius:14px;padding:10px 14px;margin-bottom:12px;box-shadow:0 10px 24px #0e1a2b40}
+.bulk.on{display:flex}
+.bulk select{width:auto;padding:6px 10px;font-size:12.5px;background:#ffffff14;color:#fff;border-color:#ffffff33}
+.bulk select option{color:var(--ink)}
+.bulk .btn-line{background:transparent;color:#fff;border-color:#ffffff40}
+.drop{border:2px dashed #c9d6e2;border-radius:14px;padding:16px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px;transition:all .2s}
 .drop.over{border-color:var(--red);background:#fff5f5;color:var(--red)}
-.tag{display:inline-flex;align-items:center;gap:5px}
-.swd{width:11px;height:11px;border-radius:50%;box-shadow:inset 0 0 0 1px #0004;display:inline-block}
-.famrow{display:grid;grid-template-columns:38px 1fr auto 46px auto auto;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px}
-.famrow .big{width:34px;height:34px;border-radius:50%;box-shadow:inset 0 0 0 1px #0003}
-@media (max-width:900px){.famrow{grid-template-columns:34px 1fr 46px auto}.famrow .meta,.famrow .check{display:none}}
-@media (max-width:900px){
-  .app{grid-template-columns:1fr}
-  aside{position:static;height:auto;flex-direction:row;overflow-x:auto;padding:10px}
+/* pages */
+.pgcard{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;background:#fff;transition:border-color .2s}
+.pgcard:hover{border-color:#cfd9e3}
+.pgnum{width:54px;text-align:center}
+.pgnum b{display:block;font-size:22px;line-height:1}
+.pgnum small{font-size:11px;color:var(--muted)}
+.pgthumbs{display:flex;gap:4px;flex-wrap:wrap;margin:8px 0}
+.pgthumbs img{width:38px;height:38px;border-radius:8px;object-fit:cover;border:1px solid var(--line)}
+.codein{display:flex;align-items:center;border:1.5px solid var(--red);border-radius:999px;overflow:hidden;background:#fff;width:max-content}
+.codein span{background:var(--red);color:#fff;font-weight:700;padding:7px 12px;font-size:13px}
+.codein input{border:0;width:90px;padding:7px 12px;font-weight:700;border-radius:0;box-shadow:none}
+.pgfields{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pgfields input[data-pf=title],.pgfields input[data-pf=desc]{flex:1 1 200px;width:auto}
+.pgfields .codein{order:-2}.pgfields [data-view]{order:-1;margin-right:auto}
+/* drawer */
+.modal{position:fixed;inset:0;z-index:50;background:#0e1a2b80;backdrop-filter:blur(3px);display:none;justify-content:flex-end}
+.modal.open{display:flex}
+.drawer{width:min(600px,100%);height:100%;background:var(--bg);overflow:auto;padding:22px;animation:slide .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes slide{from{transform:translateX(40px);opacity:0}}
+.drawer-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.drawer-h h2{font-size:19px}
+.img-edit{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:start}
+.img-prev{width:140px;height:140px;border-radius:16px;border:1.5px solid var(--ink);object-fit:cover;background:#fff}
+.colors-ed{display:flex;flex-direction:column;gap:8px}
+.drawer-f{position:sticky;bottom:-22px;margin:18px -22px -22px;padding:14px 22px;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
+/* misc */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.swc{display:flex;gap:10px;align-items:center;background:var(--bg);border-radius:12px;padding:10px}
+.swc b{display:block;font-size:13px}
+.swc input[type=text]{padding:5px 9px;font-size:13px}
+.famrow{display:grid;grid-template-columns:36px 1fr auto 46px auto auto;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-bottom:6px}
+.famrow .big{width:32px;height:32px;border-radius:50%;box-shadow:inset 0 0 0 1px #0003}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:8px;max-height:330px;overflow:auto;padding:2px}
+.feat-grid button{position:relative;border-radius:12px;overflow:hidden;border:2px solid transparent;aspect-ratio:1;background:#fff}
+.feat-grid button img{width:100%;height:100%;object-fit:cover}
+.feat-grid button.on{border-color:var(--red);box-shadow:0 0 0 3px #f2222b33}
+.feat-grid button.on::after{content:"★";position:absolute;top:4px;right:6px;color:var(--red);font-size:14px;text-shadow:0 0 3px #fff}
+.ph{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.ph button{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px 9px;font-size:12px;font-family:monospace}
+.ph button:hover{border-color:var(--red);color:var(--red)}
+.msg-prev{white-space:pre-wrap;background:#E7FFDB;border-radius:12px 12px 2px 12px;padding:14px 16px;font-size:13px;line-height:1.55;max-width:420px;box-shadow:0 2px 6px #0001;margin-left:auto}
+.wa-bg{background:#EFE7DD;border-radius:14px;padding:18px}
+.qr-prev{width:116px;height:116px;padding:8px;background:#fff;border:1px solid var(--line);border-radius:12px;flex:none}
+.qr-prev canvas,.qr-prev img{width:100%!important;height:100%!important}
+.steps-ol{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:12px}
+.steps-ol li{counter-increment:s;display:flex;gap:12px}
+.steps-ol li::before{content:counter(s);flex:none;width:26px;height:26px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+.notice{background:#ECFEFF;border:1px solid #A5F3FC;border-radius:12px;padding:12px 14px;font-size:13px;margin-bottom:14px}
+.banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#FFF7E6;border:1px solid #FCD9A0;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px}
+.banner span{flex:1;min-width:220px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-weight:600;transition:all .3s;z-index:99;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+/* live preview panel */
+.pv{display:none;border-left:1px solid var(--line);background:#EAF2F6;flex-direction:column;min-width:0}
+body.pv-on .pv{display:flex}
+.pv-h{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);background:#fff}
+.pv-h b{font-size:13px;flex:1;display:flex;align-items:center;gap:8px}
+.pv-h b i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px #16a34a33}
+.pv iframe{flex:1;border:0;width:100%;background:#EAF6FA}
+@media (max-width:1100px){body.pv-on{--pv:0px}body.pv-on .pv{display:none}}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;height:auto}
+  aside{flex-direction:row;overflow-x:auto;padding:8px;position:sticky;top:0;z-index:20}
   .logo,.saved,aside .sp{display:none}
-  #nav{display:flex;gap:4px}
-  .nav-b{flex:none}
-  main{padding:18px 14px}
-  .item{grid-template-columns:52px 1fr auto;}
-  .item .c3,.item .c4,.item .c5{display:none}
+  .nav-b{flex:none;width:auto}
+  main{padding:16px 12px 60px;overflow:visible}
+  .item{grid-template-columns:22px 52px minmax(0,1fr) auto}
+  .item .grip,.item .c5{display:none}
   .img-edit{grid-template-columns:1fr}
+  .pgfields{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -130,16 +174,22 @@ main{padding:26px 34px 60px;min-width:0}
     <div class="sp"></div>
     <div class="saved" id="saved"><i></i><span>All changes saved</span></div>
   </aside>
-  <main>
+  <main id="main">
     <div class="top">
       <div><h1 id="pageTitle"></h1><p id="pageSub"></p></div>
       <div class="actions">
-        <button class="btn btn-line" id="btnPreview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Live preview</button>
-        <button class="btn btn-red" id="btnExport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v3h16v-3"/></svg>Publish (export)</button>
+        <button class="btn btn-line" id="btnPv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M13 4v16"/></svg><span>Live preview</span></button>
+        <button class="btn btn-red" id="btnPublish"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 0L8 7m4-4 4 4M4 15v5h16v-5"/></svg>Publish</button>
       </div>
     </div>
     <div id="view"></div>
   </main>
+  <section class="pv">
+    <div class="pv-h"><b><i></i>Live preview — updates as you type</b>
+      <button class="btn btn-line btn-sm" id="pvNew" title="Open the preview in a new tab">Open in new tab</button>
+      <button class="ib" id="pvClose" title="Hide preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <iframe id="pvFrame" title="Catalog preview"></iframe>
+  </section>
 </div>
 
 <div class="modal" id="modal"><div class="drawer" id="drawer"></div></div>
@@ -147,9 +197,7 @@ main{padding:26px 34px 60px;min-width:0}
 <input type="file" id="filePick" hidden>
 
 <script>
-  /* GitHub Pages lets browsers keep files for ~10 minutes. Always load the newest data,
-     and if a newer version of the page was published, reload once to get it. */
-  window.APP_VERSION = "7";
+  window.APP_VERSION = "8";
   document.write('<script src="catalog-data.js?v=' + Date.now() + '"><\/script>');
   fetch("version.txt?t=" + Date.now(), { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(v => {
     v = v.trim(); const u = new URL(location.href);
@@ -162,17 +210,18 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clone = o => JSON.parse(JSON.stringify(o));
 const uid = () => "p" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-// fingerprint of catalog content (ignores the _base marker) — tells whether a saved draft was started from the current live file
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "item";
 const sigOf = d => { const s = JSON.stringify({ ...d, _base: undefined }); let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return String(h); };
 const PUB_SIG = sigOf(window.CATALOG_DATA);
 const fresh = () => { const d = clone(window.CATALOG_DATA); d._base = PUB_SIG; return d; };
-const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "collection";
 const IC = {
   products:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2h6v4H9zM8 6h8l1 4v11a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V10z"/></svg>',
-  collections:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>',
+  pages:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h7v16H4zM13 4h7v16h-7z"/></svg>',
+  collections:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><circle cx="17.5" cy="17.5" r="3.5"/></svg>',
+  covers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h12l2 2v16H5z"/><path d="M9 8h6M9 12h6"/></svg>',
+  texts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h16"/></svg>',
   brand:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V4h9a4 4 0 0 1 0 8H4m7 0 7 9"/></svg>',
   colors:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1.5" fill="currentColor"/><circle cx="12" cy="7" r="1.5" fill="currentColor"/><circle cx="16" cy="10" r="1.5" fill="currentColor"/></svg>',
-  texts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h16"/></svg>',
   whatsapp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/></svg>',
   publish:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 0L8 7m4-4 4 4M4 15v5h16v-5"/></svg>',
   up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 15 6-6 6 6"/></svg>',
@@ -180,60 +229,102 @@ const IC = {
   edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>',
   copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg>',
   del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  eyeoff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/></svg>',
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>',
-  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+  grip:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>',
+  view:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3h7v7M21 3l-9 9M19 14v6H4V5h6"/></svg>'
 };
 const PAGES = {
-  products:{t:"Products", s:"Add, edit, reorder and hide products. Click a product to edit it."},
-  collections:{t:"Collections & Color groups", s:"The catalog sections (Bottles, Jars, Pumps…) and the color groups inside them (White, Black, Clear…)."},
-  brand:{t:"Brand & Contact", s:"Logo, WhatsApp number, phones, website and the social-media QR code."},
-  colors:{t:"Brand Colors", s:"Every color in the catalog comes from these five values."},
-  texts:{t:"Texts & Layout", s:"Front & back cover, contents page steps and products per page."},
-  whatsapp:{t:"WhatsApp Message", s:"The message the sales team receives when a customer taps a product."},
-  publish:{t:"Publish", s:"Export your changes and upload them to make them live for everyone."}
+  products:   { t:"Products", s:"Add, edit, hide, reorder (drag ⠿) and organise products. Tick several to change them all at once." },
+  pages:      { t:"Pages & Codes", s:"Every page has a red code (e.g. NK 24). All products on that page show the same code automatically." },
+  collections:{ t:"Sections & Color groups", s:"The catalog sections (Bottles, Jars, Pumps…) and the color groups inside them (White, Black, Clear…)." },
+  covers:     { t:"Cover & Last page", s:"Front cover texts and photos, and the animated thank-you page at the end." },
+  texts:      { t:"Texts & Layout", s:"Contents page, “how to order” steps, every label, and how pages behave." },
+  brand:      { t:"Brand & Contact", s:"Logo, WhatsApp number, phones, website and the social-media QR — all clickable in the catalog." },
+  colors:     { t:"Brand Colors", s:"Every color in the catalog comes from these five values." },
+  whatsapp:   { t:"WhatsApp Message", s:"The message the sales team receives when a customer taps “Order Now”." },
+  publish:    { t:"Publish", s:"Make your changes live for customers, and keep backups." }
 };
 const LOGO_COLORS = { primary:"#F2222B", secondary:"#1FE0FD", sky:"#5CE6FF", ink:"#0E1A2B", bg:"#F2FCFF" };
+const LAYOUTS = { 1:{c:1,r:1}, 2:{c:2,r:1}, 4:{c:2,r:2}, 6:{c:3,r:2}, 9:{c:3,r:3}, 12:{c:4,r:3} };
+const PER_PAGE = [[1,"1 per page"],[2,"2 per page"],[4,"4 per page (2 × 2)"],[6,"6 per page (3 × 2)"],[9,"9 per page (3 × 3)"],[12,"12 per page (4 × 3)"]];
+const REPO_UPLOAD = "https://github.com/saiedhamada888-code/royal-plast-catalog/upload/main";
 
 /* ---------- storage ---------- */
 function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open("royalplast",1); r.onupgradeneeded=()=>r.result.createObjectStore("kv"); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
 async function idbGet(k){ const db=await idb(); return new Promise((res,rej)=>{ const q=db.transaction("kv").objectStore("kv").get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); }); }
 async function idbSet(k,v){ const db=await idb(); return new Promise((res,rej)=>{ const t=db.transaction("kv","readwrite"); t.objectStore("kv").put(v,k); t.oncomplete=res; t.onerror=()=>rej(t.error); }); }
 
-let D, page = "products", filter = { q:"", col:"all", fam:"all" }, previewWin = null, saveT;
-
-/* color groups (White / Black / Clear / Colored …) */
-const fams = () => D.settings.families || (D.settings.families = []);
-const MULTI = "conic-gradient(#F2222B,#F6D02F,#38D4C0,#1F6FE0,#A77BE0,#F2222B)";
-const swBg = hex => hex === "multi" ? MULTI : hex;
-const famTag = p => { const f = fams().find(x => x.id === p.family); return f ? `<span class="tag"><i class="swd" style="background:${esc(swBg(f.hex))}"></i>${esc(f.name)}</span>` : ""; };
-function guessFamily(name){
-  const n = name.toLowerCase(), has = (...w) => w.some(x => n.includes(x));
-  const id = has("white","abyad","ابيض","أبيض") ? "white" : has("black","aswad","اسود","أسود") ? "black" : has("clear","transparent","shafaf","شفاف") ? "clear" : "";
-  return fams().some(f => f.id === id) ? id : "";
-}
+let D, page = "products", filter = { q:"", col:"all", fam:"all" }, sel = new Set(), previewWin = null, saveT, pvT;
 function changed(){
-  $("#saved span").textContent = "Saving…";
+  $("#saved").classList.add("busy"); $("#saved span").textContent = "Saving…";
   clearTimeout(saveT);
   saveT = setTimeout(async () => {
-    try { await idbSet("draft", D); $("#saved span").textContent = "All changes saved"; }
+    try { await idbSet("draft", D); $("#saved").classList.remove("busy"); $("#saved span").textContent = "All changes saved"; }
     catch(e){ $("#saved span").textContent = "Save failed: " + e.message; }
   }, 300);
-  pushPreview();
+  clearTimeout(pvT); pvT = setTimeout(pushPreview, 350);
 }
-function pushPreview(){ if (previewWin && !previewWin.closed) previewWin.postMessage({ type:"rp-data", data:D }, "*"); }
+const frame = () => $("#pvFrame").contentWindow;
+function pushPreview(){
+  const msg = { type:"rp-data", data:D };
+  if (document.body.classList.contains("pv-on")) try { frame().postMessage(msg, "*"); } catch(_) {}
+  if (previewWin && !previewWin.closed) previewWin.postMessage(msg, "*");
+}
+function previewGoto(msg){ try { frame().postMessage(msg, "*"); } catch(_) {} if (previewWin && !previewWin.closed) previewWin.postMessage(msg, "*"); }
 addEventListener("message", e => { if (e.data && e.data.type === "rp-ready") pushPreview(); });
+function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2400); }
 
-function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2200); }
+/* ---------- catalog logic (same rules as the catalog itself) ---------- */
+const fams = () => D.settings.families || (D.settings.families = []);
+const swBg = hex => hex === "multi" ? "var(--multi)" : hex;
+const swatch = f => `<i class="sw" style="background:${esc(swBg(f.hex))}"></i>`;
+const famOf = p => fams().find(f => f.id === p.family);
+const colOf = p => D.collections.find(c => c.id === p.collection);
+const prefixed = num => {
+  const pre = String(D.settings.codePrefix || "").trim(), n = String(num ?? "").trim();
+  if (!n) return pre; if (!pre || n.toUpperCase().startsWith(pre.toUpperCase())) return n;
+  return pre + " " + n;
+};
+function computePages(){
+  const s = D.settings, vis = D.products.filter(p => !p.hidden), out = []; let idx = 2;
+  D.collections.forEach(c => {
+    const items = vis.filter(p => p.collection === c.id); if (!items.length) return;
+    const L = LAYOUTS[+c.perPage || +s.layout.perPage] || LAYOUTS[6];
+    let groups = [{ f:null, items }];
+    if (c.groupByFamily !== false && fams().length){
+      groups = fams().map(f => ({ f, items:items.filter(p => p.family === f.id) })).filter(g => g.items.length);
+      const rest = items.filter(p => !famOf(p)); if (rest.length) groups.push({ f:null, items:rest });
+    }
+    const rows = [];
+    groups.forEach(g => { for (let k = 0; k < g.items.length; k += L.c) rows.push({ f:g.f, items:g.items.slice(k, k + L.c) }); });
+    for (let k = 0, n = 0; k < rows.length; k += L.r, n++){
+      const pr = rows.slice(k, k + L.r);
+      out.push({ key:`${c.id}#${n}`, col:c, n, index:idx++, items:pr.flatMap(r => r.items), fams:[...new Set(pr.map(r => r.f).filter(Boolean))] });
+    }
+  });
+  return out;
+}
+const pageSet = key => (D.settings.pages || (D.settings.pages = {}))[key] || (D.settings.pages[key] = {});
+const pageCode = pg => prefixed((D.settings.pages?.[pg.key] || {}).code || pg.col.code);
+function codeMap(){ const m = {}; computePages().forEach(pg => { const c = pageCode(pg); pg.items.forEach(p => m[p.id] = { code:c, page:pg.index }); }); return m; }
+function guessFamily(name){
+  const n = name.toLowerCase(), has = (...w) => w.some(x => n.includes(x));
+  const id = has("white","abyad","ابيض","أبيض") ? "white" : has("black","aswad","اسود","أسود") ? "black" : has("clear","transparent","shafaf","شفاف") ? "clear" : has("gold","silver","دهبي","ذهبي","فضي") ? "metallic" : "";
+  return fams().some(f => f.id === id) ? id : "";
+}
 
 /* ---------- images ---------- */
-function readImage(file, max = 900){
+function readImage(file, max = 800){
   return new Promise((res, rej) => {
     const fr = new FileReader();
     fr.onload = () => { const img = new Image(); img.onload = () => {
       const k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement("canvas");
       c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
-      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-      let out = c.toDataURL("image/webp", .85); if (!out.startsWith("data:image/webp")) out = c.toDataURL("image/jpeg", .88);
+      const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+      let out = c.toDataURL("image/webp", .84); if (!out.startsWith("data:image/webp")) out = c.toDataURL("image/jpeg", .86);
       res(out);
     }; img.onerror = rej; img.src = fr.result; };
     fr.onerror = rej; fr.readAsDataURL(file);
@@ -243,13 +334,13 @@ function pickFiles({ multiple = false, accept = "image/*" } = {}){
   return new Promise(res => { const i = $("#filePick"); i.value = ""; i.multiple = multiple; i.accept = accept; i.onchange = () => res([...i.files]); i.click(); });
 }
 
-/* ---------- binding helpers ---------- */
+/* ---------- generic binding: data-bind="settings.cover.title" ---------- */
 const getPath = (o, p) => p.split(".").reduce((a, k) => a?.[k], o);
-function setPath(o, p, v){ const ks = p.split("."), last = ks.pop(); ks.reduce((a, k) => a[k], o)[last] = v; }
+function setPath(o, p, v){ const ks = p.split("."), last = ks.pop(); ks.reduce((a, k) => a[k] ??= {}, o)[last] = v; }
 function bindAll(root){
   root.querySelectorAll("[data-bind]").forEach(el => {
     const p = el.dataset.bind, v = getPath(D, p);
-    if (el.type === "checkbox") el.checked = !!v; else el.value = v ?? "";
+    if (el.type === "checkbox") el.checked = v !== false && v !== undefined ? !!v : false; else el.value = v ?? "";
     el.addEventListener(el.type === "checkbox" || el.tagName === "SELECT" ? "change" : "input", () => {
       let val = el.type === "checkbox" ? el.checked : el.value;
       if (el.dataset.num !== undefined) val = +val;
@@ -257,123 +348,166 @@ function bindAll(root){
     });
   });
 }
-const field = (label, bind, { type = "text", hint = "", full = false, area = false, ph = "" } = {}) =>
-  `<div class="f${full ? " full" : ""}"><label>${label}</label>${area ? `<textarea data-bind="${bind}" placeholder="${esc(ph)}"></textarea>` : `<input type="${type}" data-bind="${bind}" placeholder="${esc(ph)}">`}${hint ? `<small>${hint}</small>` : ""}</div>`;
+const field = (label, bind, { hint = "", full = false, area = false, ph = "", rtl = false } = {}) =>
+  `<div class="f${full ? " full" : ""}"><label>${label}</label>${area ? `<textarea data-bind="${bind}" placeholder="${esc(ph)}"${rtl ? ' dir="rtl"' : ""}></textarea>` : `<input data-bind="${bind}" placeholder="${esc(ph)}"${rtl ? ' dir="rtl"' : ""}>`}${hint ? `<small>${hint}</small>` : ""}</div>`;
+const check = (label, bind) => `<label class="check"><input type="checkbox" data-bind="${bind}"> ${label}</label>`;
 
 /* ---------- navigation ---------- */
 function renderNav(){
-  $("#nav").innerHTML = Object.entries(PAGES).map(([k, v]) => `<button class="nav-b${k === page ? " on" : ""}" data-p="${k}">${IC[k]}${v.t}</button>`).join("");
+  const counts = { products:D.products.length, pages:computePages().length };
+  $("#nav").innerHTML = Object.entries(PAGES).map(([k, v]) => `<button class="nav-b${k === page ? " on" : ""}" data-p="${k}">${IC[k]}${v.t}${counts[k] ? `<em>${counts[k]}</em>` : ""}</button>`).join("");
   $("#nav").querySelectorAll(".nav-b").forEach(b => b.onclick = () => { page = b.dataset.p; render(); });
 }
 function render(){
   renderNav(); $("#pageTitle").textContent = PAGES[page].t; $("#pageSub").textContent = PAGES[page].s;
-  ({ products:vProducts, collections:vCollections, brand:vBrand, colors:vColors, texts:vTexts, whatsapp:vWhatsapp, publish:vPublish })[page]();
-  scrollTo(0, 0);
+  ({ products:vProducts, pages:vPages, collections:vCollections, covers:vCovers, texts:vTexts, brand:vBrand, colors:vColors, whatsapp:vWhatsapp, publish:vPublish })[page]();
+  $("#main").scrollTo(0, 0);
 }
 
-/* ---------- PRODUCTS ---------- */
+/* ================= PRODUCTS ================= */
 function vProducts(){
   $("#view").innerHTML = `
     <div class="toolbar">
-      <input id="pq" type="search" placeholder="Search name or code…" value="${esc(filter.q)}">
-      <select id="pc"><option value="all">All collections</option>${D.collections.map(c => `<option value="${esc(c.id)}"${filter.col === c.id ? " selected" : ""}>${esc(c.name)}</option>`).join("")}</select>
+      <input class="grow" id="pq" type="search" placeholder="Search name or code…" value="${esc(filter.q)}">
+      <select id="pc"><option value="all">All sections</option>${D.collections.map(c => `<option value="${esc(c.id)}"${filter.col === c.id ? " selected" : ""}>${esc(c.name)}</option>`).join("")}</select>
       <select id="pfam"><option value="all">All color groups</option>${fams().map(f => `<option value="${esc(f.id)}"${filter.fam === f.id ? " selected" : ""}>${esc(f.name)}</option>`).join("")}<option value="none"${filter.fam === "none" ? " selected" : ""}>No color group</option></select>
       <button class="btn btn-red" id="add">${IC.plus}Add product</button>
-      <button class="btn btn-line" id="bulk">${IC.plus}Bulk add from images</button>
-      <span class="count" id="pcount"></span>
+      <button class="btn btn-line" id="bulkAdd">${IC.plus}Add many photos</button>
     </div>
-    <div class="drop" id="drop">Drop many product photos here to create products in bulk — the file name becomes the product code (e.g. <b>PB 24-08.png</b>).<br>Put <b>white</b>, <b>black</b> or <b>clear</b> in a file name and it goes straight into that color group. They are added to the collection selected above.</div>
-    <div class="list" id="plist" style="margin-top:14px"></div>`;
+    <div class="drop" id="drop">Drop many product photos here to add them at once — they go into the section & color group selected above. A file name containing <b>white</b>, <b>black</b>, <b>clear</b> or <b>gold</b> picks the color group automatically.</div>
+    <div class="bulk" id="bulk">
+      <b id="bulkN"></b>
+      <select id="bkCol"><option value="">Move to section…</option>${D.collections.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}</select>
+      <select id="bkFam"><option value="">Set color group…</option>${fams().map(f => `<option value="${esc(f.id)}">${esc(f.name)}</option>`).join("")}<option value="__none">— None —</option></select>
+      <button class="btn btn-line btn-sm" data-bk="hide">${IC.eyeoff}Hide</button>
+      <button class="btn btn-line btn-sm" data-bk="show">${IC.eye}Show</button>
+      <button class="btn btn-line btn-sm" data-bk="del">${IC.del}Delete</button>
+      <span style="flex:1"></span>
+      <button class="btn btn-line btn-sm" data-bk="all">Select all shown</button>
+      <button class="btn btn-line btn-sm" data-bk="none">Clear</button>
+    </div>
+    <div class="row" style="margin-bottom:8px"><span class="count" id="pcount"></span></div>
+    <div class="plist" id="plist"></div>`;
   $("#pq").oninput = e => { filter.q = e.target.value; drawList(); };
   $("#pc").onchange = e => { filter.col = e.target.value; drawList(); };
   $("#pfam").onchange = e => { filter.fam = e.target.value; drawList(); };
   $("#add").onclick = () => editProduct(null);
-  $("#bulk").onclick = async () => bulkAdd(await pickFiles({ multiple:true }));
+  $("#bulkAdd").onclick = async () => bulkAdd(await pickFiles({ multiple:true }));
   const drop = $("#drop");
-  ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { if (e.dataTransfer.types.includes("Files")){ e.preventDefault(); drop.classList.add("over"); } }));
   ["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
   drop.addEventListener("drop", e => bulkAdd([...e.dataTransfer.files].filter(f => f.type.startsWith("image/"))));
+  $("#bkCol").onchange = e => { if (!e.target.value) return; eachSel(p => p.collection = e.target.value); toast(`Moved ${sel.size} products`); e.target.value = ""; };
+  $("#bkFam").onchange = e => { if (!e.target.value) return; const v = e.target.value === "__none" ? "" : e.target.value; eachSel(p => p.family = v); toast(`Updated ${sel.size} products`); e.target.value = ""; };
+  $("#bulk").querySelectorAll("[data-bk]").forEach(b => b.onclick = () => {
+    const a = b.dataset.bk;
+    if (a === "hide") eachSel(p => p.hidden = true);
+    if (a === "show") eachSel(p => p.hidden = false);
+    if (a === "del"){ if (!confirm(`Delete ${sel.size} products? This can't be undone (unless you discard your edits).`)) return; D.products = D.products.filter(p => !sel.has(p.id)); sel.clear(); changed(); drawList(); }
+    if (a === "all"){ shown().forEach(p => sel.add(p.id)); drawList(); }
+    if (a === "none"){ sel.clear(); drawList(); }
+  });
   drawList();
 }
+function eachSel(fn){ D.products.forEach(p => { if (sel.has(p.id)) fn(p); }); changed(); drawList(); }
+function shown(){
+  const q = filter.q.toLowerCase(), cm = codeMap();
+  const famOk = p => filter.fam === "all" || (filter.fam === "none" ? !famOf(p) : p.family === filter.fam);
+  return D.products.filter(p => (filter.col === "all" || p.collection === filter.col) && famOk(p) && (!q || [p.name, p.code, cm[p.id]?.code].join(" ").toLowerCase().includes(q)));
+}
 function drawList(){
-  const q = filter.q.toLowerCase(), cname = id => D.collections.find(c => c.id === id)?.name || "—";
-  const famOk = p => filter.fam === "all" || (filter.fam === "none" ? !fams().some(f => f.id === p.family) : p.family === filter.fam);
-  const list = D.products.filter(p => (filter.col === "all" || p.collection === filter.col) && famOk(p) && (!q || (p.name + " " + p.code).toLowerCase().includes(q)));
-  $("#pcount").textContent = `${list.length} of ${D.products.length} products`;
-  $("#plist").innerHTML = list.length ? list.map(p => `
-    <div class="item${p.hidden ? " hidden" : ""}" data-id="${esc(p.id)}">
-      <img class="thumb" src="${esc(p.image)}" alt="" onerror="this.style.visibility='hidden'">
-      <div><span class="code">${esc(p.code)}</span><div class="nm">${esc(p.name)}</div></div>
-      <div class="meta c3">${esc([p.capacity, p.material, p.neck].filter(Boolean).join(" · "))}</div>
-      <div class="meta c4">${esc(cname(p.collection))}</div>
-      <div class="tags c5">${famTag(p)}${p.featured ? '<span class="tag star">★ Cover</span>' : ""}${p.hidden ? '<span class="tag">Hidden</span>' : ""}</div>
+  const list = shown(), cm = codeMap();
+  $("#pcount").textContent = `${list.length} of ${D.products.length} products${sel.size ? ` · ${sel.size} selected` : ""}`;
+  $("#bulk").classList.toggle("on", sel.size > 0); $("#bulkN").textContent = `${sel.size} selected`;
+  $("#plist").innerHTML = list.length ? list.map(p => {
+    const f = famOf(p), c = colOf(p), code = p.code || cm[p.id]?.code;
+    return `<div class="item${p.hidden ? " hid" : ""}${sel.has(p.id) ? " sel" : ""}" data-id="${esc(p.id)}" draggable="true">
+      <span class="grip" title="Drag to reorder">${IC.grip}</span>
+      <input type="checkbox" data-a="sel"${sel.has(p.id) ? " checked" : ""}>
+      <img class="thumb" src="${esc(p.image)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+      <div style="min-width:0"><div class="nm">${esc(p.name)}</div><div class="sub">${code ? `<span class="code${p.code ? " own" : ""}" title="${p.code ? "Own code" : "Page code"}">${esc(code)}</span>` : `<span class="tag">hidden</span>`}${p.capacity ? `<span class="meta">${esc(p.capacity)}</span>` : ""}</div></div>
+      <div class="sub c5" style="margin:0"><span class="meta">${esc(c?.name || "—")}</span>${f ? `<span class="tag">${swatch(f)}${esc(f.name)}</span>` : ""}${p.featured ? '<span class="tag star">★ Cover</span>' : ""}</div>
+      <div></div>
       <div class="ibtns">
-        <button class="ib" data-a="up" title="Move up">${IC.up}</button><button class="ib" data-a="down" title="Move down">${IC.down}</button>
-        <button class="ib" data-a="edit" title="Edit">${IC.edit}</button><button class="ib" data-a="dup" title="Duplicate">${IC.copy}</button>
+        <button class="ib" data-a="hide" title="${p.hidden ? "Show in catalog" : "Hide from catalog"}">${p.hidden ? IC.eyeoff : IC.eye}</button>
+        <button class="ib" data-a="dup" title="Duplicate">${IC.copy}</button>
+        <button class="ib" data-a="edit" title="Edit">${IC.edit}</button>
         <button class="ib del" data-a="del" title="Delete">${IC.del}</button>
-      </div>
-    </div>`).join("") : `<div class="empty">No products yet. Click “Add product”.</div>`;
+      </div></div>`;
+  }).join("") : `<div class="empty">No products match. Click “Add product”.</div>`;
+  let dragId = null;
   $("#plist").querySelectorAll(".item").forEach(row => {
     const id = row.dataset.id;
     row.addEventListener("click", e => {
-      const a = e.target.closest("[data-a]")?.dataset.a || "edit", i = D.products.findIndex(p => p.id === id);
+      const a = e.target.closest("[data-a]")?.dataset.a || "edit", i = D.products.findIndex(p => p.id === id), p = D.products[i];
+      if (e.target.closest(".grip")) return;
+      if (a === "sel"){ e.target.checked ? sel.add(id) : sel.delete(id); return drawList(); }
       if (a === "edit") return editProduct(id);
-      if (a === "up" && i > 0) [D.products[i-1], D.products[i]] = [D.products[i], D.products[i-1]];
-      if (a === "down" && i < D.products.length - 1) [D.products[i+1], D.products[i]] = [D.products[i], D.products[i+1]];
-      if (a === "dup"){ const c = clone(D.products[i]); c.id = uid(); c.code += " copy"; D.products.splice(i + 1, 0, c); toast("Product duplicated"); }
-      if (a === "del"){ if (!confirm(`Delete “${D.products[i].name}”?`)) return; D.products.splice(i, 1); toast("Product deleted"); }
-      changed(); drawList();
+      if (a === "hide"){ p.hidden = !p.hidden; toast(p.hidden ? "Hidden from the catalog" : "Shown in the catalog"); }
+      if (a === "dup"){ const c = clone(p); c.id = uid(); c.name += " (copy)"; D.products.splice(i + 1, 0, c); toast("Product duplicated"); }
+      if (a === "del"){ if (!confirm(`Delete “${p.name}”?`)) return; D.products.splice(i, 1); sel.delete(id); toast("Product deleted"); }
+      changed(); drawList(); renderNav();
+    });
+    row.addEventListener("dragstart", e => { if (!e.target.closest(".item")) return; dragId = id; row.classList.add("drag"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", id); });
+    row.addEventListener("dragend", () => { row.classList.remove("drag"); $("#plist").querySelectorAll(".over").forEach(x => x.classList.remove("over")); });
+    row.addEventListener("dragover", e => { if (!dragId || dragId === id) return; e.preventDefault(); $("#plist").querySelectorAll(".over").forEach(x => x.classList.remove("over")); row.classList.add("over"); });
+    row.addEventListener("drop", e => {
+      if (!dragId || dragId === id) return; e.preventDefault();
+      const from = D.products.findIndex(p => p.id === dragId), [m] = D.products.splice(from, 1);
+      D.products.splice(D.products.findIndex(p => p.id === id), 0, m); dragId = null;
+      changed(); drawList(); toast("Order updated");
     });
   });
 }
 async function bulkAdd(files){
   if (!files.length) return;
-  const col = filter.col !== "all" ? filter.col : D.collections[0]?.id;
+  const col = filter.col !== "all" ? filter.col : D.collections[0]?.id, famSel = fams().some(f => f.id === filter.fam) ? filter.fam : "";
   toast(`Adding ${files.length} products…`);
   for (const f of files){
     const base = f.name.replace(/\.[^.]+$/, "");
-    D.products.push({ id:uid(), code:base.toUpperCase(), name:base.replace(/[-_]+/g," "), collection:col, family:guessFamily(base), capacity:"", material:"", neck:"", weight:"", packing:"", colors:[], description:"", image:await readImage(f), featured:false, hidden:false });
+    D.products.push({ id:uid(), code:"", name:base.replace(/[-_]+/g," ").replace(/\s+/g," ").trim(), collection:col, family:famSel || guessFamily(base), capacity:"", material:"", neck:"", weight:"", packing:"", description:"", colors:[], image:await readImage(f), featured:false, hidden:false });
   }
-  changed(); drawList(); toast(`${files.length} products added — click each one to complete its details`);
+  changed(); drawList(); renderNav(); toast(`${files.length} products added — click one to rename it or add details`);
 }
 
 function editProduct(id){
-  const isNew = !id;
+  const isNew = !id, cm = codeMap();
   const p = isNew ? { id:uid(), code:"", name:"", collection:filter.col !== "all" ? filter.col : D.collections[0]?.id, family:fams().some(f => f.id === filter.fam) ? filter.fam : "", capacity:"", material:"", neck:"", weight:"", packing:"", description:"", colors:[], image:"", featured:false, hidden:false }
                   : clone(D.products.find(x => x.id === id));
+  if (!isNew) previewGoto({ type:"rp-goto-product", id });
   const dr = $("#drawer");
-  const colorsHTML = () => p.colors.map((c, i) => `<div class="row"><input type="color" value="${esc(c.hex)}" data-ci="${i}" data-k="hex"><input type="text" value="${esc(c.name)}" data-ci="${i}" data-k="name" placeholder="Color name"><button class="ib del" data-rm="${i}">${IC.x}</button></div>`).join("");
+  const colorsHTML = () => p.colors.map((c, i) => `<div class="row"><input type="color" value="${esc(c.hex)}" data-ci="${i}" data-k="hex"><input value="${esc(c.name)}" data-ci="${i}" data-k="name" placeholder="Color name"><button class="ib del" data-rm="${i}">${IC.x}</button></div>`).join("");
   dr.innerHTML = `
     <div class="drawer-h"><h2>${isNew ? "New product" : "Edit product"}</h2><button class="ib" id="close">${IC.x}</button></div>
-    <div class="card"><h3>Photo</h3><p class="hint">Square photos look best. Use a PNG with transparent background or a clean studio shot.</p>
+    <div class="card"><h3>Photo</h3><p class="hint">Square photos look best (a clean studio shot on a light background).</p>
       <div class="img-edit">
         <img class="img-prev" id="imgPrev" src="${esc(p.image)}" alt="" onerror="this.style.opacity=.2">
         <div>
           <div class="row" style="margin-bottom:10px"><button class="btn btn-ink btn-sm" id="up">Upload photo</button><button class="btn btn-line btn-sm" id="clr">Remove</button></div>
-          <div class="f"><label>…or image path / URL</label><input id="imgPath" value="${p.image.startsWith("data:") ? "" : esc(p.image)}" placeholder="images/NK63-01.png"><small>Using a file in the <b>images</b> folder lets WhatsApp show the photo preview in the message.</small></div>
+          <div class="f"><label>…or image path / URL</label><input id="imgPath" value="${p.image.startsWith("data:") ? "" : esc(p.image)}" placeholder="images/products/…jpg"></div>
         </div>
       </div>
     </div>
-    <div class="card"><h3>Details</h3><p class="hint">Name, code and size show on the catalog page; everything shows in the product preview and the WhatsApp message.</p>
+    <div class="card"><h3>Details</h3><p class="hint">Only the name is required. Empty details are simply not shown.</p>
       <div class="fields">
-        <div class="f"><label>Code *</label><input data-k="code" placeholder="NK 63-05"></div>
-        <div class="f"><label>Name *</label><input data-k="name" placeholder="Glow Mist Bottle"></div>
-        <div class="f"><label>Collection</label><select data-k="collection">${D.collections.map(c => `<option value="${esc(c.id)}">${esc(c.name)} · ${esc(c.code)}</option>`).join("")}</select></div>
-        <div class="f"><label>Color group</label><select data-k="family"><option value="">— None —</option>${fams().map(f => `<option value="${esc(f.id)}">${esc(f.name)}</option>`).join("")}</select><small>Products of the same group sit together (all white, all black…).</small></div>
+        <div class="f full"><label>Name *</label><input data-k="name" placeholder="Gold Lotion Pump"></div>
+        <div class="f"><label>Section</label><select data-k="collection">${D.collections.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}</select></div>
+        <div class="f"><label>Color group</label><select data-k="family"><option value="">— None —</option>${fams().map(f => `<option value="${esc(f.id)}">${esc(f.name)}</option>`).join("")}</select></div>
+        <div class="f"><label>Code</label><input data-k="code" placeholder="${esc(cm[p.id]?.code || prefixed("24"))}"><small>Leave empty to use the page code${cm[p.id] ? ` (now <b>${esc(cm[p.id].code)}</b>)` : ""} — change page codes in <b>Pages & Codes</b>.</small></div>
         <div class="f"><label>Capacity / size</label><input data-k="capacity" placeholder="200 ML"></div>
         <div class="f"><label>Material</label><input data-k="material" placeholder="PET / PP / HDPE"></div>
         <div class="f"><label>Neck size</label><input data-k="neck" placeholder="24/410"></div>
         <div class="f"><label>Weight</label><input data-k="weight" placeholder="22 g"></div>
         <div class="f"><label>Packing</label><input data-k="packing" placeholder="Carton 300 pcs"></div>
-        <div class="f full"><label>Short description (shown in the product preview)</label><textarea data-k="description" placeholder="Ergonomic mini trigger with adjustable nozzle…" style="min-height:70px"></textarea></div>
+        <div class="f full"><label>Short description (shown when the product is opened)</label><textarea data-k="description" style="min-height:64px"></textarea></div>
       </div>
     </div>
-    <div class="card"><h3>Available colors</h3><p class="hint">Shown in the product preview — the color the customer picks is added to the WhatsApp message.</p>
+    <div class="card"><h3>Available colors</h3><p class="hint">Shown when the product is opened — the color the customer picks is added to the WhatsApp message.</p>
       <div class="colors-ed" id="cols">${colorsHTML()}</div>
       <button class="btn btn-line btn-sm" id="addc" style="margin-top:10px">${IC.plus}Add color</button>
     </div>
     <div class="card">
-      <label class="check"><input type="checkbox" data-k="featured"> Show on the front cover</label><br>
+      <label class="check"><input type="checkbox" data-k="featured"> Show this photo on the front cover</label>
       <label class="check"><input type="checkbox" data-k="hidden"> Hide from the catalog</label>
     </div>
     <div class="drawer-f"><button class="btn btn-line" id="cancel">Cancel</button><button class="btn btn-red" id="save">${isNew ? "Add product" : "Save changes"}</button></div>`;
@@ -389,62 +523,103 @@ function editProduct(id){
   $("#close").onclick = $("#cancel").onclick = close;
   $("#save").onclick = () => {
     dr.querySelectorAll("[data-k]").forEach(el => { if (el.dataset.ci !== undefined) return; p[el.dataset.k] = el.type === "checkbox" ? el.checked : el.value.trim(); });
-    if (!p.code || !p.name) return toast("Code and name are required");
-    if (D.products.some(x => x.code.toLowerCase() === p.code.toLowerCase() && x.id !== p.id)) return toast("Another product already uses this code");
+    if (!p.name) return toast("Please give the product a name");
     p.colors = p.colors.filter(c => c.name.trim());
     if (isNew) D.products.push(p); else D.products[D.products.findIndex(x => x.id === p.id)] = p;
-    changed(); close(); drawList(); toast(isNew ? "Product added" : "Saved");
+    changed(); close(); if (page === "products") drawList(); renderNav(); toast(isNew ? "Product added" : "Saved");
+    setTimeout(() => previewGoto({ type:"rp-goto-product", id:p.id }), 900);
   };
   $("#modal").classList.add("open");
 }
 $("#modal").addEventListener("click", e => { if (e.target.id === "modal") $("#modal").classList.remove("open"); });
 addEventListener("keydown", e => { if (e.key === "Escape") $("#modal").classList.remove("open"); });
 
-/* ---------- COLLECTIONS ---------- */
+/* ================= PAGES & CODES ================= */
+function vPages(){
+  const pgs = computePages(), pre = D.settings.codePrefix || "";
+  $("#view").innerHTML = `
+    <div class="card"><h3>Code prefix</h3><p class="hint">Written before every page number — e.g. <b>NK</b> → “NK 24”. Change it once here and every page updates.</p>
+      <div class="row" style="max-width:360px"><input id="prefix" value="${esc(pre)}" placeholder="NK" style="max-width:140px;font-weight:700"><span class="meta">Example: <b id="prefEx">${esc(prefixed("24"))}</b></span></div>
+    </div>
+    ${D.collections.map(c => {
+      const cp = pgs.filter(p => p.col.id === c.id); if (!cp.length) return "";
+      return `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><div><h3>${esc(c.name)}</h3><p class="hint" style="margin:0">${cp.length} page${cp.length > 1 ? "s" : ""} · default code <b>${esc(prefixed(c.code))}</b> (change it in Sections)</p></div></div>
+        ${cp.map(pg => { const ps = (D.settings.pages || {})[pg.key] || {};
+          return `<div class="pgcard" data-key="${esc(pg.key)}" data-index="${pg.index}">
+            <div class="pgnum"><small>Page</small><b>${pg.index + 1}</b></div>
+            <div>
+              <div class="pgfields">
+                <div class="codein" title="The red code at the top of this page"><span class="pre">${esc(pre || "—")}</span><input data-pf="code" value="${esc(ps.code || "")}" placeholder="${esc(c.code)}"></div>
+                <input data-pf="title" value="${esc(ps.title || "")}" placeholder="Title: ${esc(c.name + (D.settings.labels.catalogSuffix || ""))}">
+                <input data-pf="desc" value="${esc(ps.desc || "")}" placeholder="Description: same as the section">
+                <button class="btn btn-line btn-sm" data-view>${IC.view}View</button>
+              </div>
+              <div class="pgthumbs">${pg.items.map(p => `<img src="${esc(p.image)}" title="${esc(p.name)}" loading="lazy">`).join("")}</div>
+              <div class="row" style="gap:6px;flex-wrap:wrap">${pg.fams.map(f => `<span class="tag">${swatch(f)}${esc(f.name)}</span>`).join("")}<span class="meta">${pg.items.length} products · all show <b class="pgc">${esc(pageCode(pg))}</b></span></div>
+            </div></div>`; }).join("")}
+      </div>`;
+    }).join("")}`;
+  $("#prefix").oninput = e => {
+    D.settings.codePrefix = e.target.value.trim(); changed();
+    $("#prefEx").textContent = prefixed("24");
+    $("#view").querySelectorAll(".pre").forEach(s => s.textContent = D.settings.codePrefix || "—");
+    $("#view").querySelectorAll(".pgcard").forEach(updatePgCode);
+  };
+  $("#view").querySelectorAll(".pgcard").forEach(card => {
+    const key = card.dataset.key;
+    card.querySelectorAll("[data-pf]").forEach(inp => inp.addEventListener("input", () => {
+      const ps = pageSet(key), k = inp.dataset.pf, v = inp.value.trim();
+      if (v) ps[k] = v; else delete ps[k];
+      changed(); updatePgCode(card);
+    }));
+    card.querySelectorAll("[data-pf]").forEach(inp => inp.addEventListener("focus", () => previewGoto({ type:"rp-goto", page:+card.dataset.index })));
+    card.querySelector("[data-view]").onclick = () => { if (!document.body.classList.contains("pv-on")) togglePv(true); setTimeout(() => previewGoto({ type:"rp-goto", page:+card.dataset.index }), 300); };
+  });
+}
+function updatePgCode(card){
+  const pg = computePages().find(p => p.key === card.dataset.key); if (pg) card.querySelector(".pgc").textContent = pageCode(pg);
+}
+
+/* ================= SECTIONS & COLOR GROUPS ================= */
 function vCollections(){
-  $("#view").innerHTML = `<div class="toolbar"><button class="btn btn-red" id="addCol">${IC.plus}Add collection</button></div><div id="clist"></div>`;
-  $("#addCol").onclick = () => { const name = prompt("Collection name (e.g. Glow Essentials)"); if (!name) return; let id = slug(name), n = 2; while (D.collections.some(c => c.id === id)) id = slug(name) + "-" + n++; D.collections.push({ id, name, code:"", description:"" }); changed(); vCollections(); };
+  D.collections.forEach(c => { if (c.groupByFamily === undefined) c.groupByFamily = true; });
+  $("#view").innerHTML = `<div class="toolbar"><button class="btn btn-red" id="addCol">${IC.plus}Add section</button></div><div id="clist"></div>`;
+  $("#addCol").onclick = () => { const name = prompt("Section name (e.g. Tubes)"); if (!name) return; let id = slug(name), n = 2; while (D.collections.some(c => c.id === id)) id = slug(name) + "-" + n++; D.collections.push({ id, name, code:"24", perPage:"", groupByFamily:true, description:"" }); changed(); vCollections(); };
   $("#clist").innerHTML = D.collections.map((c, i) => `
     <div class="card" data-i="${i}">
-      <div class="row" style="justify-content:space-between;margin-bottom:14px"><h3>${esc(c.name)} <span class="meta" style="font-weight:400">· ${D.products.filter(p => p.collection === c.id).length} products</span></h3>
-        <div class="ibtns"><button class="ib" data-a="up">${IC.up}</button><button class="ib" data-a="down">${IC.down}</button><button class="ib del" data-a="del">${IC.del}</button></div></div>
+      <div class="row" style="justify-content:space-between;margin-bottom:12px"><h3>${esc(c.name)} <span class="meta" style="font-weight:400">· ${D.products.filter(p => p.collection === c.id).length} products</span></h3>
+        <div class="ibtns"><button class="ib" data-a="up" title="Move up">${IC.up}</button><button class="ib" data-a="down" title="Move down">${IC.down}</button><button class="ib del" data-a="del" title="Delete">${IC.del}</button></div></div>
       <div class="fields">
-        ${field("Name", `collections.${i}.name`)}${field("Code badge", `collections.${i}.code`, { ph:"NK 63" })}
-        <div class="f"><label>Products per page</label><select data-bind="collections.${i}.perPage"><option value="">Default (from Texts & Layout)</option>${PER_PAGE.map(([n, t]) => `<option value="${n}">${t}</option>`).join("")}</select></div>
-        ${field("Description", `collections.${i}.description`, { full:true, area:true })}
+        ${field("Name", `collections.${i}.name`)}
+        ${field("Default page code number", `collections.${i}.code`, { ph:"24", hint:`Shows as <b>${esc(prefixed(c.code))}</b>. Each page can still have its own number in Pages & Codes.` })}
+        <div class="f"><label>Products per page</label><select data-bind="collections.${i}.perPage"><option value="">Default (Texts & Layout)</option>${PER_PAGE.map(([n, t]) => `<option value="${n}">${t}</option>`).join("")}</select></div>
+        ${field("Description (under the page title)", `collections.${i}.description`, { full:true, area:true })}
       </div>
-      <label class="check" style="margin-top:12px"><input type="checkbox" data-bind="collections.${i}.groupByFamily"> Group products by color (white together, black together, clear together…)</label>
+      ${check("Group products by color (white together, black together, clear together…)", `collections.${i}.groupByFamily`)}
     </div>`).join("") + famCard();
-  D.collections.forEach(c => { if (c.groupByFamily === undefined) c.groupByFamily = true; });
   bindAll($("#clist"));
-  bindFamilies();
   $("#clist").querySelectorAll("[data-a]").forEach(b => b.onclick = () => {
     const i = +b.closest(".card").dataset.i, a = b.dataset.a, c = D.collections[i];
     if (a === "up" && i > 0) [D.collections[i-1], D.collections[i]] = [c, D.collections[i-1]];
     if (a === "down" && i < D.collections.length - 1) [D.collections[i+1], D.collections[i]] = [c, D.collections[i+1]];
-    if (a === "del"){
-      const n = D.products.filter(p => p.collection === c.id).length;
-      if (n) return toast(`Move or delete its ${n} products first`);
-      if (!confirm(`Delete collection “${c.name}”?`)) return;
-      D.collections.splice(i, 1);
-    }
+    if (a === "del"){ const n = D.products.filter(p => p.collection === c.id).length; if (n) return toast(`Move or delete its ${n} products first`); if (!confirm(`Delete section “${c.name}”?`)) return; D.collections.splice(i, 1); }
     changed(); vCollections();
   });
+  bindFamilies();
 }
-
 function famCard(){
   return `<div class="card" id="famCard"><h3>Color groups</h3>
-    <p class="hint">Inside every collection, products are grouped in this order. Each group starts on a new row with its own label, and appears in the contents page so customers can jump straight to it.</p>
-    <div class="list">${fams().map((f, i) => `
+    <p class="hint">Inside every section, products are grouped in this order. Each group starts on a new row with its own label and appears in the contents page.</p>
+    ${fams().map((f, i) => `
       <div class="famrow" data-fi="${i}">
         <span class="big" style="background:${esc(swBg(f.hex))}"></span>
-        <input data-ff="name" value="${esc(f.name)}" placeholder="Group name (e.g. White)">
-        <label class="check"><input type="checkbox" data-ff="multi"${f.hex === "multi" ? " checked" : ""}> Multicolor</label>
+        <input data-ff="name" value="${esc(f.name)}" placeholder="Group name">
+        <label class="check" style="margin:0"><input type="checkbox" data-ff="multi"${f.hex === "multi" ? " checked" : ""}> Multicolor</label>
         <input type="color" data-ff="hex" value="${f.hex === "multi" ? "#ffffff" : esc(f.hex)}"${f.hex === "multi" ? " disabled" : ""}>
         <span class="meta">${D.products.filter(p => p.family === f.id).length} products</span>
         <div class="ibtns"><button class="ib" data-fa="up">${IC.up}</button><button class="ib" data-fa="down">${IC.down}</button><button class="ib del" data-fa="del">${IC.del}</button></div>
-      </div>`).join("")}</div>
-    <button class="btn btn-line btn-sm" id="addFam" style="margin-top:12px">${IC.plus}Add color group</button>
+      </div>`).join("")}
+    <button class="btn btn-line btn-sm" id="addFam" style="margin-top:8px">${IC.plus}Add color group</button>
   </div>`;
 }
 function bindFamilies(){
@@ -454,7 +629,7 @@ function bindFamilies(){
     const f = fams()[+row.dataset.fi], k = e.target.dataset.ff;
     if (k === "name") f.name = e.target.value;
     if (k === "hex"){ f.hex = e.target.value; row.querySelector(".big").style.background = f.hex; }
-    changed();
+    if (k !== "multi") changed();
   });
   card.addEventListener("change", e => {
     if (e.target.dataset.ff !== "multi") return;
@@ -477,25 +652,97 @@ function bindFamilies(){
     const name = prompt("Color group name (e.g. Amber)"); if (!name) return;
     let id = slug(name), n = 2; while (fams().some(f => f.id === id)) id = slug(name) + "-" + n++;
     fams().push({ id, name, hex:"#cccccc" }); changed(); vCollections();
-    setTimeout(() => $("#famCard").scrollIntoView({ behavior:"smooth", block:"end" }), 50);
   };
 }
 
-/* ---------- BRAND ---------- */
+/* ================= COVER & LAST PAGE ================= */
+function vCovers(){
+  const s = "settings", featCol = filter.featCol || "all";
+  $("#view").innerHTML = `
+    <div class="card"><h3>Front cover</h3><p class="hint">The big title is “Title” + the highlighted word in red italics.</p>
+      <div class="fields">${field("Year", `${s}.cover.year`)}${field("Title", `${s}.cover.title`)}${field("Highlighted word", `${s}.cover.highlight`)}
+        ${field("Subtitle", `${s}.cover.subtitle`, { full:true, area:true })}${field("Note at the bottom", `${s}.cover.note`, { full:true })}</div>
+    </div>
+    <div class="card"><h3>Cover photos</h3><p class="hint">Tap photos to put them on the cover (★). The first 3 marked are used.</p>
+      <div class="toolbar"><select id="fcol"><option value="all">All sections</option>${D.collections.map(c => `<option value="${esc(c.id)}"${featCol === c.id ? " selected" : ""}>${esc(c.name)}</option>`).join("")}</select><span class="count" id="fcount"></span></div>
+      <div class="feat-grid" id="fgrid"></div>
+    </div>
+    <div class="card"><h3>Last page — thank-you message</h3><p class="hint">The animated last page with the QR code. Arabic text is fine here.</p>
+      <div class="fields">
+        ${field("Big thank-you line", `${s}.back.thanks`, { rtl:true, ph:"شكراً لثقتكم" })}
+        ${field("Second line", `${s}.back.thanksSub`, { rtl:true, ph:"في كيان رويال بلاست" })}
+        ${field("Small message (optional)", `${s}.back.message`, { rtl:true, full:true })}
+        ${field("WhatsApp button text", `${s}.labels.backWhatsapp`)}
+      </div>
+      ${check("Confetti celebration when the page opens", `${s}.back.confetti`)}
+      <p class="hint" style="margin:8px 0 0">The QR, phones and website on this page come from <b>Brand & Contact</b>.</p>
+      <button class="btn btn-line btn-sm" id="seeBack" style="margin-top:8px">${IC.view}See the last page</button>
+    </div>`;
+  bindAll($("#view"));
+  const drawFeat = () => {
+    const list = D.products.filter(p => !p.hidden && (featCol === "all" || p.collection === filter.featCol));
+    $("#fgrid").innerHTML = list.map(p => `<button class="${p.featured ? "on" : ""}" data-id="${esc(p.id)}" title="${esc(p.name)}"><img src="${esc(p.image)}" loading="lazy" alt=""></button>`).join("");
+    $("#fcount").textContent = `${D.products.filter(p => p.featured).length} marked`;
+    $("#fgrid").querySelectorAll("button").forEach(b => b.onclick = () => { const p = D.products.find(x => x.id === b.dataset.id); p.featured = !p.featured; b.classList.toggle("on", p.featured); $("#fcount").textContent = `${D.products.filter(p => p.featured).length} marked`; changed(); previewGoto({ type:"rp-goto", page:0 }); });
+  };
+  drawFeat();
+  $("#fcol").onchange = e => { filter.featCol = e.target.value; vCovers(); };
+  $("#seeBack").onclick = () => { if (!document.body.classList.contains("pv-on")) togglePv(true); setTimeout(() => previewGoto({ type:"rp-goto", page:9999 }), 300); };
+  $("#view").querySelectorAll("[data-bind^='settings.cover']").forEach(i => i.addEventListener("focus", () => previewGoto({ type:"rp-goto", page:0 })));
+  $("#view").querySelectorAll("[data-bind^='settings.back']").forEach(i => i.addEventListener("focus", () => previewGoto({ type:"rp-goto", page:9999 })));
+}
+
+/* ================= TEXTS & LAYOUT ================= */
+function vTexts(){
+  const s = "settings";
+  $("#view").innerHTML = `
+    <div class="card"><h3>Pages & behavior</h3><p class="hint">Each section can also set its own products-per-page (Sections).</p>
+      <div class="fields">
+        <div class="f"><label>Products per page (default)</label><select data-bind="${s}.layout.perPage" data-num>${PER_PAGE.map(([n, t]) => `<option value="${n}">${t}</option>`).join("")}</select></div>
+        <div class="f"><label>When a customer taps a product</label><select data-bind="${s}.clickAction"><option value="preview">Show it large first, with “Order Now”</option><option value="whatsapp">Open WhatsApp immediately</option></select></div>
+        <div class="f"><label>Page-turn speed</label><select data-bind="${s}.layout.flipSpeed" data-num><option value="500">Fast</option><option value="700">Normal</option><option value="950">Slow & elegant</option></select></div>
+      </div>
+      ${check("Page-turn sound on by default", `${s}.layout.flipSound`)}
+      ${check("Big arrows on both sides of the book", `${s}.layout.sideArrows`)}
+      ${check("Show “How to order” on the contents page", `${s}.layout.showHow`)}
+    </div>
+    <div class="card"><h3>Contents page</h3>
+      <div class="fields">${field("Title", `${s}.labels.contentsTitle`)}${field("Subtitle", `${s}.labels.contentsSub`)}${field("Word “products”", `${s}.labels.productsWord`)}${field("“How to order” title", `${s}.labels.howTitle`)}</div>
+    </div>
+    <div class="card"><h3>How to order — 3 steps</h3>
+      ${D.settings.steps.map((st, i) => `<div class="fields" style="margin-bottom:10px">${field(`Step ${i+1} title`, `${s}.steps.${i}.title`)}${field(`Step ${i+1} text`, `${s}.steps.${i}.text`)}</div>`).join("")}
+    </div>
+    <div class="card"><h3>Labels</h3><p class="hint">Every other word the customer sees.</p>
+      <div class="fields">
+        ${field("Word after section names", `${s}.labels.catalogSuffix`, { hint:"e.g. “ Catalog” → “Jars Catalog”. Leave empty for none." })}
+        ${field("“View” badge on products", `${s}.labels.view`)}
+        ${field("Order button", `${s}.labels.orderNow`)}
+        ${field("Note under the order button", `${s}.labels.orderNote`)}
+        ${field("Colors title (product view)", `${s}.labels.chooseColor`)}
+        ${field("Search box placeholder", `${s}.labels.findPlaceholder`)}
+        ${field("Hint on computers", `${s}.labels.hintDesktop`)}
+        ${field("Hint on phones", `${s}.labels.hintMobile`)}
+      </div>
+    </div>`;
+  bindAll($("#view"));
+  $("#view").querySelectorAll("[data-bind*='contents'],[data-bind*='steps'],[data-bind*='howTitle'],[data-bind*='showHow']").forEach(i => i.addEventListener("focus", () => previewGoto({ type:"rp-goto", page:1 })));
+}
+
+/* ================= BRAND & CONTACT ================= */
 function vBrand(){
   const s = "settings";
   $("#view").innerHTML = `
-    <div class="card"><h3>Brand</h3><p class="hint">Shown in the header, footer, loader and browser tab.</p>
-      <div class="fields">${field("Brand name", `${s}.brandName`)}${field("Tagline", `${s}.tagline`)}</div>
-      <div class="fields" style="margin-top:16px">
-        <div class="f"><label>Full logo (header)</label><div class="row"><img id="lg1" class="thumb" src="${esc(D.settings.logo)}"><button class="btn btn-line btn-sm" data-up="logo">Upload</button></div></div>
-        <div class="f"><label>Logo mark / icon (loader & sections)</label><div class="row"><img id="lg2" class="thumb" src="${esc(D.settings.logoMark)}"><button class="btn btn-line btn-sm" data-up="logoMark">Upload</button></div></div>
+    <div class="card"><h3>Brand</h3><p class="hint">Shown on the cover, pages, footer, loader and browser tab.</p>
+      <div class="fields">${field("Brand name", `${s}.brandName`)}${field("Tagline (footer of every page)", `${s}.tagline`)}</div>
+      <div class="fields" style="margin-top:14px">
+        <div class="f"><label>Full logo</label><div class="row"><img class="thumb" src="${esc(D.settings.logo)}"><button class="btn btn-line btn-sm" data-up="logo">Upload</button></div></div>
+        <div class="f"><label>Logo mark / icon (pages & covers)</label><div class="row"><img class="thumb" src="${esc(D.settings.logoMark)}"><button class="btn btn-line btn-sm" data-up="logoMark">Upload</button></div></div>
       </div>
     </div>
-    <div class="card"><h3>Sales WhatsApp</h3><p class="hint">Every product tap opens a chat with this number.</p>
-      <div class="fields">${field("WhatsApp number (international, digits only)", `${s}.whatsapp`, { hint:"Egypt example: 201013105930 (20 + number without the first 0)" })}</div>
+    <div class="card"><h3>Sales WhatsApp</h3><p class="hint">Every “Order Now” opens a chat with this number.</p>
+      <div class="fields">${field("WhatsApp number (international, digits only)", `${s}.whatsapp`, { hint:"Egypt example: 201013105930 (20 + the number without its first 0)" })}</div>
     </div>
-    <div class="card"><h3>Contact</h3><p class="hint">Shown in the footer of every page and on the back cover — all of them are clickable.</p>
+    <div class="card"><h3>Contact</h3><p class="hint">In the footer of every page and on the last page — all clickable.</p>
       <div class="fields">
         <div class="f"><label>Phone numbers (one per line)</label><textarea id="phones"></textarea></div>
         <div class="f"><label>When a customer taps a phone number</label><select data-bind="${s}.phoneAction"><option value="call">Call the number</option><option value="whatsapp">Open a WhatsApp chat with it</option></select>
@@ -503,7 +750,7 @@ function vBrand(){
       </div>
     </div>
     <div class="card"><h3>Social media QR</h3><p class="hint">The QR is generated from this link, so it always stays sharp and in your brand colors.</p>
-      <div class="row" style="align-items:flex-start;gap:20px">
+      <div class="row" style="align-items:flex-start;gap:18px">
         <div class="fields" style="flex:1">${field("QR link", `${s}.qrLink`, { full:true })}${field("Caption under the QR", `${s}.qrCaption`, { full:true })}</div>
         <div class="qr-prev" id="qrPrev"></div>
       </div>
@@ -516,13 +763,13 @@ function vBrand(){
   qr(); $("[data-bind='settings.qrLink']").addEventListener("bound", qr);
 }
 
-/* ---------- COLORS ---------- */
+/* ================= COLORS ================= */
 function vColors(){
-  const names = { primary:["Primary (red)","Buttons, codes, titles"], secondary:["Secondary (cyan)","Accents, underline, glow"], sky:["Panel background","Collection panels & footer"], ink:["Text / ink","Text, borders, QR"], bg:["Page background","Behind everything"] };
+  const names = { primary:["Primary (red)","Buttons, codes, titles"], secondary:["Secondary (cyan)","Accents & underlines"], sky:["Page background","Product pages & footer"], ink:["Text / ink","Text, borders, QR"], bg:["Light background","Behind the book"] };
   $("#view").innerHTML = `
-    <div class="card"><h3>Brand colors</h3><p class="hint">Taken from your logo. Change any color and the live preview updates instantly.</p>
-      <div class="swatches">${Object.entries(names).map(([k, [t, h]]) => `<div class="sw"><input type="color" data-c="${k}"><div><b>${t}</b><small class="meta">${h}</small><input type="text" data-ct="${k}"></div></div>`).join("")}</div>
-      <button class="btn btn-line" id="resetC" style="margin-top:16px">Reset to logo colors</button>
+    <div class="card"><h3>Brand colors</h3><p class="hint">Taken from your logo. Changes show instantly in the preview.</p>
+      <div class="swatches">${Object.entries(names).map(([k, [t, h]]) => `<div class="swc"><input type="color" data-c="${k}"><div style="flex:1"><b>${t}</b><small class="meta">${h}</small><input type="text" data-ct="${k}"></div></div>`).join("")}</div>
+      <button class="btn btn-line" id="resetC" style="margin-top:14px">Reset to logo colors</button>
     </div>`;
   const sync = () => Object.keys(names).forEach(k => { $(`[data-c=${k}]`).value = D.settings.colors[k]; $(`[data-ct=${k}]`).value = D.settings.colors[k]; });
   sync();
@@ -530,97 +777,44 @@ function vColors(){
   $("#resetC").onclick = () => { D.settings.colors = { ...LOGO_COLORS }; sync(); changed(); toast("Logo colors restored"); };
 }
 
-/* ---------- TEXTS ---------- */
-const PER_PAGE = [[1,"1 per page (hero product)"],[2,"2 per page"],[4,"4 per page (2 × 2)"],[6,"6 per page (3 × 2)"],[9,"9 per page (3 × 3)"],[12,"12 per page (4 × 3)"]];
-function vTexts(){
-  const s = "settings";
-  $("#view").innerHTML = `
-    <div class="card"><h3>Front cover</h3><p class="hint">The big title is “Title” + the highlighted word in red italics.</p>
-      <div class="fields">${field("Year", `${s}.cover.year`)}${field("Title", `${s}.cover.title`)}${field("Highlighted word", `${s}.cover.highlight`)}${field("Subtitle", `${s}.cover.subtitle`, { full:true, area:true })}${field("Note at the bottom", `${s}.cover.note`, { full:true })}</div>
-      <p class="hint" style="margin-top:12px">The 3 photos on the cover are the products marked “Show on the front cover”.</p>
-    </div>
-    <div class="card"><h3>Last page — thank-you message</h3><p class="hint">The animated last page with the QR code. Arabic text is fine here.</p>
-      <div class="fields">
-        <div class="f"><label>Big thank-you line</label><input data-bind="${s}.back.thanks" dir="rtl" placeholder="شكراً لثقتكم"></div>
-        <div class="f"><label>Second line</label><input data-bind="${s}.back.thanksSub" dir="rtl" placeholder="في كيان رويال بلاست"></div>
-        <div class="f full"><label>Small message (optional)</label><input data-bind="${s}.back.message" dir="rtl" placeholder="نفخر بأن نكون جزءاً من نجاحكم"></div>
-      </div><br>
-      <label class="check"><input type="checkbox" data-bind="${s}.back.confetti"> Confetti celebration when the page opens</label>
-      <p class="hint" style="margin:10px 0 0">The QR, phones, WhatsApp button and website on this page come from <b>Brand & Contact</b>.</p>
-    </div>
-    <div class="card"><h3>How to order — 3 steps</h3><p class="hint">Shown on the contents page.</p>
-      ${D.settings.steps.map((st, i) => `<div class="fields" style="margin-bottom:12px">${field(`Step ${i+1} title`, `${s}.steps.${i}.title`)}${field(`Step ${i+1} text`, `${s}.steps.${i}.text`)}</div>`).join("")}
-    </div>
-    <div class="card"><h3>Pages & behavior</h3><p class="hint">Each collection can also override the products-per-page from the Collections tab.</p>
-      <div class="fields">
-        <div class="f"><label>Products per page (default)</label><select data-bind="${s}.layout.perPage" data-num>${PER_PAGE.map(([n, t]) => `<option value="${n}">${t}</option>`).join("")}</select></div>
-        <div class="f"><label>When a customer taps a product</label><select data-bind="${s}.clickAction">
-          <option value="preview">Show the product large first, with an “Order Now” button</option><option value="whatsapp">Open WhatsApp immediately</option></select></div>
-        <div class="f"><label>Page-turn speed</label><select data-bind="${s}.layout.flipSpeed" data-num><option value="500">Fast</option><option value="700">Normal</option><option value="950">Slow & elegant</option></select></div>
-      </div><br>
-      <label class="check"><input type="checkbox" data-bind="${s}.layout.flipSound"> Page-turn sound on by default</label><br>
-      <label class="check"><input type="checkbox" data-bind="${s}.layout.sideArrows"> Show the big arrows on both sides of the book</label>
-    </div>
-    <div class="card"><h3>Labels & small texts</h3><p class="hint">Every word the customer sees in the catalog.</p>
-      <div class="fields">
-        ${field("Word after collection names", `${s}.labels.catalogSuffix`, { hint:"e.g. “ Catalog” → “PET Bottles Catalog”. Leave empty for none." })}
-        ${field("Contents page title", `${s}.labels.contentsTitle`)}
-        ${field("Contents page subtitle", `${s}.labels.contentsSub`)}
-        ${field("“How to order” title", `${s}.labels.howTitle`)}
-        ${field("Word “products” (contents page)", `${s}.labels.productsWord`)}
-        ${field("“View” badge on products", `${s}.labels.view`)}
-        ${field("Order button", `${s}.labels.orderNow`)}
-        ${field("Note under the order button", `${s}.labels.orderNote`)}
-        ${field("Colors title in the preview", `${s}.labels.chooseColor`)}
-        ${field("Back cover WhatsApp button", `${s}.labels.backWhatsapp`)}
-        ${field("Search box placeholder", `${s}.labels.findPlaceholder`)}
-        ${field("Hint on computers", `${s}.labels.hintDesktop`)}
-        ${field("Hint on phones", `${s}.labels.hintMobile`)}
-      </div>
-    </div>`;
-  bindAll($("#view"));
-}
-
-/* ---------- WHATSAPP ---------- */
+/* ================= WHATSAPP ================= */
 function vWhatsapp(){
   const keys = ["name","code","collection","family","capacity","material","neck","weight","color","colors","packing","image","link"];
   $("#view").innerHTML = `
     <div class="card"><h3>Message template</h3><p class="hint">Click a field to insert it. Lines whose fields are empty are removed automatically.</p>
       <div class="ph">${keys.map(k => `<button data-k="${k}">{${k}}</button>`).join("")}</div>
-      <textarea id="tpl" data-bind="settings.messageTemplate" style="min-height:260px;font-family:monospace;font-size:13px"></textarea>
-      <small class="meta">{color} = the color the customer picked · {colors} = all available colors · {image} = product photo link (WhatsApp shows it as a preview when the catalog is online) · {link} = link that opens the catalog on this product.</small>
+      <textarea id="tpl" data-bind="settings.messageTemplate" style="min-height:250px;font-family:monospace;font-size:13px"></textarea>
+      <small class="meta">{code} = the page code (NK…) · {family} = color group · {color} = the color the customer picked · {image} = product photo link (WhatsApp shows the photo) · {link} = link that opens the catalog on this product.</small>
     </div>
-    <div class="card"><h3>Preview</h3><p class="hint">Example with product: <select id="pp" style="width:auto;display:inline-block;padding:4px 8px">${D.products.map(p => `<option value="${esc(p.id)}">${esc(p.code)} — ${esc(p.name)}</option>`).join("")}</select></p>
+    <div class="card"><h3>Preview</h3><p class="hint">Example product: <select id="pp" style="width:auto;display:inline-block;padding:4px 8px">${D.products.map(p => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("")}</select></p>
       <div class="wa-bg"><div class="msg-prev" id="mp"></div></div>
     </div>`;
   bindAll($("#view"));
   const tpl = $("#tpl");
   const prev = () => {
     const p = D.products.find(x => x.id === $("#pp").value) || D.products[0]; if (!p) return;
-    const vals = { name:p.name, code:p.code, collection:D.collections.find(c => c.id === p.collection)?.name, family:fams().find(f => f.id === p.family)?.name, capacity:p.capacity, material:p.material, neck:p.neck, weight:p.weight, packing:p.packing, color:p.colors[0]?.name || "", colors:p.colors.map(c => c.name).join(" / "), image:"https://your-site.com/images/…", link:"https://your-site.com/?p=" + p.code };
+    const cm = codeMap();
+    const vals = { name:p.name, code:p.code || cm[p.id]?.code, collection:colOf(p)?.name, family:famOf(p)?.name, capacity:p.capacity, material:p.material, neck:p.neck, weight:p.weight, packing:p.packing, color:p.colors[0]?.name || "", colors:p.colors.map(c => c.name).join(" / "), image:"https://…/images/products/photo.jpg", link:"https://…/?p=" + p.id };
     $("#mp").textContent = D.settings.messageTemplate.split("\n").filter(l => { const ks = [...l.matchAll(/\{(\w+)\}/g)].map(m => m[1]); return !ks.length || ks.some(k => String(vals[k] ?? "").trim()); }).map(l => l.replace(/\{(\w+)\}/g, (_, k) => vals[k] ?? "")).join("\n");
   };
   prev(); tpl.addEventListener("bound", prev); $("#pp").onchange = prev;
-  $("#view").querySelectorAll(".ph button").forEach(b => b.onclick = () => {
-    const t = `{${b.dataset.k}}`, a = tpl.selectionStart, z = tpl.selectionEnd;
-    tpl.setRangeText(t, a, z, "end"); tpl.focus(); tpl.dispatchEvent(new Event("input"));
-  });
+  $("#view").querySelectorAll(".ph button").forEach(b => b.onclick = () => { const t = `{${b.dataset.k}}`; tpl.setRangeText(t, tpl.selectionStart, tpl.selectionEnd, "end"); tpl.focus(); tpl.dispatchEvent(new Event("input")); });
 }
 
-/* ---------- PUBLISH ---------- */
+/* ================= PUBLISH ================= */
 function vPublish(){
-  const size = (new Blob([JSON.stringify(D)]).size / 1024 / 1024).toFixed(2);
+  const size = (new Blob([JSON.stringify(D)]).size / 1024 / 1024).toFixed(2), same = sigOf(D) === PUB_SIG;
   $("#view").innerHTML = `
-    <div class="notice">Your edits are saved automatically on <b>this computer</b> and show up in <b>Live preview</b>. To make them live for customers, export and upload the file.</div>
+    ${same ? `<div class="notice">✅ No unpublished changes — the live catalog already matches what you see here.</div>` : `<div class="notice">Your edits are saved on <b>this computer</b> and visible in the live preview. To show them to customers, publish them (2 minutes):</div>`}
     <div class="card"><h3>Make your changes live</h3><p class="hint">Data size: ${size} MB</p>
       <ol class="steps-ol">
-        <li><div><b>Download catalog-data.js</b><br><button class="btn btn-red" id="ex1" style="margin-top:8px">${IC.publish}Download catalog-data.js</button></div></li>
-        <li><div><b>Replace the old file</b> — upload it to your website / hosting, next to <code>index.html</code>, replacing the old <code>catalog-data.js</code>.</div></li>
-        <li><div><b>Done</b> — everyone who opens the catalog sees the new version.</div></li>
+        <li><div><b>Download the catalog file</b><br><button class="btn btn-red" id="ex1" style="margin-top:8px">${IC.publish}Download catalog-data.js</button></div></li>
+        <li><div><b>Upload it to GitHub</b> — open the upload page, drag the downloaded <code>catalog-data.js</code> into it, then press the green <b>Commit changes</b> button.<br><a class="btn btn-ink" href="${REPO_UPLOAD}" target="_blank" rel="noopener" style="margin-top:8px;text-decoration:none">Open GitHub upload page</a></div></li>
+        <li><div><b>Done</b> — within about a minute everyone sees the new catalog (it refreshes itself).</div></li>
       </ol>
     </div>
     <div class="card"><h3>Backup & restore</h3><p class="hint">Keep a backup before big changes, or move your work to another computer.</p>
-      <div class="row" style="flex-wrap:wrap"><button class="btn btn-line" id="ex2">Download backup (.json)</button><button class="btn btn-line" id="imp">Import backup / catalog-data.js</button><button class="btn btn-line" id="rst" style="color:var(--red)">Discard edits — reload the published file</button></div>
+      <div class="row" style="flex-wrap:wrap"><button class="btn btn-line" id="ex2">Download backup (.json)</button><button class="btn btn-line" id="imp">Import backup / catalog-data.js</button><button class="btn btn-line" id="rst" style="color:var(--red)">Discard my edits — load the live catalog</button></div>
     </div>`;
   $("#ex1").onclick = exportJS;
   $("#ex2").onclick = () => download(`royal-plast-backup-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(D, null, 1), "application/json");
@@ -629,36 +823,55 @@ function vPublish(){
     try {
       const txt = (await f.text()).replace(/^[\s\S]*?window\.CATALOG_DATA\s*=\s*/, "").replace(/;\s*$/, "");
       const d = JSON.parse(txt); if (!d.settings || !d.products) throw new Error("Not a catalog file");
-      d._base = PUB_SIG; D = d; changed(); render(); toast("Imported");
+      d._base = PUB_SIG; D = withDefaults(d); changed(); render(); toast("Imported");
     } catch(e){ alert("Could not import: " + e.message); }
   };
-  $("#rst").onclick = () => { if (!confirm("Discard all unpublished edits?")) return; D = fresh(); changed(); render(); toast("Reloaded the published catalog"); };
+  $("#rst").onclick = () => { if (!confirm("Discard all unpublished edits?")) return; D = fresh(); changed(); render(); toast("Loaded the live catalog"); };
 }
 function download(name, text, type){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
 function exportJS(){
-  download("catalog-data.js", `/* Royal Plast catalog data — exported ${new Date().toLocaleString()} from admin.html */\nwindow.CATALOG_DATA = ${JSON.stringify(D, null, 1)};\n`, "text/javascript");
-  toast("catalog-data.js downloaded — upload it next to index.html");
+  const out = clone(D); delete out._base;
+  download("catalog-data.js", `/* Royal Plast catalog data — exported ${new Date().toLocaleString()} from admin.html */\nwindow.CATALOG_DATA = ${JSON.stringify(out, null, 1)};\n`, "text/javascript");
+  toast("Downloaded — now upload it on GitHub (step 2)");
 }
 
-$("#btnExport").onclick = () => { page = "publish"; render(); };
-$("#btnPreview").onclick = () => { previewWin = window.open("index.html?preview=1", "rp-preview"); setTimeout(pushPreview, 1500); };
+/* ---------- preview panel ---------- */
+function togglePv(on){
+  document.body.classList.toggle("pv-on", on);
+  $("#btnPv").classList.toggle("on", on);
+  if (on && !$("#pvFrame").src) $("#pvFrame").src = "index.html?preview=1";
+  else if (on) pushPreview();
+  try { localStorage.setItem("rp-pv", on ? "1" : "0"); } catch(_) {}
+}
+$("#btnPv").onclick = () => togglePv(!document.body.classList.contains("pv-on"));
+$("#pvClose").onclick = () => togglePv(false);
+$("#pvNew").onclick = () => { previewWin = window.open("index.html?preview=1", "rp-preview"); };
+$("#btnPublish").onclick = () => { page = "publish"; render(); };
 
+/* ---------- boot ---------- */
+function withDefaults(d){
+  const base = window.CATALOG_DATA.settings;
+  for (const k in base){
+    if (d.settings[k] === undefined) d.settings[k] = clone(base[k]);
+    else if (base[k] && typeof base[k] === "object" && !Array.isArray(base[k]) && k !== "pages") d.settings[k] = { ...clone(base[k]), ...d.settings[k] };
+  }
+  if (!["preview","whatsapp"].includes(d.settings.clickAction)) d.settings.clickAction = "preview";
+  d.collections.forEach(c => { if (c.groupByFamily === undefined) c.groupByFamily = true; });
+  return d;
+}
 (async function boot(){
   try { D = await idbGet("draft"); } catch(_) {}
   if (!D) D = fresh();
-  // fill in settings added in newer versions
-  const base = window.CATALOG_DATA.settings;
-  for (const k in base){
-    if (D.settings[k] === undefined) D.settings[k] = clone(base[k]);
-    else if (base[k] && typeof base[k] === "object" && !Array.isArray(base[k])) D.settings[k] = { ...clone(base[k]), ...D.settings[k] };
-  }
-  if (!["preview","whatsapp"].includes(D.settings.clickAction)) D.settings.clickAction = "preview";
+  D = withDefaults(D);
   $("#sideLogo").src = D.settings.logoMark || D.settings.logo;
   render();
-  // the published catalog was updated after these edits were started → offer to switch
-  if (D._base !== PUB_SIG && sigOf(D) !== PUB_SIG) $("#view").insertAdjacentHTML("afterbegin", `<div class="banner" id="stale"><span>⚠️ The live catalog was updated after you started these edits. Load the live version to make sure you edit the latest products.</span><button class="btn btn-ink btn-sm" id="loadPub">Load live version</button><button class="btn btn-line btn-sm" id="keepDraft">Keep my edits</button></div>`);
-  $("#loadPub")?.addEventListener("click", () => { D = fresh(); changed(); render(); toast("Loaded the live catalog"); });
-  $("#keepDraft")?.addEventListener("click", () => { D._base = PUB_SIG; changed(); $("#stale").remove(); });
+  if (D._base !== PUB_SIG && sigOf(D) !== PUB_SIG){
+    $("#view").insertAdjacentHTML("afterbegin", `<div class="banner" id="stale"><span>⚠️ The live catalog was updated after you started these edits. Load the live version so you edit the latest products.</span><button class="btn btn-ink btn-sm" id="loadPub">Load live version</button><button class="btn btn-line btn-sm" id="keepDraft">Keep my edits</button></div>`);
+    $("#loadPub").onclick = () => { D = fresh(); changed(); render(); toast("Loaded the live catalog"); };
+    $("#keepDraft").onclick = () => { D._base = PUB_SIG; changed(); $("#stale").remove(); };
+  }
+  let pv = innerWidth > 1100; try { const v = localStorage.getItem("rp-pv"); if (v !== null) pv = v === "1" && innerWidth > 1100; } catch(_) {}
+  togglePv(pv);
 })();
 </script>
 </body>
